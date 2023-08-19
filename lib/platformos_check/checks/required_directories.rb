@@ -11,7 +11,7 @@ module PlatformosCheck
     REQUIRED_DIRECTORIES = %w[assets config layout locales sections snippets templates]
 
     def on_end
-      directories = theme.directories.map(&:to_s)
+      directories = platformos_app.directories.map(&:to_s)
       missing_directories = REQUIRED_DIRECTORIES - directories
       missing_directories.each { |d| add_missing_directories_offense(d) }
     end
@@ -19,8 +19,8 @@ module PlatformosCheck
     private
 
     def add_missing_directories_offense(directory)
-      add_offense("Theme is missing '#{directory}' directory") do |corrector|
-        corrector.mkdir(@theme.storage, directory)
+      add_offense("App is missing '#{directory}' directory") do |corrector|
+        corrector.mkdir(@platformos_app.storage, directory)
       end
     end
   end

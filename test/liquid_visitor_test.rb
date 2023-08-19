@@ -14,10 +14,10 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_assign
-    theme_file = parse_liquid(<<~END)
+    platformos_app_file = parse_liquid(<<~END)
       {% assign x = 'hello' %}
     END
-    @visitor.visit_liquid_file(theme_file)
+    @visitor.visit_liquid_file(platformos_app_file)
 
     assert_equal([
                    :on_document,
@@ -34,13 +34,13 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_if
-    theme_file = parse_liquid(<<~END)
+    platformos_app_file = parse_liquid(<<~END)
       {% if x == 'condition' %}
         {% assign x = 'hello' %}
       {% else %}
       {% endif %}
     END
-    @visitor.visit_liquid_file(theme_file)
+    @visitor.visit_liquid_file(platformos_app_file)
 
     assert_equal([
                    :on_document,
@@ -72,12 +72,12 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_schema
-    theme_file = parse_liquid(<<~END)
+    platformos_app_file = parse_liquid(<<~END)
       {% schema %}
         { "muffin": true }
       {% endschema %}
     END
-    @visitor.visit_liquid_file(theme_file)
+    @visitor.visit_liquid_file(platformos_app_file)
 
     assert_equal([
                    :on_document,
@@ -92,12 +92,12 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_paginate
-    theme_file = parse_liquid(<<~END)
+    platformos_app_file = parse_liquid(<<~END)
       {% paginate products by x %}
         {{ product.name }}
       {% endpaginate %}
     END
-    @visitor.visit_liquid_file(theme_file)
+    @visitor.visit_liquid_file(platformos_app_file)
 
     assert_equal([
                    :on_document,
@@ -120,13 +120,13 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_render
-    theme_file = parse_liquid(<<~END)
+    platformos_app_file = parse_liquid(<<~END)
       {% for block in section.blocks %}
         {% assign x = 1 %}
         {% render block with x %}
       {% endfor %}
     END
-    @visitor.visit_liquid_file(theme_file)
+    @visitor.visit_liquid_file(platformos_app_file)
 
     assert_equal([
                    :on_document,
@@ -169,11 +169,11 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_form
-    theme_file = parse_liquid(<<~END)
+    platformos_app_file = parse_liquid(<<~END)
       {% form 'type', object, key: value %}
       {% endform %}
     END
-    @visitor.visit_liquid_file(theme_file)
+    @visitor.visit_liquid_file(platformos_app_file)
 
     assert_equal([
                    :on_document,

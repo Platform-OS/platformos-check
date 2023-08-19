@@ -4,7 +4,7 @@ require "test_helper"
 
 class SpaceInsideBracesTest < Minitest::Test
   def test_reports_missing_space
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {% assign x = 1%}
@@ -36,7 +36,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_dont_report_when_no_missing_space
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {% comment %}
@@ -68,7 +68,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_reports_extra_space
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {{  x }}
@@ -95,7 +95,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_reports_extra_space_around_coma
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {% form 'type',  object, key:value %}
@@ -110,7 +110,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_reports_extra_space_around_pipeline
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {{ url  | asset_url | img_tag }}
@@ -133,7 +133,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_reports_missing_space_around_pipeline
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {{ url| asset_url | img_tag }}
@@ -152,7 +152,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_dont_report_on_correct_spaces_around_pipeline
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {{ url | asset_url | img_tag }}
@@ -164,7 +164,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_reports_extra_space_after_colon_in_assign_tag
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {% assign max_width = height | times:  image.aspect_ratio %}
@@ -177,7 +177,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_dont_report_on_proper_spaces_around_pipeline
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {% assign x = 1 %}
@@ -211,7 +211,7 @@ class SpaceInsideBracesTest < Minitest::Test
         {{ x }}
       END
     }
-    sources = fix_theme(
+    sources = fix_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {{ x}}
@@ -231,7 +231,7 @@ class SpaceInsideBracesTest < Minitest::Test
         {{ x }}
       END
     }
-    sources = fix_theme(
+    sources = fix_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {{ x  }}
@@ -245,7 +245,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_reports_extra_space_after_operators
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {%- if x >  y -%}{%- endif -%}
@@ -270,7 +270,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_reports_missing_space_after_operators
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {%- if x >y -%}{%- endif -%}
@@ -295,7 +295,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_reports_extra_space_before_operators
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {%- if x  > y -%}{%- endif -%}
@@ -320,7 +320,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_reports_missing_space_before_operators
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {%- if x> y -%}{%- endif -%}
@@ -345,7 +345,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_dont_report_with_correct_spaces_around_operators
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {%- if x > y -%}{%- endif -%}
@@ -362,7 +362,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_dont_report_missing_spaces_inside_strings
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {{ filter.min_value.value | money_without_currency | replace: '.', '' | replace: ',', '.' }}
@@ -432,14 +432,14 @@ class SpaceInsideBracesTest < Minitest::Test
       },
       {
         liquid: <<~LIQUID,
-          {% comment %}theme-check-disable foo{% endcomment %}
+          {% comment %}platformos-check-disable foo{% endcomment %}
           {%comment %}
           {% endcomment %}
         LIQUID
-        expected: "Space missing after '{%' at templates/index.liquid:55:56"
+        expected: "Space missing after '{%' at templates/index.liquid:60:61"
       }
     ].each do |test_desc|
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PlatformosCheck::SpaceInsideBraces.new,
         "templates/index.liquid" => test_desc[:liquid]
       )
@@ -452,7 +452,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_reports_properly_at_end_tag
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {% assign x = n-%}
@@ -469,7 +469,7 @@ class SpaceInsideBracesTest < Minitest::Test
   end
 
   def test_dont_report_empty_variables
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SpaceInsideBraces.new,
       "templates/index.liquid" => <<~END
         {{}}

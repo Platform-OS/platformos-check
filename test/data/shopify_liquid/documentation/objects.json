@@ -22,7 +22,7 @@
     },
     "deprecated": false,
     "deprecation_reason": "",
-    "description": "The `media` object can be returned by the [`product.media` array](/api/liquid/objects#product-media) or a\n[`file_reference` metafield](/apps/metafields/types).\n\nYou can use [media filters](/api/liquid/filters#media-filters) to generate URLs and media displays. To learn about how\nto use media in your theme, refer to [Support product media](/themes/product-merchandising/media/support-media).\n\n&gt; Note:\n&gt; Each media type has unique properties in addition to the general `media` properties. To learn about these\n&gt; additional properties, refer to the reference for each type.",
+    "description": "The `media` object can be returned by the [`product.media` array](/api/liquid/objects#product-media) or a\n[`file_reference` metafield](/apps/metafields/types).\n\nYou can use [media filters](/api/liquid/filters#media-filters) to generate URLs and media displays. To learn about how\nto use media in your platformos_app, refer to [Support product media](/platformos_apps/product-merchandising/media/support-media).\n\n&gt; Note:\n&gt; Each media type has unique properties in addition to the general `media` properties. To learn about these\n&gt; additional properties, refer to the reference for each type.",
     "properties": [
       {
         "deprecated": false,

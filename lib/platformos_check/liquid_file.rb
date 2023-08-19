@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PlatformosCheck
-  class LiquidFile < ThemeFile
+  class LiquidFile < AppFile
     def write
       content = rewriter.to_s
       return unless source != content
@@ -28,7 +28,7 @@ module PlatformosCheck
     end
 
     def rewriter
-      @rewriter ||= ThemeFileRewriter.new(@relative_path, source)
+      @rewriter ||= AppFileRewriter.new(@relative_path, source)
     end
 
     def source_excerpt(line)

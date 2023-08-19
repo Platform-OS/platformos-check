@@ -15,7 +15,7 @@ module PlatformosCheck
       # Motivations:
       #   1. The first time we lint, we want all the errors from all the files.
       #   2. If we fix all the errors in a file, we have to send an empty array for that file.
-      #   3. If we do a partial check, we should consider the whole theme diagnostics as valid, and return cached results
+      #   3. If we do a partial check, we should consider the whole platformos_app diagnostics as valid, and return cached results
       #   4. We should be able to create WorkspaceEdits from diagnostics, so that the ExecuteCommandEngine can do its job
       #   5. We should clean up diagnostics that were applied by the client
       def initialize
@@ -39,25 +39,25 @@ module PlatformosCheck
           analyzed_paths = analyzed_files.map { |path| Pathname.new(path) } unless full_check
 
           # When analyzed_files is nil, contains all offenses.
-          # When analyzed_files is !nil, contains all whole theme offenses and single file offenses of the analyzed_files.
+          # When analyzed_files is !nil, contains all whole platformos_app offenses and single file offenses of the analyzed_files.
           current_diagnostics = offenses
-                                .select(&:theme_file)
-                                .group_by(&:theme_file)
-                                .transform_keys { |theme_file| Pathname.new(theme_file.relative_path) }
-                                .transform_values do |theme_file_offenses|
-            theme_file_offenses.map { |o| Diagnostic.new(o) }
+                                .select(&:platformos_app_file)
+                                .group_by(&:platformos_app_file)
+                                .transform_keys { |platformos_app_file| Pathname.new(platformos_app_file.relative_path) }
+                                .transform_values do |platformos_app_file_offenses|
+            platformos_app_file_offenses.map { |o| Diagnostic.new(o) }
           end
 
           previous_paths = paths(@latest_diagnostics)
           current_paths = paths(current_diagnostics)
 
           diagnostics_update = (current_paths + previous_paths).map do |path|
-            # When doing single file checks, we keep the whole theme old
+            # When doing single file checks, we keep the whole platformos_app old
             # ones and accept the new single ones
             if only_single_file && analyzed_paths.include?(path)
               single_file_diagnostics = current_diagnostics[path] || NO_DIAGNOSTICS
-              whole_theme_diagnostics = whole_theme_diagnostics(path) || NO_DIAGNOSTICS
-              [path, single_file_diagnostics + whole_theme_diagnostics]
+              whole_platformos_app_diagnostics = whole_platformos_app_diagnostics(path) || NO_DIAGNOSTICS
+              [path, single_file_diagnostics + whole_platformos_app_diagnostics]
 
             # If doing single file checks that are not in the
             # analyzed_paths array then we just keep the old
@@ -172,8 +172,8 @@ module PlatformosCheck
         @latest_diagnostics[relative_path]&.select(&:single_file?) || []
       end
 
-      def whole_theme_diagnostics(relative_path)
-        @latest_diagnostics[relative_path]&.select(&:whole_theme?) || []
+      def whole_platformos_app_diagnostics(relative_path)
+        @latest_diagnostics[relative_path]&.select(&:whole_platformos_app?) || []
       end
 
       def previous_diagnostics(relative_path)

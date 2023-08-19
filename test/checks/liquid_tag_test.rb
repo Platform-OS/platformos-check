@@ -4,7 +4,7 @@ require "test_helper"
 
 class LiquidTagTest < Minitest::Test
   def test_consecutive_statements
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::LiquidTag.new(min_consecutive_statements: 4),
       "templates/index.liquid" => <<~END
         {% assign x = 1 %}
@@ -22,7 +22,7 @@ class LiquidTagTest < Minitest::Test
   end
 
   def test_ignores_non_consecutive_statements
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::LiquidTag.new(min_consecutive_statements: 4),
       "templates/index.liquid" => <<~END
         {% assign x = 1 %}
@@ -39,7 +39,7 @@ class LiquidTagTest < Minitest::Test
   end
 
   def test_ignores_inside_liquid_tag
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::LiquidTag.new(min_consecutive_statements: 4),
       "templates/index.liquid" => <<~END
         {% liquid
@@ -57,8 +57,8 @@ class LiquidTagTest < Minitest::Test
   end
 
   def test_allows_sections_tag_in_layout
-    offenses = analyze_theme(
-      "sections/theme.liquid" => <<~END
+    offenses = analyze_platformos_app(
+      "sections/platformos_app.liquid" => <<~END
         {% sections 'foo' %}
       END
     )

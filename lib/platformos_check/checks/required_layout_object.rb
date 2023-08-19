@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module PlatformosCheck
-  # Reports missing content_for_header and content_for_layout in theme.liquid
-  class RequiredLayoutThemeObject < LiquidCheck
+  # Reports missing content_for_header and content_for_layout in platformos_app.liquid
+  class RequiredLayoutObject < LiquidCheck
     severity :error
     category :liquid
     doc docs_url(__FILE__)
 
-    LAYOUT_FILENAME = "layout/theme"
+    LAYOUT_FILENAME = "layout/platformos_app"
 
     def initialize
       @content_for_layout_found = false
@@ -15,7 +15,7 @@ module PlatformosCheck
     end
 
     def on_document(node)
-      @layout_theme_node = node if node.theme_file.name == LAYOUT_FILENAME
+      @layout_platformos_app_node = node if node.platformos_app_file.name == LAYOUT_FILENAME
     end
 
     def on_variable(node)
@@ -26,7 +26,7 @@ module PlatformosCheck
     end
 
     def after_document(node)
-      return unless node.theme_file.name == LAYOUT_FILENAME
+      return unless node.platformos_app_file.name == LAYOUT_FILENAME
 
       add_missing_object_offense("content_for_layout", "</body>") unless @content_for_layout_found
       add_missing_object_offense("content_for_header", "</head>") unless @content_for_header_found
@@ -35,10 +35,10 @@ module PlatformosCheck
     private
 
     def add_missing_object_offense(name, tag)
-      add_offense("#{LAYOUT_FILENAME} must include {{#{name}}}", node: @layout_theme_node) do
-        if @layout_theme_node.source.index(tag)
-          @layout_theme_node.source.insert(@layout_theme_node.source.index(tag), "  {{ #{name} }}\n  ")
-          @layout_theme_node.markup = @layout_theme_node.source
+      add_offense("#{LAYOUT_FILENAME} must include {{#{name}}}", node: @layout_platformos_app_node) do
+        if @layout_platformos_app_node.source.index(tag)
+          @layout_platformos_app_node.source.insert(@layout_platformos_app_node.source.index(tag), "  {{ #{name} }}\n  ")
+          @layout_platformos_app_node.markup = @layout_platformos_app_node.source
         end
       end
     end

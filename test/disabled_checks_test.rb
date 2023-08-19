@@ -21,7 +21,7 @@ module PlatformosCheck
       end
 
       def on_document(node)
-        source = node.theme_file.source
+        source = node.platformos_app_file.source
         matches(source, @regex).each do |match|
           offenses << Offense.new(
             check: self,
@@ -37,11 +37,11 @@ module PlatformosCheck
     # A check that uses the on_end callback
     class OnEndCheck < Check
       def on_document(node)
-        @theme_file = node.theme_file
+        @platformos_app_file = node.platformos_app_file
       end
 
       def on_end
-        offenses << Offense.new(check: self, message: "on_end used", theme_file: @theme_file)
+        offenses << Offense.new(check: self, message: "on_end used", platformos_app_file: @platformos_app_file)
       end
     end
 
@@ -72,10 +72,10 @@ module PlatformosCheck
     def test_ignore_all_checks
       comment_types.each do |comment|
         liquid_file = parse_liquid(<<~END)
-          #{comment.call('theme-check-disable')}
+          #{comment.call('platformos-check-disable')}
           {% assign x = 'x' %}
           RegexError 1
-          #{comment.call('theme-check-enable')}
+          #{comment.call('platformos-check-enable')}
         END
         @visitor.visit_liquid_file(liquid_file)
         @disabled_checks.remove_disabled_offenses(@checks)
@@ -87,14 +87,14 @@ module PlatformosCheck
 
     def test_ignore_all_checks_issue_583
       liquid_file = parse_liquid(<<~END)
-        {% comment %}theme-check-disable{% endcomment %}
+        {% comment %}platformos-check-disable{% endcomment %}
         {% comment %}
           This is some comment about the file...
-          Adding a comment here should not mess with theme-check-disable
+          Adding a comment here should not mess with platformos-check-disable
         {% endcomment %}
         {% assign x = 'x' %}
         RegexError 1
-        {% comment %}theme-check-enable{% endcomment %}
+        {% comment %}platformos-check-enable{% endcomment %}
       END
       @visitor.visit_liquid_file(liquid_file)
       @disabled_checks.remove_disabled_offenses(@checks)
@@ -106,7 +106,7 @@ module PlatformosCheck
     def test_ignore_all_checks_without_end
       comment_types.each do |comment|
         liquid_file = parse_liquid(<<~END)
-          #{comment.call('theme-check-disable')}
+          #{comment.call('platformos-check-disable')}
           {% assign x = 'x' %}
           RegexError 1
         END
@@ -123,10 +123,10 @@ module PlatformosCheck
         liquid_file = parse_liquid(<<~END)
           {% assign x = 'x' %}
           RegexError 1
-          #{comment.call('theme-check-disable')}
+          #{comment.call('platformos-check-disable')}
           {% assign y = 'y' %}
           RegexError 2
-          #{comment.call('theme-check-enable')}
+          #{comment.call('platformos-check-enable')}
           {% assign z = 'z' %}
           RegexError 3
         END
@@ -145,10 +145,10 @@ module PlatformosCheck
     def test_ignore_specific_checks
       comment_types.each do |comment|
         liquid_file = parse_liquid(<<~END)
-          #{comment.call('theme-check-disable AssignCheck')}
+          #{comment.call('platformos-check-disable AssignCheck')}
           {% assign x = 'x' %}
           RegexError 1
-          #{comment.call('theme-check-enable AssignCheck')}
+          #{comment.call('platformos-check-enable AssignCheck')}
         END
         @visitor.visit_liquid_file(liquid_file)
         @disabled_checks.remove_disabled_offenses(@checks)
@@ -161,10 +161,10 @@ module PlatformosCheck
     def test_ignore_multiple_checks
       comment_types.each do |comment|
         liquid_file = parse_liquid(<<~END)
-          #{comment.call('theme-check-disable AssignCheck, RegexCheck')}
+          #{comment.call('platformos-check-disable AssignCheck, RegexCheck')}
           {% assign x = 'x' %}
           RegexError 1
-          #{comment.call('theme-check-enable AssignCheck, RegexCheck')}
+          #{comment.call('platformos-check-enable AssignCheck, RegexCheck')}
         END
         @visitor.visit_liquid_file(liquid_file)
         @disabled_checks.remove_disabled_offenses(@checks)
@@ -177,13 +177,13 @@ module PlatformosCheck
     def test_enable_specific_checks_individually
       comment_types.each do |comment|
         liquid_file = parse_liquid(<<~END)
-          #{comment.call('theme-check-disable AssignCheck, RegexCheck')}
+          #{comment.call('platformos-check-disable AssignCheck, RegexCheck')}
           {% assign x = 'x' %}
           RegexError 1
-          #{comment.call('theme-check-enable AssignCheck')}
+          #{comment.call('platformos-check-enable AssignCheck')}
           {% assign y = 'y' %}
           RegexError 2
-          #{comment.call('theme-check-enable RegexCheck')}
+          #{comment.call('platformos-check-enable RegexCheck')}
           {% assign z = 'z' %}
           RegexError 3
         END
@@ -205,10 +205,10 @@ module PlatformosCheck
     def test_comments_can_have_spaces
       comment_types.each do |comment|
         liquid_file = parse_liquid(<<~END)
-          #{comment.call(' theme-check-disable ')}
+          #{comment.call(' platformos-check-disable ')}
           {% assign x = 'x' %}
           RegexError 1
-          #{comment.call(' theme-check-enable ')}
+          #{comment.call(' platformos-check-enable ')}
         END
         @visitor.visit_liquid_file(liquid_file)
         @disabled_checks.remove_disabled_offenses(@checks)
@@ -222,12 +222,12 @@ module PlatformosCheck
       comment_types.each do |comment|
         RegexCheck.can_disable(false)
         liquid_file = parse_liquid(<<~END)
-          #{comment.call(' theme-check-disable ')}
+          #{comment.call(' platformos-check-disable ')}
           RegexError 1
-          #{comment.call(' theme-check-enable ')}
-          #{comment.call(' theme-check-disable RegexCheck ')}
+          #{comment.call(' platformos-check-enable ')}
+          #{comment.call(' platformos-check-disable RegexCheck ')}
           RegexError 2
-          #{comment.call(' theme-check-enable RegexCheck ')}
+          #{comment.call(' platformos-check-enable RegexCheck ')}
         END
         @visitor.visit_liquid_file(liquid_file)
         @disabled_checks.remove_disabled_offenses(@checks)
@@ -242,14 +242,14 @@ module PlatformosCheck
     def test_can_disable_check_that_run_on_end
       comment_types.each do |comment|
         liquid_file = parse_liquid(<<~END)
-          #{comment.call('theme-check-disable OnEndCheck')}
+          #{comment.call('platformos-check-disable OnEndCheck')}
           Hello there
         END
         @visitor.visit_liquid_file(liquid_file)
         @checks.call(:on_end)
         @disabled_checks.remove_disabled_offenses(@checks)
 
-        assert_empty(@on_end_check.offenses.map(&:theme_file))
+        assert_empty(@on_end_check.offenses.map(&:platformos_app_file))
       end
     end
 
@@ -263,7 +263,7 @@ module PlatformosCheck
       @visitor.visit_liquid_file(liquid_file)
       @disabled_checks.remove_disabled_offenses(@checks)
 
-      assert_empty(@assign_check.offenses.map(&:theme_file))
+      assert_empty(@assign_check.offenses.map(&:platformos_app_file))
     end
 
     def test_should_ignore_regex_checks_inside_comments

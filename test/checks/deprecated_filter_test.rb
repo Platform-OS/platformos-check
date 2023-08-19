@@ -4,7 +4,7 @@ require "test_helper"
 
 class DeprecatedFilterTest < Minitest::Test
   def test_reports_on_deprecate_filter
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::DeprecatedFilter.new,
       "templates/index.liquid" => <<~END
         color: {{ settings.color_name | hex_to_rgba: 0.5 }};
@@ -17,7 +17,7 @@ class DeprecatedFilterTest < Minitest::Test
   end
 
   def test_does_not_report_on_filter
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::DeprecatedFilter.new,
       "templates/index.liquid" => <<~END
         color: {{ '#7ab55c' | color_to_rgb }};
@@ -28,7 +28,7 @@ class DeprecatedFilterTest < Minitest::Test
   end
 
   def test_fixes_img_url
-    sources = fix_theme(
+    sources = fix_platformos_app(
       PlatformosCheck::DeprecatedFilter.new,
       "templates/index.liquid" => <<~END
         {{ product.featured_image | img_url: '200x', scale: 2, crop: 'center' }}
@@ -107,7 +107,7 @@ class DeprecatedFilterTest < Minitest::Test
       ["original", 1024]
     ]
     named_sizes.each do |(name, size)|
-      sources = fix_theme(
+      sources = fix_platformos_app(
         PlatformosCheck::DeprecatedFilter.new,
         "templates/index.liquid" => <<~END
           {{ product.featured_image | img_url: '#{name}', scale: 2, crop: 'center' }}
@@ -130,7 +130,7 @@ class DeprecatedFilterTest < Minitest::Test
   end
 
   def test_fixes_img_url_master
-    sources = fix_theme(
+    sources = fix_platformos_app(
       PlatformosCheck::DeprecatedFilter.new,
       "templates/index.liquid" => <<~END
         {{ product.featured_image | img_url: 'master', scale: 2, crop: 'center' }}

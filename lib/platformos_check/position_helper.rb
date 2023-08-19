@@ -6,7 +6,7 @@ module PlatformosCheck
   module PositionHelper
     # Apparently this old implementation is 2x slower (with benchmark/ips),
     # so dropping with the following one... It's ugly af but
-    # this shit runs 100K+ times in one theme-check so it gotta go
+    # this shit runs 100K+ times in one platformos-check so it gotta go
     # fast!
     #
     def from_row_column_to_index(content, row, col)

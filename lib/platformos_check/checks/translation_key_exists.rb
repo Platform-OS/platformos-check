@@ -12,18 +12,18 @@ module PlatformosCheck
     end
 
     def on_document(node)
-      @nodes[node.theme_file.name] = []
+      @nodes[node.platformos_app_file.name] = []
     end
 
     def on_variable(node)
-      return unless @theme.default_locale_json&.content.is_a?(Hash)
+      return unless @platformos_app.default_locale_json&.content.is_a?(Hash)
       return unless node.filters.any? { |name, _| %w[t translate].include?(name) }
 
-      @nodes[node.theme_file.name] << node
+      @nodes[node.platformos_app_file.name] << node
     end
 
     def on_schema(node)
-      return unless (schema_locales = node.inner_json&.dig("locales", @theme.default_locale))
+      return unless (schema_locales = node.inner_json&.dig("locales", @platformos_app.default_locale))
 
       @schema_locales = schema_locales
     end
@@ -33,14 +33,14 @@ module PlatformosCheck
         file_nodes.each do |node|
           next unless (key_node = node.children.first)
           next unless key_node.value.is_a?(String)
-          next if key_exists?(key_node.value, @theme.default_locale_json.content) || key_exists?(key_node.value, @schema_locales) || ShopifyLiquid::SystemTranslations.include?(key_node.value)
+          next if key_exists?(key_node.value, @platformos_app.default_locale_json.content) || key_exists?(key_node.value, @schema_locales) || ShopifyLiquid::SystemTranslations.include?(key_node.value)
 
           add_offense(
-            @schema_locales.empty? ? "'#{key_node.value}' does not have a matching entry in '#{@theme.default_locale_json.relative_path}'" : "'#{key_node.value}' does not have a matching entry in '#{@theme.default_locale_json.relative_path}' or '#{node.theme_file.relative_path}'",
+            @schema_locales.empty? ? "'#{key_node.value}' does not have a matching entry in '#{@platformos_app.default_locale_json.relative_path}'" : "'#{key_node.value}' does not have a matching entry in '#{@platformos_app.default_locale_json.relative_path}' or '#{node.platformos_app_file.relative_path}'",
             node:,
             markup: key_node.value
           ) do |corrector|
-            corrector.add_translation(@theme.default_locale_json, key_node.value.split("."), "TODO")
+            corrector.add_translation(@platformos_app.default_locale_json, key_node.value.split("."), "TODO")
           end
         end
       end

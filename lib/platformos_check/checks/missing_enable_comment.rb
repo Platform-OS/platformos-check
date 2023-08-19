@@ -31,7 +31,7 @@ module PlatformosCheck
                   checks_missing_end_index.join(', ') + " " + (checks_missing_end_index.size == 1 ? "was" : "were")
                 end
 
-      add_offense("#{message} disabled but not re-enabled with theme-check-enable", node:)
+      add_offense("#{message} disabled but not re-enabled with platformos-check-enable", node:)
     end
   end
 end

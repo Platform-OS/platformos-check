@@ -3,7 +3,7 @@
 require "pathname"
 
 module PlatformosCheck
-  class Theme
+  class App
     DEFAULT_LOCALE_REGEXP = %r{locales/(.*)\.default$}
     LIQUID_REGEX = /\.liquid$/i
     JSON_REGEX = /\.json$/i

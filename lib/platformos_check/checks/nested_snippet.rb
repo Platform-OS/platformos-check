@@ -27,13 +27,13 @@ module PlatformosCheck
     end
 
     def on_document(node)
-      @templates[node.theme_file.name] = TemplateInfo.new(Set.new)
+      @templates[node.platformos_app_file.name] = TemplateInfo.new(Set.new)
     end
 
     def on_include(node)
       return unless node.value.template_name_expr.is_a?(String)
 
-      @templates[node.theme_file.name].includes << node
+      @templates[node.platformos_app_file.name].includes << node
     end
     alias on_render on_include
 

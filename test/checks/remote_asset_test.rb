@@ -5,15 +5,15 @@ require "test_helper"
 module PlatformosCheck
   class RemoteAssetTest < Minitest::Test
     def test_no_offense_for_good_behaviour
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         RemoteAsset.new,
         "templates/index.liquid" => <<~END
           <!-- scripts -->
-          <script src="{{ 'theme.js' | asset_url }}" defer></script>
+          <script src="{{ 'platformos_app.js' | asset_url }}" defer></script>
 
           <!-- styles -->
-          {{ 'theme.css' | asset_url | stylesheet_tag }}
-          <link href="{{ 'theme.css' | asset_url }}" rel="stylesheet">
+          {{ 'platformos_app.css' | asset_url | stylesheet_tag }}
+          <link href="{{ 'platformos_app.css' | asset_url }}" rel="stylesheet">
           <link rel="stylesheet" href="https://cdn.shopify.com/shopifycloud/ui.css">
 
           <!-- images -->
@@ -41,7 +41,7 @@ module PlatformosCheck
     end
 
     def test_no_offense_for_stuff_we_dont_care_about
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         RemoteAsset.new,
         "templates/index.liquid" => <<~END
           <link href="https://dont.care" rel="preconnect">
@@ -52,7 +52,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_scripts_to_remote_domains
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         RemoteAsset.new,
         "templates/index.liquid" => <<~END
           <script src="https://example.com/jquery.js" defer></script>
@@ -65,7 +65,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_remote_stylesheet
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         RemoteAsset.new,
         "templates/index.liquid" => <<~END
           <link href="https://example.com/bootstrap.css" rel="stylesheet">
@@ -80,7 +80,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_image_drops_without_img_url_filter
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         RemoteAsset.new,
         "templates/index.liquid" => <<~END
           <img src="{{ image }}">
@@ -106,7 +106,7 @@ module PlatformosCheck
           ></script>
         {% endif %}
       LIQUID
-      offenses = analyze_theme(RemoteAsset.new, "templates/index.liquid" => liquid)
+      offenses = analyze_platformos_app(RemoteAsset.new, "templates/index.liquid" => liquid)
 
       assert_equal(4, offenses[0].start_row)
       assert_equal(2, offenses[0].start_column)

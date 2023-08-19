@@ -20,17 +20,17 @@ class LanguageServerTest < Minitest::Test
     :code_name,
     :severity,
     :message,
-    :theme_file,
+    :platformos_app_file,
     :start_column,
     :end_column,
     :start_row,
     :end_row,
     :doc,
-    :whole_theme?,
+    :whole_platformos_app?,
     :version
   ) do
     def single_file?
-      !whole_theme?
+      !whole_platformos_app?
     end
 
     def self.build(path)
@@ -56,8 +56,8 @@ class LanguageServerTest < Minitest::Test
   SERVER_INFO = PlatformosCheck::LanguageServer::Handler::SERVER_INFO
 
   def test_sends_offenses_on_open
-    storage = make_file_system_storage("layout/theme.liquid" => "")
-    offense = OffenseMock.build(storage.path("layout/theme.liquid"))
+    storage = make_file_system_storage("layout/platformos_app.liquid" => "")
+    offense = OffenseMock.build(storage.path("layout/platformos_app.liquid"))
     PlatformosCheck::Analyzer.any_instance.stubs(:offenses).returns([offense])
 
     send_messages({
@@ -76,8 +76,8 @@ class LanguageServerTest < Minitest::Test
                     method: "textDocument/didOpen",
                     params: {
                       textDocument: {
-                        text: storage.read('layout/theme.liquid'),
-                        uri: file_uri(storage.path('layout/theme.liquid')),
+                        text: storage.read('layout/platformos_app.liquid'),
+                        uri: file_uri(storage.path('layout/platformos_app.liquid')),
                         version: 1
                       }
                     }
@@ -94,15 +94,15 @@ class LanguageServerTest < Minitest::Test
                        jsonrpc: "2.0",
                        method: "textDocument/publishDiagnostics",
                        params: {
-                         uri: file_uri(storage.path('layout/theme.liquid')),
+                         uri: file_uri(storage.path('layout/platformos_app.liquid')),
                          diagnostics: [Diagnostic.new(offense).to_h]
                        }
                      })
   end
 
   def test_sends_offenses_on_text_document_did_save
-    storage = make_file_system_storage("layout/theme.liquid" => "")
-    offense = OffenseMock.build(storage.path("layout/theme.liquid"))
+    storage = make_file_system_storage("layout/platformos_app.liquid" => "")
+    offense = OffenseMock.build(storage.path("layout/platformos_app.liquid"))
     PlatformosCheck::Analyzer.any_instance.expects(:offenses).returns([offense])
 
     send_messages({
@@ -117,7 +117,7 @@ class LanguageServerTest < Minitest::Test
                     method: "textDocument/didSave",
                     params: {
                       textDocument: {
-                        uri: file_uri(storage.path('layout/theme.liquid')),
+                        uri: file_uri(storage.path('layout/platformos_app.liquid')),
                         version: 1
                       }
                     }
@@ -134,7 +134,7 @@ class LanguageServerTest < Minitest::Test
                        jsonrpc: "2.0",
                        method: "textDocument/publishDiagnostics",
                        params: {
-                         uri: file_uri(storage.path('layout/theme.liquid')),
+                         uri: file_uri(storage.path('layout/platformos_app.liquid')),
                          diagnostics: [Diagnostic.new(offense).to_h]
                        }
                      })
@@ -142,9 +142,9 @@ class LanguageServerTest < Minitest::Test
 
   def test_finds_root_from_file
     storage = make_file_system_storage(
-      "src/layout/theme.liquid" => "",
-      "src/.theme-check.yml" => "",
-      ".theme-check.yml" => ""
+      "src/layout/platformos_app.liquid" => "",
+      "src/.platformos-check.yml" => "",
+      ".platformos-check.yml" => ""
     )
 
     send_messages({
@@ -159,8 +159,8 @@ class LanguageServerTest < Minitest::Test
                     method: "textDocument/didOpen",
                     params: {
                       textDocument: {
-                        text: storage.read('src/layout/theme.liquid'),
-                        uri: file_uri(storage.path("src/layout/theme.liquid")),
+                        text: storage.read('src/layout/platformos_app.liquid'),
+                        uri: file_uri(storage.path("src/layout/platformos_app.liquid")),
                         version: 1
                       }
                     }
@@ -188,7 +188,7 @@ class LanguageServerTest < Minitest::Test
                     method: "textDocument/didOpen",
                     params: {
                       textDocument: {
-                        uri: file_uri(storage.path('layout/theme.liquid')),
+                        uri: file_uri(storage.path('layout/platformos_app.liquid')),
                         text: contents,
                         version: 1
                       }
@@ -199,7 +199,7 @@ class LanguageServerTest < Minitest::Test
                     method: "textDocument/documentLink",
                     params: {
                       textDocument: {
-                        uri: file_uri(storage.path('layout/theme.liquid'))
+                        uri: file_uri(storage.path('layout/platformos_app.liquid'))
                       }
                     }
                   })
@@ -229,9 +229,9 @@ class LanguageServerTest < Minitest::Test
     LIQUID
 
     storage = make_file_system_storage(
-      "src/theme/layout/theme.liquid" => "",
-      ".theme-check.yml" => <<~CONFIG
-        root: src/theme
+      "src/platformos_app/layout/platformos_app.liquid" => "",
+      ".platformos-check.yml" => <<~CONFIG
+        root: src/platformos_app
       CONFIG
     )
 
@@ -247,7 +247,7 @@ class LanguageServerTest < Minitest::Test
                     method: "textDocument/didOpen",
                     params: {
                       textDocument: {
-                        uri: file_uri(storage.path('src/theme/layout/theme.liquid')),
+                        uri: file_uri(storage.path('src/platformos_app/layout/platformos_app.liquid')),
                         text: contents,
                         version: 1
                       }
@@ -258,7 +258,7 @@ class LanguageServerTest < Minitest::Test
                     method: "textDocument/documentLink",
                     params: {
                       textDocument: {
-                        uri: file_uri(storage.path('src/theme/layout/theme.liquid'))
+                        uri: file_uri(storage.path('src/platformos_app/layout/platformos_app.liquid'))
                       }
                     }
                   })
@@ -267,7 +267,7 @@ class LanguageServerTest < Minitest::Test
                                jsonrpc: "2.0",
                                id: 1,
                                result: [{
-                                 target: file_uri(storage.path('src/theme/snippets/a.liquid')),
+                                 target: file_uri(storage.path('src/platformos_app/snippets/a.liquid')),
                                  range: {
                                    start: {
                                      line: 0,
@@ -310,7 +310,7 @@ class LanguageServerTest < Minitest::Test
     LIQUID
 
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~YAML
+      ".platformos-check.yml" => <<~YAML
         root: "path with spaces/"
       YAML
     )
@@ -327,7 +327,7 @@ class LanguageServerTest < Minitest::Test
                     method: "textDocument/didOpen",
                     params: {
                       textDocument: {
-                        uri: file_uri(storage.path('path with spaces/layout/theme.liquid')),
+                        uri: file_uri(storage.path('path with spaces/layout/platformos_app.liquid')),
                         text: contents,
                         version: 1
                       }
@@ -338,7 +338,7 @@ class LanguageServerTest < Minitest::Test
                     method: "textDocument/documentLink",
                     params: {
                       textDocument: {
-                        uri: file_uri(storage.path('path with spaces/layout/theme.liquid'))
+                        uri: file_uri(storage.path('path with spaces/layout/platformos_app.liquid'))
                       }
                     }
                   })

@@ -187,7 +187,7 @@ module PlatformosCheck
 
       # We're using workspace/willRenameFiles here because we want this to run
       # before textDocument/didOpen and textDocumetn/didClose of the files
-      # (which might trigger another theme analysis).
+      # (which might trigger another platformos_app analysis).
       def on_workspace_will_rename_files(id, params)
         relative_paths = params[:files]
           &.map { |file| [file[:oldUri], file[:newUri]] }

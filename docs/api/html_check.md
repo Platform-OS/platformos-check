@@ -18,7 +18,7 @@ module PlatformosCheck
     def on_document(node)
       # Called with the root node of all theme files
       node.value      # is an instance of Nokogiri::XML::Node
-      node.theme_file # is the html_file being analyzed, See lib/platformos_check/theme_file.rb.
+      node.platformos_app_file # is the html_file being analyzed, See lib/platformos_check/platformos_app_file.rb.
       node.parent     # is the parent node.
       node.children   # are the children nodes.
       # See lib/platformos_check/html_node.rb for more helper methods

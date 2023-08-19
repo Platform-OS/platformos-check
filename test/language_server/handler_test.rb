@@ -12,10 +12,10 @@ module PlatformosCheck
         @bridge = Bridge.new(@mock_messenger)
         @handler = Handler.new(@bridge)
         @storage = make_file_system_storage(
-          "layout/theme.liquid" => "<html>hello world</html>",
+          "layout/platformos_app.liquid" => "<html>hello world</html>",
           "sections/main.liquid" => "{% render 'error' %}",
           "snippets/error.liquid" => "{% if unclosed %}",
-          ".theme-check.yml" => <<~YAML
+          ".platformos-check.yml" => <<~YAML
             extends: nothing
             SyntaxError:
               enabled: true
@@ -65,7 +65,7 @@ module PlatformosCheck
 
       def test_handle_document_did_open_does_not_crash
         initialize!(1, nil, @storage.root)
-        did_open!('layout/theme.liquid')
+        did_open!('layout/platformos_app.liquid')
       end
 
       def test_handle_document_did_open_checks_by_default
@@ -113,7 +113,7 @@ module PlatformosCheck
       def test_handle_workspace_did_delete_files
         initialize!(1, nil, @storage.root)
 
-        old_file_path = 'layout/theme.liquid'
+        old_file_path = 'layout/platformos_app.liquid'
 
         # here, we delete the file from the file system without the handler knowing
         @storage.write(old_file_path, 'hello')
@@ -132,8 +132,8 @@ module PlatformosCheck
       def test_handle_workspace_will_rename_files
         initialize!(1, nil, @storage.root)
 
-        old_file_path = 'layout/theme.liquid'
-        new_file_path = 'layout/theme2.liquid'
+        old_file_path = 'layout/platformos_app.liquid'
+        new_file_path = 'layout/platformos_app2.liquid'
 
         # We send a workspace/willRenameFiles request to the server
         # and ask for potential WorkspaceEdits in response

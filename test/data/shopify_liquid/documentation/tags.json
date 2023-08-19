@@ -3,7 +3,7 @@
     "category": "html",
     "deprecated": false,
     "deprecation_reason": "",
-    "description": "Because there are many different form types available in Shopify themes, the `form` tag requires a type. Depending on the\nform type, an additional parameter might be required. You can specify the following form types:\n\n- [`activate_customer_password`](/api/liquid/tags#form-activate_customer_password)\n- [`cart`](/api/liquid/tags#form-cart)\n- [`contact`](/api/liquid/tags#form-contact)\n- [`create_customer`](/api/liquid/tags#form-create_customer)\n- [`currency`](/api/liquid/tags#form-currency)\n- [`customer`](/api/liquid/tags#form-customer)\n- [`customer_address`](/api/liquid/tags#form-customer_address)\n- [`customer_login`](/api/liquid/tags#form-customer_login)\n- [`guest_login`](/api/liquid/tags#form-guest_login)\n- [`localization`](/api/liquid/tags#form-localization)\n- [`new_comment`](/api/liquid/tags#form-new_comment)\n- [`product`](/api/liquid/tags#form-product)\n- [`recover_customer_password`](/api/liquid/tags#form-recover_customer_password)\n- [`reset_customer_password`](/api/liquid/tags#form-reset_customer_password)\n- [`storefront_password`](/api/liquid/tags#form-storefront_password)",
+    "description": "Because there are many different form types available in Shopify platformos_apps, the `form` tag requires a type. Depending on the\nform type, an additional parameter might be required. You can specify the following form types:\n\n- [`activate_customer_password`](/api/liquid/tags#form-activate_customer_password)\n- [`cart`](/api/liquid/tags#form-cart)\n- [`contact`](/api/liquid/tags#form-contact)\n- [`create_customer`](/api/liquid/tags#form-create_customer)\n- [`currency`](/api/liquid/tags#form-currency)\n- [`customer`](/api/liquid/tags#form-customer)\n- [`customer_address`](/api/liquid/tags#form-customer_address)\n- [`customer_login`](/api/liquid/tags#form-customer_login)\n- [`guest_login`](/api/liquid/tags#form-guest_login)\n- [`localization`](/api/liquid/tags#form-localization)\n- [`new_comment`](/api/liquid/tags#form-new_comment)\n- [`product`](/api/liquid/tags#form-product)\n- [`recover_customer_password`](/api/liquid/tags#form-recover_customer_password)\n- [`reset_customer_password`](/api/liquid/tags#form-reset_customer_password)\n- [`storefront_password`](/api/liquid/tags#form-storefront_password)",
     "parameters": [
       {
         "description": "The desired URL to redirect to when the form submits.",
@@ -30,7 +30,7 @@
     "examples": [
       {
         "name": "activate_customer_password",
-        "description": "Generates a form for activating a customer account.\nTo learn more about using this form, and its contents, refer to the [`customers/activate_account` template](/themes/architecture/templates/customers-activate-account#content).\n",
+        "description": "Generates a form for activating a customer account.\nTo learn more about using this form, and its contents, refer to the [`customers/activate_account` template](/platformos_apps/architecture/templates/customers-activate-account#content).\n",
         "syntax": "{% form 'activate_customer_password', article %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'activate_customer_password' %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -40,7 +40,7 @@
       },
       {
         "name": "cart",
-        "description": "Generates a form for creating a checkout based on the items currently in the cart. The `cart` form requires a [`cart` object](/api/liquid/objects#cart) as a parameter.\nTo learn more about using the cart form in your theme, refer to the [`cart` template](/themes/architecture/templates/cart#proceed-to-checkout).\n",
+        "description": "Generates a form for creating a checkout based on the items currently in the cart. The `cart` form requires a [`cart` object](/api/liquid/objects#cart) as a parameter.\nTo learn more about using the cart form in your platformos_app, refer to the [`cart` template](/platformos_apps/architecture/templates/cart#proceed-to-checkout).\n",
         "syntax": "{% form 'cart', cart %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'cart', cart %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -50,7 +50,7 @@
       },
       {
         "name": "contact",
-        "description": "Generates a form for submitting an email to the merchant. To learn more about using this form in your theme, refer to [Add a contact form to your theme](/themes/customer-engagement/add-contact-form).\n\n&gt; Tip:\n&gt; To learn more about the merchant experience of receiving submissions, refer to [the Shopify Help Center](https://help.shopify.com/manual/online-store/themes/customizing-themes/add-contact-page#view-contact-form-submissions).\n",
+        "description": "Generates a form for submitting an email to the merchant. To learn more about using this form in your platformos_app, refer to [Add a contact form to your platformos_app](/platformos_apps/customer-engagement/add-contact-form).\n\n&gt; Tip:\n&gt; To learn more about the merchant experience of receiving submissions, refer to [the Shopify Help Center](https://help.shopify.com/manual/online-store/platformos_apps/customizing-platformos_apps/add-contact-page#view-contact-form-submissions).\n",
         "syntax": "{% form 'contact' %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'contact' %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -60,7 +60,7 @@
       },
       {
         "name": "create_customer",
-        "description": "Generates a form for creating a new customer account.\nTo learn more about using this form, and its contents, refer to the [`customers/register` template](/themes/architecture/templates/customers-register#content).\n",
+        "description": "Generates a form for creating a new customer account.\nTo learn more about using this form, and its contents, refer to the [`customers/register` template](/platformos_apps/architecture/templates/customers-register#content).\n",
         "syntax": "{% form 'create_customer' %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'create_customer' %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -80,7 +80,7 @@
       },
       {
         "name": "customer",
-        "description": "Generates a form for creating a new customer without registering a new account. This form is useful for collecting customer information when you don't want customers to log in to your store, such as building a list of emails from a newsletter signup.\n\n&gt; Tip:\n&gt; To generate a form that registers a customer account, use the [`create_customer` form](/api/liquid/tags#form-create_customer).\n\nTo learn more about using this form, and its contents, refer to [Email consent](/themes/customer-engagement/email-consent#newsletter-sign-up-form).\n",
+        "description": "Generates a form for creating a new customer without registering a new account. This form is useful for collecting customer information when you don't want customers to log in to your store, such as building a list of emails from a newsletter signup.\n\n&gt; Tip:\n&gt; To generate a form that registers a customer account, use the [`create_customer` form](/api/liquid/tags#form-create_customer).\n\nTo learn more about using this form, and its contents, refer to [Email consent](/platformos_apps/customer-engagement/email-consent#newsletter-sign-up-form).\n",
         "syntax": "{% form 'customer' %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'customer' %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -90,7 +90,7 @@
       },
       {
         "name": "customer_address",
-        "description": "Generates a form for creating a new address on a customer account, or editing an existing one. The `customer_address` form requires a specific parameter, depending on whether a new address is being created or an existing one is being edited:\n\n| Parameter value | Use-case |\n| --- | --- |\n| `customer.new_address` | When a new address is being created. |\n| `address` | When an existing address is being edited. |\n\nTo learn more about using this form, and its contents, refer to the [`customers/addresses` template](/themes/architecture/templates/customers-addresses#content).\n",
+        "description": "Generates a form for creating a new address on a customer account, or editing an existing one. The `customer_address` form requires a specific parameter, depending on whether a new address is being created or an existing one is being edited:\n\n| Parameter value | Use-case |\n| --- | --- |\n| `customer.new_address` | When a new address is being created. |\n| `address` | When an existing address is being edited. |\n\nTo learn more about using this form, and its contents, refer to the [`customers/addresses` template](/platformos_apps/architecture/templates/customers-addresses#content).\n",
         "syntax": "{% form 'customer_address', address_type %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'customer_address', customer.new_address %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -100,7 +100,7 @@
       },
       {
         "name": "customer_login",
-        "description": "Generates a form for logging into a customer account.\nTo learn more about using this form, and its contents, refer to the [`customers/login` template](/themes/architecture/templates/customers-login#the-customer-login-form).\n",
+        "description": "Generates a form for logging into a customer account.\nTo learn more about using this form, and its contents, refer to the [`customers/login` template](/platformos_apps/architecture/templates/customers-login#the-customer-login-form).\n",
         "syntax": "{% form 'customer_login' %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'customer_login' %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -110,7 +110,7 @@
       },
       {
         "name": "guest_login",
-        "description": "Generates a form, for use in the [`customers/login` template](/themes/architecture/templates/customers-login), that directs customers back to their checkout session as a guest instead of logging in to an account.\nTo learn more about using this form, and its contents, refer to [Offer guest checkout](/themes/architecture/templates/customers-login#offer-guest-checkout).\n",
+        "description": "Generates a form, for use in the [`customers/login` template](/platformos_apps/architecture/templates/customers-login), that directs customers back to their checkout session as a guest instead of logging in to an account.\nTo learn more about using this form, and its contents, refer to [Offer guest checkout](/platformos_apps/architecture/templates/customers-login#offer-guest-checkout).\n",
         "syntax": "{% form 'guest_login' %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'guest_login' %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -120,7 +120,7 @@
       },
       {
         "name": "localization",
-        "description": "Generates a form for customers to select their preferred country so that they're shown the appropriate language and currency. The `localization` form can contain one of two selectors:\n\n- A country selector\n- A language selector\n\n&gt; Note:\n&gt; The `localization` form replaces the deprecated [`currency` form](/api/liquid/tags#form-currency).\n\nTo learn more about using this form, and its contents, refer to [Support multiple currencies and languages](/themes/internationalization/multiple-currencies-languages).\n",
+        "description": "Generates a form for customers to select their preferred country so that they're shown the appropriate language and currency. The `localization` form can contain one of two selectors:\n\n- A country selector\n- A language selector\n\n&gt; Note:\n&gt; The `localization` form replaces the deprecated [`currency` form](/api/liquid/tags#form-currency).\n\nTo learn more about using this form, and its contents, refer to [Support multiple currencies and languages](/platformos_apps/internationalization/multiple-currencies-languages).\n",
         "syntax": "{% form 'localization' %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'localization' %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -130,7 +130,7 @@
       },
       {
         "name": "new_comment",
-        "description": "Generates a form for creating a new comment on an article. The `new_comment` form requires an [`article` object](/api/liquid/objects#article) as a parameter.\nTo learn more about using this form, and its contents, refer to the [`article` template](/themes/architecture/templates/article#the-comment-form).\n",
+        "description": "Generates a form for creating a new comment on an article. The `new_comment` form requires an [`article` object](/api/liquid/objects#article) as a parameter.\nTo learn more about using this form, and its contents, refer to the [`article` template](/platformos_apps/architecture/templates/article#the-comment-form).\n",
         "syntax": "{% form 'new_comment', article %}\n  form_content\n{% endform %}\n",
         "path": "/blogs/potion-notions/how-to-tell-if-you-have-run-out-of-invisibility-potion",
         "raw_liquid": "{% form 'new_comment', article %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -140,7 +140,7 @@
       },
       {
         "name": "product",
-        "description": "Generates a form for adding a product variant to the cart. The `product` form requires a [`product` object](/api/liquid/objects#product) as a parameter.\nTo learn more about using this form, and its contents, refer to the [`product` template](/themes/architecture/templates/product#the-product-form).\n",
+        "description": "Generates a form for adding a product variant to the cart. The `product` form requires a [`product` object](/api/liquid/objects#product) as a parameter.\nTo learn more about using this form, and its contents, refer to the [`product` template](/platformos_apps/architecture/templates/product#the-product-form).\n",
         "syntax": "{% form 'product', product %}\n  form_content\n{% endform %}\n",
         "path": "/products/health-potion",
         "raw_liquid": "{% form 'product', product %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -150,7 +150,7 @@
       },
       {
         "name": "recover_customer_password",
-        "description": "Generates a form, for use in the [`customers/login` template](/themes/architecture/templates/customers-login), for a customer to recover a lost or forgotten password.\nTo learn more about using this form, and its contents, refer to [Provide a \"Forgot your password\" option](/themes/architecture/templates/customers-login#provide-a-forgot-your-password-option).\n",
+        "description": "Generates a form, for use in the [`customers/login` template](/platformos_apps/architecture/templates/customers-login), for a customer to recover a lost or forgotten password.\nTo learn more about using this form, and its contents, refer to [Provide a \"Forgot your password\" option](/platformos_apps/architecture/templates/customers-login#provide-a-forgot-your-password-option).\n",
         "syntax": "{% form 'recover_customer_password' %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'recover_customer_password' %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -160,7 +160,7 @@
       },
       {
         "name": "reset_customer_password",
-        "description": "Generates a form for a customer to reset their password.\nTo learn more about using this form, and its contents, refer to the [`customers/reset_password` template](/themes/architecture/templates/customers-reset-password#content).\n",
+        "description": "Generates a form for a customer to reset their password.\nTo learn more about using this form, and its contents, refer to the [`customers/reset_password` template](/platformos_apps/architecture/templates/customers-reset-password#content).\n",
         "syntax": "{% form 'reset_customer_password' %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'reset_customer_password' %}\n  &lt;!-- form content --&gt;\n{% endform %}",
@@ -170,7 +170,7 @@
       },
       {
         "name": "storefront_password",
-        "description": "Generates a form for entering a password protected storefront.\nTo learn more about using this form, and its contents, refer to the [`password` template](/themes/architecture/templates/password#the-password-form).\n",
+        "description": "Generates a form for entering a password protected storefront.\nTo learn more about using this form, and its contents, refer to the [`password` template](/platformos_apps/architecture/templates/password#the-password-form).\n",
         "syntax": "{% form 'storefront_password' %}\n  form_content\n{% endform %}\n",
         "path": "/",
         "raw_liquid": "{% form 'storefront_password' %}\n  &lt;!-- form content --&gt;\n{% endform %}",

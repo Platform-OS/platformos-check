@@ -26,14 +26,14 @@ module PlatformosCheck
       return @option_parser if defined?(@option_parser)
 
       @option_parser = parser
-      @option_parser.banner = "Usage: theme-check [options] [/path/to/your/theme]"
+      @option_parser.banner = "Usage: platformos-check [options] [/path/to/your/platformos_app]"
 
       @option_parser.separator("")
       @option_parser.separator("Basic Options:")
       @option_parser.on(
         "-C", "--config PATH",
-        "Use the config provided, overriding .theme-check.yml if present",
-        "Use :theme_app_extension to use default checks for theme app extensions"
+        "Use the config provided, overriding .platformos-check.yml if present",
+        "Use :platformos_app_app_extension to use default checks for app extensions"
       ) { |path| @config_path = path }
       @option_parser.on(
         "-o", "--output FORMAT", FORMATS,
@@ -62,7 +62,7 @@ module PlatformosCheck
       @option_parser.separator("Miscellaneous:")
       @option_parser.on(
         "--init",
-        "Generate a .theme-check.yml file"
+        "Generate a .platformos-check.yml file"
       ) { @command = :init }
       @option_parser.on(
         "--print",
@@ -70,7 +70,7 @@ module PlatformosCheck
       ) { @command = :print }
       @option_parser.on(
         "--update-docs",
-        "Update Theme Check docs (objects, filters, and tags)"
+        "Update PlatformOS Check docs (objects, filters, and tags)"
       ) { @update_docs = true }
       @option_parser.on(
         "-h", "--help",
@@ -82,7 +82,7 @@ module PlatformosCheck
       ) { @command = :list }
       @option_parser.on(
         "-v", "--version",
-        "Print Theme Check version"
+        "Print PlatformOS Check version"
       ) { @command = :version }
 
       if ENV["PLATFORMOS_CHECK_DEBUG"]
@@ -97,10 +97,10 @@ module PlatformosCheck
       @option_parser.separator("")
       @option_parser.separator(<<~EOS)
         Description:
-            Theme Check helps you follow Shopify Themes & Liquid best practices by analyzing the
-            Liquid & JSON inside your theme.
+            PlatformOS Check helps you follow platformOS best practices by analyzing the
+            Liquid & JSON inside your app.
 
-            You can configure checks in the .theme-check.yml file of your theme root directory.
+            You can configure checks in the .platformos-check.yml file of your platformos_app root directory.
       EOS
 
       @option_parser
@@ -190,13 +190,13 @@ module PlatformosCheck
 
       warn "Checking #{@config.root} ..."
       storage = PlatformosCheck::FileSystemStorage.new(@config.root, ignored_patterns: @config.ignored_patterns)
-      theme = PlatformosCheck::Theme.new(storage)
-      raise Abort, "No theme files found." if theme.all.empty?
+      platformos_app = PlatformosCheck::App.new(storage)
+      raise Abort, "No platformos_app files found." if platformos_app.all.empty?
 
-      analyzer = PlatformosCheck::Analyzer.new(theme, @config.enabled_checks, @config.auto_correct)
-      analyzer.analyze_theme
+      analyzer = PlatformosCheck::Analyzer.new(platformos_app, @config.enabled_checks, @config.auto_correct)
+      analyzer.analyze_platformos_app
       analyzer.correct_offenses
-      print_with_format(theme, analyzer, out_stream)
+      print_with_format(platformos_app, analyzer, out_stream)
       # corrections are committed after printing so that the
       # source_excerpts are still pointing to the uncorrected source.
       analyzer.write_corrections
@@ -227,10 +227,10 @@ module PlatformosCheck
       warn "Profiling is only available in development"
     end
 
-    def print_with_format(theme, analyzer, out_stream)
+    def print_with_format(platformos_app, analyzer, out_stream)
       case @format
       when :text
-        PlatformosCheck::Printer.new(out_stream).print(theme, analyzer.offenses, @config.auto_correct)
+        PlatformosCheck::Printer.new(out_stream).print(platformos_app, analyzer.offenses, @config.auto_correct)
       when :json
         PlatformosCheck::JsonPrinter.new(out_stream).print(analyzer.offenses)
       end

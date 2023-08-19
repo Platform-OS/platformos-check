@@ -93,7 +93,7 @@ module PlatformosCheck
       ensure
         send_response(id, nil, {
                         code: ErrorCodes::INTERNAL_ERROR,
-                        message: "A theme-check-language-server has occured, inspect OUTPUT logs for details."
+                        message: "A platformos-check-language-server has occured, inspect OUTPUT logs for details."
                       })
       end
 

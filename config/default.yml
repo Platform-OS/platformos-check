@@ -30,7 +30,7 @@ NestedSnippet:
   ignore: []
   max_nesting_level: 3
 
-RequiredLayoutThemeObject:
+RequiredLayoutObject:
   enabled: true
   ignore: []
 

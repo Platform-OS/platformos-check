@@ -577,12 +577,12 @@ module PlatformosCheck
 
     def test_outer_markup_repeated_comments
       liquid = <<~LIQUID
-        {% comment %}theme-check-disable foo{% endcomment %}
-        {% comment %}theme-check-disable bar{% endcomment %}
+        {% comment %}platformos-check-disable foo{% endcomment %}
+        {% comment %}platformos-check-disable bar{% endcomment %}
         {%comment%}
         {%endcomment%}
       LIQUID
-      assert_can_find_node_with_outer_markup('{% comment %}theme-check-disable foo{% endcomment %}', liquid)
+      assert_can_find_node_with_outer_markup('{% comment %}platformos-check-disable foo{% endcomment %}', liquid)
       assert_can_find_node_with_outer_markup(<<~COMMENT.rstrip, liquid)
         {%comment%}
         {%endcomment%}
@@ -591,12 +591,12 @@ module PlatformosCheck
 
     def test_outer_markup_repeated_comments_inline_comment
       liquid = <<~LIQUID
-        {% # theme-check-disable foo %}
-        {% # theme-check-disable bar %}
-        {%# theme-check-disable baz%}
+        {% # platformos-check-disable foo %}
+        {% # platformos-check-disable bar %}
+        {%# platformos-check-disable baz%}
       LIQUID
-      assert_can_find_node_with_outer_markup('{% # theme-check-disable foo %}', liquid)
-      assert_can_find_node_with_outer_markup('{%# theme-check-disable baz%}', liquid)
+      assert_can_find_node_with_outer_markup('{% # platformos-check-disable foo %}', liquid)
+      assert_can_find_node_with_outer_markup('{%# platformos-check-disable baz%}', liquid)
     end
 
     def test_inner_markup
@@ -706,8 +706,8 @@ module PlatformosCheck
 
     # @returns [LiquidNode]
     def root_node(code)
-      theme_file = parse_liquid(code)
-      LiquidNode.new(theme_file.root, nil, theme_file)
+      platformos_app_file = parse_liquid(code)
+      LiquidNode.new(platformos_app_file.root, nil, platformos_app_file)
     end
 
     # @returns [LiquidNode]

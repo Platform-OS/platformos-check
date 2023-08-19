@@ -2,8 +2,8 @@
 
 module PlatformosCheck
   class Analyzer
-    def initialize(theme, checks = Check.all.map(&:new), auto_correct = false)
-      @theme = theme
+    def initialize(platformos_app, checks = Check.all.map(&:new), auto_correct = false)
+      @platformos_app = platformos_app
       @auto_correct = auto_correct
 
       @liquid_checks = Checks.new
@@ -11,7 +11,7 @@ module PlatformosCheck
       @html_checks = Checks.new
 
       checks.each do |check|
-        check.theme = @theme
+        check.platformos_app = @platformos_app
 
         case check
         when LiquidCheck
@@ -31,33 +31,33 @@ module PlatformosCheck
     end
 
     def json_file_count
-      @json_file_count ||= @theme.json.size
+      @json_file_count ||= @platformos_app.json.size
     end
 
     def liquid_file_count
-      @liquid_file_count ||= @theme.liquid.size
+      @liquid_file_count ||= @platformos_app.liquid.size
     end
 
     def total_file_count
       json_file_count + liquid_file_count
     end
 
-    # Returns all offenses for all files in theme
-    def analyze_theme
+    # Returns all offenses for all files in platformos_app
+    def analyze_platformos_app
       reset
 
       liquid_visitor = LiquidVisitor.new(@liquid_checks, @disabled_checks)
       html_visitor = HtmlVisitor.new(@html_checks)
 
       PlatformosCheck.with_liquid_c_disabled do
-        @theme.liquid.each_with_index do |liquid_file, i|
+        @platformos_app.liquid.each_with_index do |liquid_file, i|
           yield(liquid_file.relative_path.to_s, i, total_file_count) if block_given?
           liquid_visitor.visit_liquid_file(liquid_file)
           html_visitor.visit_liquid_file(liquid_file)
         end
       end
 
-      @theme.json.each_with_index do |json_file, i|
+      @platformos_app.json.each_with_index do |json_file, i|
         yield(json_file.relative_path.to_s, liquid_file_count + i, total_file_count) if block_given?
         @json_checks.call(:on_file, json_file)
       end
@@ -69,14 +69,14 @@ module PlatformosCheck
 
     # When only_single_file is false:
     #   Runs single file checks for each file in `files`
-    #   Runs whole theme checks
-    #   Returns single file checks offenses for file in `files` + whole theme checks
+    #   Runs whole platformos_app checks
+    #   Returns single file checks offenses for file in `files` + whole platformos_app checks
     # When only_single_file is true:
     #   Runs single file checks for each file in `files`
-    #   Does not run whole theme checks
+    #   Does not run whole platformos_app checks
     #   Returns single file checks offenses for file in `files`
     # When files is empty and only_single_file is false:
-    #   Only returns whole theme checks
+    #   Only returns whole platformos_app checks
     # When files is empty and only_single_file is true:
     #   Returns empty array
     def analyze_files(files, only_single_file: false)
@@ -87,33 +87,33 @@ module PlatformosCheck
         offset = 0
 
         unless only_single_file
-          # Call all checks that run on the whole theme
-          liquid_visitor = LiquidVisitor.new(@liquid_checks.whole_theme, @disabled_checks)
-          html_visitor = HtmlVisitor.new(@html_checks.whole_theme)
+          # Call all checks that run on the whole platformos_app
+          liquid_visitor = LiquidVisitor.new(@liquid_checks.whole_platformos_app, @disabled_checks)
+          html_visitor = HtmlVisitor.new(@html_checks.whole_platformos_app)
           total += total_file_count
           offset = total_file_count
-          @theme.liquid.each_with_index do |liquid_file, i|
+          @platformos_app.liquid.each_with_index do |liquid_file, i|
             yield(liquid_file.relative_path.to_s, i, total) if block_given?
             liquid_visitor.visit_liquid_file(liquid_file)
             html_visitor.visit_liquid_file(liquid_file)
           end
 
-          @theme.json.each_with_index do |json_file, i|
+          @platformos_app.json.each_with_index do |json_file, i|
             yield(json_file.relative_path.to_s, liquid_file_count + i, total) if block_given?
-            @json_checks.whole_theme.call(:on_file, json_file)
+            @json_checks.whole_platformos_app.call(:on_file, json_file)
           end
         end
 
         # Call checks that run on a single files, only on specified file
         liquid_visitor = LiquidVisitor.new(@liquid_checks.single_file, @disabled_checks)
         html_visitor = HtmlVisitor.new(@html_checks.single_file)
-        files.each_with_index do |theme_file, i|
-          yield(theme_file.relative_path.to_s, offset + i, total) if block_given?
-          if theme_file.liquid?
-            liquid_visitor.visit_liquid_file(theme_file)
-            html_visitor.visit_liquid_file(theme_file)
-          elsif theme_file.json?
-            @json_checks.single_file.call(:on_file, theme_file)
+        files.each_with_index do |platformos_app_file, i|
+          yield(platformos_app_file.relative_path.to_s, offset + i, total) if block_given?
+          if platformos_app_file.liquid?
+            liquid_visitor.visit_liquid_file(platformos_app_file)
+            html_visitor.visit_liquid_file(platformos_app_file)
+          elsif platformos_app_file.json?
+            @json_checks.single_file.call(:on_file, platformos_app_file)
           end
         end
       end
@@ -138,8 +138,8 @@ module PlatformosCheck
     def write_corrections
       return unless @auto_correct
 
-      @theme.liquid.each(&:write)
-      @theme.json.each(&:write)
+      @platformos_app.liquid.each(&:write)
+      @platformos_app.json.each(&:write)
     end
 
     private

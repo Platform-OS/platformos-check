@@ -5,7 +5,7 @@ require "test_helper"
 module PlatformosCheck
   class PaginationSizeTest < Minitest::Test
     def test_no_offense_for_good_behaviour
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END
           {% paginate products by 50 %}
@@ -52,7 +52,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_size_greater_than_max
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END
           {%- paginate collection.products by 999 -%}
@@ -69,7 +69,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_size_less_than_min
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END
           {%- paginate collection.products by 0 -%}
@@ -86,7 +86,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_size_is_integer
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END
           {%- paginate collection.products by 1.5 -%}
@@ -103,7 +103,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_setting_value
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END
           <!-- setting size -->
@@ -131,7 +131,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_missing_setting_value
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END
           <!-- setting size -->

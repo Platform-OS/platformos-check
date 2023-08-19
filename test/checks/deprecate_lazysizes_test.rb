@@ -5,7 +5,7 @@ require "test_helper"
 module PlatformosCheck
   class DeprecateLazysizesTest < Minitest::Test
     def test_valid
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         DeprecateLazysizes.new,
         "templates/index.liquid" => <<~END
           <img src="a.jpg" loading="lazy">
@@ -16,7 +16,7 @@ module PlatformosCheck
     end
 
     def test_does_not_reports_lazyload_class_without_data_src_or_srcset
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         DeprecateLazysizes.new,
         "templates/index.liquid" => <<~END
           <img src="a.jpg" class="lazyload">
@@ -28,7 +28,7 @@ module PlatformosCheck
     end
 
     def test_reports_data_srcset
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         DeprecateLazysizes.new,
         "templates/index.liquid" => <<~END
           <img
@@ -49,7 +49,7 @@ module PlatformosCheck
     end
 
     def test_reports_data_sizes
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         DeprecateLazysizes.new,
         "templates/index.liquid" => <<~END
           <img
@@ -70,7 +70,7 @@ module PlatformosCheck
     end
 
     def test_reports_sizes_auto
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         DeprecateLazysizes.new,
         "templates/index.liquid" => <<~END
           <img

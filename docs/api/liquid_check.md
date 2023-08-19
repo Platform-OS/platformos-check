@@ -18,7 +18,7 @@ module PlatformosCheck
     def on_document(node)
       # Called with the root node of all liquid_file
       node.value      # is the original Liquid object for this node. See Liquid source code for details.
-      node.theme_file # is the liquid_file being analyzed, See lib/platformos_check/liquid_file.rb.
+      node.platformos_app_file # is the liquid_file being analyzed, See lib/platformos_check/liquid_file.rb.
       node.parent     # is the parent node.
       node.children   # are the children nodes.
       # See lib/platformos_check/node.rb for more helper methods
@@ -39,7 +39,7 @@ module PlatformosCheck
       # If you find an issue, add an offense:
       add_offense("Describe the problem...", node: node)
       # Or, if the offense is related to the whole theme file:
-      add_offense("Describe the problem...", theme_file: node.theme_file)
+      add_offense("Describe the problem...", platformos_app_file: node.platformos_app_file)
     end
 
     def on_assign(node)

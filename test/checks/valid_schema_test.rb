@@ -4,7 +4,7 @@ require "test_helper"
 
 class ValidSchemaTest < Minitest::Test
   def test_detects_json_error
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::ValidSchema.new,
       "sections/product.liquid" => <<~END
         {% schema %}
@@ -19,7 +19,7 @@ class ValidSchemaTest < Minitest::Test
   end
 
   def test_valid_json
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::ValidSchema.new,
       "sections/product.liquid" => <<~END
         {% schema %}

@@ -4,7 +4,7 @@ require "test_helper"
 
 class UnusedAssignTest < Minitest::Test
   def test_reports_unused_assigns
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "templates/index.liquid" => <<~END
         {% assign x = 1 %}
@@ -17,7 +17,7 @@ class UnusedAssignTest < Minitest::Test
   end
 
   def test_do_not_report_used_assigns
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "templates/index.liquid" => <<~END
         {% assign a = 1 %}
@@ -37,7 +37,7 @@ class UnusedAssignTest < Minitest::Test
   end
 
   def test_do_not_report_used_assigns_bracket_syntax
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "templates/index.liquid" => <<~END
         {% liquid
@@ -52,7 +52,7 @@ class UnusedAssignTest < Minitest::Test
   end
 
   def test_do_not_report_assigns_used_before_defined
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "templates/index.liquid" => <<~END
         {% unless a %}
@@ -65,7 +65,7 @@ class UnusedAssignTest < Minitest::Test
   end
 
   def test_do_not_report_assigns_used_in_includes
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "templates/index.liquid" => <<~END,
         {% assign a = 1 %}
@@ -80,7 +80,7 @@ class UnusedAssignTest < Minitest::Test
   end
 
   def test_recursion_in_includes
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "templates/index.liquid" => <<~END,
         {% assign a = 1 %}
@@ -104,7 +104,7 @@ class UnusedAssignTest < Minitest::Test
     expected_sources = {
       "templates/index.liquid" => "\n"
     }
-    sources = fix_theme(
+    sources = fix_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "templates/index.liquid" => <<~END
         {% assign x = 1 %}
@@ -127,7 +127,7 @@ class UnusedAssignTest < Minitest::Test
         {{ y }}
       END
     }
-    sources = fix_theme(
+    sources = fix_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "templates/index.liquid" => <<~END
         {% liquid
@@ -151,7 +151,7 @@ class UnusedAssignTest < Minitest::Test
         <p>test case</p><p>test case</p>
       END
     }
-    sources = fix_theme(
+    sources = fix_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "templates/index.liquid" => <<~END
         <p>test case</p>{% assign x = 1 %}<p>test case</p>
@@ -169,7 +169,7 @@ class UnusedAssignTest < Minitest::Test
         <p>test case</p>
       END
     }
-    sources = fix_theme(
+    sources = fix_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "templates/index.liquid" => <<~END
         <p>test case</p>{% assign x = 1 %}

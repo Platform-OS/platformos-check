@@ -13,7 +13,7 @@ module PlatformosCheck
     def build_homebrew
       root_dir = File.join(PACKAGING_DIR, 'homebrew')
 
-      build_path = File.join(BUILDS_DIR, "theme-check.rb")
+      build_path = File.join(BUILDS_DIR, "platformos-check.rb")
       puts "\nBuilding Homebrew package"
 
       puts "Generating formula..."
@@ -25,7 +25,7 @@ module PlatformosCheck
       puts "Grabbing sha256 checksum from Rubygems.org"
       require 'digest/sha2'
       require 'open-uri'
-      gem_checksum = URI.open("https://rubygems.org/downloads/theme-check-#{PlatformosCheck::VERSION}.gem") do |io|
+      gem_checksum = URI.open("https://rubygems.org/downloads/platformos-check-#{PlatformosCheck::VERSION}.gem") do |io|
         Digest::SHA256.new.hexdigest(io.read)
       end
 

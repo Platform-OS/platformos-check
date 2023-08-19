@@ -6,7 +6,7 @@ module PlatformosCheck
       raise NotImplementedError
     end
 
-    def theme_file
+    def platformos_app_file
       raise NotImplementedError
     end
 

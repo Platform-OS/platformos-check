@@ -108,7 +108,7 @@ module PlatformosCheck
       end
 
       def filename
-        "layout/theme.liquid"
+        "layout/platformos_app.liquid"
       end
     end
   end

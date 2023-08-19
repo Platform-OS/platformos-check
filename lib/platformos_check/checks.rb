@@ -17,8 +17,8 @@ module PlatformosCheck
       @disableable ||= self.class.new(select(&:can_disable?))
     end
 
-    def whole_theme
-      @whole_theme ||= self.class.new(select(&:whole_theme?))
+    def whole_platformos_app
+      @whole_platformos_app ||= self.class.new(select(&:whole_platformos_app?))
     end
 
     def single_file
@@ -47,7 +47,7 @@ module PlatformosCheck
       raise
     rescue StandardError => e
       node = args.first
-      theme_file = node.respond_to?(:theme_file) ? node.theme_file.relative_path : "?"
+      platformos_app_file = node.respond_to?(:platformos_app_file) ? node.platformos_app_file.relative_path : "?"
       markup = node.respond_to?(:markup) ? node.markup : ""
       node_class = node.respond_to?(:value) ? node.value.class : "?"
       line_number = node.respond_to?(:line_number) ? node.line_number : "?"
@@ -59,7 +59,7 @@ module PlatformosCheck
           #{e.backtrace.join("\n  ")}
         ```
 
-        Theme File: `#{theme_file}`
+        Platformos App File: `#{platformos_app_file}`
         Node: `#{node_class}`
         Markup:
         ```

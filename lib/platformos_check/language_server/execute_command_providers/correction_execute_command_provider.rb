@@ -23,7 +23,7 @@ module PlatformosCheck
         # attempt to apply the document changes
         workspace_edit = diagnostics_manager.workspace_edit(diagnostic_hashes)
         result = bridge.send_request('workspace/applyEdit', {
-                                       label: 'Theme Check correction',
+                                       label: 'PlatformOS Check correction',
                                        edit: workspace_edit
                                      })
 

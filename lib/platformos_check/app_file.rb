@@ -3,7 +3,7 @@
 require "pathname"
 
 module PlatformosCheck
-  class ThemeFile
+  class AppFile
     attr_reader :version, :storage
 
     def initialize(relative_path, storage)

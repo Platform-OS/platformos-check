@@ -217,10 +217,10 @@ module PlatformosCheck
         case thing
         when Node
           {
-            uri: file_uri(thing.theme_file&.path),
-            version: thing.theme_file&.version
+            uri: file_uri(thing.platformos_app_file&.path),
+            version: thing.platformos_app_file&.version
           }
-        when ThemeFile
+        when AppFile
           {
             uri: file_uri(thing.path),
             version: thing.version
@@ -231,13 +231,13 @@ module PlatformosCheck
       end
 
       def absolute_path(node)
-        node.theme_file&.path
+        node.platformos_app_file&.path
       end
 
       def character_range_position(node, character_range)
         return unless character_range
 
-        source = node.theme_file.source
+        source = node.platformos_app_file.source
         StrictPosition.new(
           source[character_range],
           source,

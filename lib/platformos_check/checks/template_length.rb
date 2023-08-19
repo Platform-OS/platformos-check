@@ -30,10 +30,10 @@ module PlatformosCheck
     end
 
     def after_document(node)
-      lines = node.theme_file.source.count("\n") - @excluded_lines
+      lines = node.platformos_app_file.source.count("\n") - @excluded_lines
       return unless lines > @max_length
 
-      add_offense("Template has too many lines [#{lines}/#{@max_length}]", theme_file: node.theme_file)
+      add_offense("Template has too many lines [#{lines}/#{@max_length}]", platformos_app_file: node.platformos_app_file)
     end
 
     private

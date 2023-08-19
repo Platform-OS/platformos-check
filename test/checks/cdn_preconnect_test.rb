@@ -5,7 +5,7 @@ require "test_helper"
 module PlatformosCheck
   class CdnPreconnectTest < Minitest::Test
     def test_no_offense_with_other_external_domains
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         CdnPreconnect.new,
         "templates/index.liquid" => <<~END
           <link rel="preconnect" href="https://example.com/">
@@ -17,7 +17,7 @@ module PlatformosCheck
     end
 
     def test_no_offense_with_other_links
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         CdnPreconnect.new,
         "templates/index.liquid" => <<~END
           <link rel="preload" href="https://example.com/foo.css" as="style">
@@ -30,7 +30,7 @@ module PlatformosCheck
     end
 
     def test_reports_preconnect_to_shopify_cdn
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         CdnPreconnect.new,
         "templates/index.liquid" => <<~END
           <link rel="preconnect" href="https://cdn.shopify.com/">
@@ -43,7 +43,7 @@ module PlatformosCheck
     end
 
     def test_reports_crossorigin_preconnect_to_shopify_cdn
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         CdnPreconnect.new,
         "templates/index.liquid" => <<~END
           <link rel="preconnect" href="https://cdn.shopify.com/" crossorigin>

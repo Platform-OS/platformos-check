@@ -21,13 +21,13 @@ module PlatformosCheck
       def analyze_and_send_offenses(absolute_path_or_paths, config, force: false, only_single_file: false)
         return unless @diagnostics_lock.try_lock
 
-        theme = PlatformosCheck::Theme.new(storage)
-        analyzer = PlatformosCheck::Analyzer.new(theme, config.enabled_checks)
+        platformos_app = PlatformosCheck::App.new(storage)
+        analyzer = PlatformosCheck::Analyzer.new(platformos_app, config.enabled_checks)
 
         if !only_single_file && (@diagnostics_manager.first_run? || force)
           run_full_platformos_check(analyzer)
         else
-          run_partial_platformos_check(absolute_path_or_paths, theme, analyzer, only_single_file)
+          run_partial_platformos_check(absolute_path_or_paths, platformos_app, analyzer, only_single_file)
         end
 
         @diagnostics_lock.unlock
@@ -49,11 +49,11 @@ module PlatformosCheck
         raise 'Unsafe operation' unless @diagnostics_lock.owned?
 
         token = @bridge.send_create_work_done_progress_request
-        @bridge.send_work_done_progress_begin(token, "Full theme check")
+        @bridge.send_work_done_progress_begin(token, "Full platformos_app check")
         @bridge.log("Checking #{storage.root}")
         offenses = nil
         time = Benchmark.measure do
-          offenses = analyzer.analyze_theme do |path, i, total|
+          offenses = analyzer.analyze_platformos_app do |path, i, total|
             @bridge.send_work_done_progress_report(token, "#{i}/#{total} #{path}", (i.to_f / total * 100.0).to_i)
           end
         end
@@ -63,33 +63,33 @@ module PlatformosCheck
         send_diagnostics(offenses)
       end
 
-      def run_partial_platformos_check(absolute_path_or_paths, theme, analyzer, only_single_file)
+      def run_partial_platformos_check(absolute_path_or_paths, platformos_app, analyzer, only_single_file)
         raise 'Unsafe operation' unless @diagnostics_lock.owned?
 
         relative_paths = as_array(absolute_path_or_paths).map do |absolute_path|
           Pathname.new(storage.relative_path(absolute_path))
         end
 
-        theme_files = relative_paths
-                      .map { |relative_path| theme[relative_path] }
-                      .reject(&:nil?)
+        platformos_app_files = relative_paths
+                               .map { |relative_path| platformos_app[relative_path] }
+                               .reject(&:nil?)
 
-        deleted_relative_paths = relative_paths - theme_files.map(&:relative_path)
+        deleted_relative_paths = relative_paths - platformos_app_files.map(&:relative_path)
         deleted_relative_paths
           .each { |p| send_clearing_diagnostics(p) }
 
         token = @bridge.send_create_work_done_progress_request
-        @bridge.send_work_done_progress_begin(token, "Partial theme check")
+        @bridge.send_work_done_progress_begin(token, "Partial platformos_app check")
         offenses = nil
         time = Benchmark.measure do
-          offenses = analyzer.analyze_files(theme_files, only_single_file:) do |path, i, total|
+          offenses = analyzer.analyze_files(platformos_app_files, only_single_file:) do |path, i, total|
             @bridge.send_work_done_progress_report(token, "#{i}/#{total} #{path}", (i.to_f / total * 100.0).to_i)
           end
         end
         end_message = "Found #{offenses.size} new offenses in #{format("%0.2f", time.real)}s"
         @bridge.send_work_done_progress_end(token, end_message)
         @bridge.log(end_message)
-        send_diagnostics(offenses, theme_files.map(&:relative_path), only_single_file:)
+        send_diagnostics(offenses, platformos_app_files.map(&:relative_path), only_single_file:)
       end
 
       def send_clearing_diagnostics(relative_path)

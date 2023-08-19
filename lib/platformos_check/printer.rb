@@ -6,14 +6,14 @@ module PlatformosCheck
       @out = out_stream
     end
 
-    def print(theme, offenses, auto_correct)
+    def print(platformos_app, offenses, auto_correct)
       offenses.each do |offense|
         print_offense(offense, auto_correct)
         @out.puts
       end
 
       correctable = offenses.select(&:correctable?)
-      @out.puts "#{theme.all.size} files inspected, #{red(offenses.size.to_s + ' offenses')} detected, \
+      @out.puts "#{platformos_app.all.size} files inspected, #{red(offenses.size.to_s + ' offenses')} detected, \
 #{yellow(correctable.size.to_s + ' offenses')} #{auto_correct ? 'corrected' : 'auto-correctable'}"
     end
 

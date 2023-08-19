@@ -25,7 +25,7 @@ module PlatformosCheck
         return @diagnostic unless @diagnostic.nil?
 
         @diagnostic = {
-          source: "theme-check",
+          source: "platformos-check",
           code:,
           message:,
           range:,
@@ -44,8 +44,8 @@ module PlatformosCheck
         offense.single_file?
       end
 
-      def whole_theme?
-        offense.whole_theme?
+      def whole_platformos_app?
+        offense.whole_platformos_app?
       end
 
       def correctable?
@@ -101,11 +101,11 @@ module PlatformosCheck
       end
 
       def absolute_path
-        @absolute_path ||= offense&.theme_file&.path
+        @absolute_path ||= offense&.platformos_app_file&.path
       end
 
       def relative_path
-        @relative_path ||= offense&.theme_file&.relative_path
+        @relative_path ||= offense&.platformos_app_file&.relative_path
       end
 
       def uri

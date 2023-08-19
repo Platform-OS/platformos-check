@@ -6,12 +6,12 @@ module PlatformosCheck
 
     MAX_SOURCE_EXCERPT_SIZE = 120
 
-    attr_reader :check, :message, :theme_file, :node, :markup, :line_number, :correction
+    attr_reader :check, :message, :platformos_app_file, :node, :markup, :line_number, :correction
 
     def initialize(
       check:, # instance of a PlatformosCheck::Check
       message: nil, # error message for the offense
-      theme_file: nil, # ThemeFile
+      platformos_app_file: nil, # AppFile
       node: nil, # Node
       markup: nil, # string
       line_number: nil, # line number of the error (1-indexed)
@@ -40,7 +40,7 @@ module PlatformosCheck
       end
 
       @node = node
-      @theme_file = node&.theme_file || theme_file
+      @platformos_app_file = node&.platformos_app_file || platformos_app_file
       @markup = markup || node&.markup
 
       raise ArgumentError, "Offense markup cannot be an empty string" if @markup.is_a?(String) && @markup.empty?
@@ -49,7 +49,7 @@ module PlatformosCheck
 
       @position = Position.new(
         @markup,
-        @theme_file&.source,
+        @platformos_app_file&.source,
         line_number_1_indexed: @line_number,
         node_markup_offset:,
         node_markup: node&.markup
@@ -60,7 +60,7 @@ module PlatformosCheck
       return unless line_number
 
       @source_excerpt ||= begin
-        excerpt = theme_file.source_excerpt(line_number)
+        excerpt = platformos_app_file.source_excerpt(line_number)
         if excerpt.size > MAX_SOURCE_EXCERPT_SIZE
           excerpt[0, MAX_SOURCE_EXCERPT_SIZE - 3] + '...'
         else
@@ -124,7 +124,7 @@ module PlatformosCheck
     end
 
     def version
-      theme_file&.version
+      platformos_app_file&.version
     end
 
     def doc
@@ -132,12 +132,12 @@ module PlatformosCheck
     end
 
     def location
-      tokens = [theme_file&.relative_path, line_number].compact
+      tokens = [platformos_app_file&.relative_path, line_number].compact
       tokens.join(":") if tokens.any?
     end
 
     def location_range
-      tokens = [theme_file&.relative_path, start_index, end_index].compact
+      tokens = [platformos_app_file&.relative_path, start_index, end_index].compact
       tokens.join(":") if tokens.any?
     end
 
@@ -147,7 +147,7 @@ module PlatformosCheck
 
     def correct(corrector = nil)
       if correctable?
-        corrector ||= Corrector.new(theme_file:)
+        corrector ||= Corrector.new(platformos_app_file:)
         correction.call(corrector)
       end
     rescue StandardError => e
@@ -178,8 +178,8 @@ module PlatformosCheck
       exit(2)
     end
 
-    def whole_theme?
-      check.whole_theme?
+    def whole_platformos_app?
+      check.whole_platformos_app?
     end
 
     def single_file?
@@ -197,7 +197,7 @@ module PlatformosCheck
     alias eql? ==
 
     def to_s
-      if theme_file
+      if platformos_app_file
         "#{message} at #{location}"
       else
         message
@@ -205,7 +205,7 @@ module PlatformosCheck
     end
 
     def to_s_range
-      if theme_file
+      if platformos_app_file
         "#{message} at #{location_range}"
       else
         message
@@ -215,7 +215,7 @@ module PlatformosCheck
     def to_h
       {
         check: check.code_name,
-        path: theme_file&.relative_path,
+        path: platformos_app_file&.relative_path,
         severity: check.severity_value,
         start_row:,
         start_column:,

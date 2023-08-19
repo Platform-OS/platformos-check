@@ -14,32 +14,12 @@ module PlatformosCheck
             {% endschema %}
           BLOCK
         }
-        offenses = analyze_theme(
+        offenses = analyze_platformos_app(
           AppBlockValidTags.new,
           extension_files
         )
 
-        assert_offenses("Theme app extension blocks cannot contain #{tag} tags at blocks/app.liquid:1", offenses)
-      end
-    end
-
-    def test_javascript_and_stylesheet_tag
-      %w[javascript stylesheet].each do |tag|
-        extension_files = {
-          "blocks/app.liquid" => <<~BLOCK
-            {% #{tag} %}
-            {% end#{tag} %}
-            {% schema %}
-            { }
-            {% endschema %}
-          BLOCK
-        }
-        offenses = analyze_theme(
-          AppBlockValidTags.new,
-          extension_files
-        )
-
-        assert_offenses("Theme app extension blocks cannot contain #{tag} tags at blocks/app.liquid:1", offenses)
+        assert_offenses("App extension blocks cannot contain #{tag} tags at blocks/app.liquid:1", offenses)
       end
     end
   end

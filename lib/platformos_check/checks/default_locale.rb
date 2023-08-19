@@ -7,10 +7,10 @@ module PlatformosCheck
     doc docs_url(__FILE__)
 
     def on_end
-      return if @theme.default_locale_json
+      return if @platformos_app.default_locale_json
 
       add_offense("Default translation file not found (for example locales/en.default.json)") do |corrector|
-        corrector.create_file(@theme.storage, "locales/#{theme.default_locale}.default.json", "{}")
+        corrector.create_file(@platformos_app.storage, "locales/#{platformos_app.default_locale}.default.json", "{}")
       end
     end
   end

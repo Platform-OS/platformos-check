@@ -40,8 +40,8 @@ module PlatformosCheck
           @plus_objects ||= load_file("../plus_labels")
         end
 
-        def theme_app_extension_labels
-          @theme_app_extension_labels ||= load_file("../theme_app_extension_labels")
+        def platformos_app_app_extension_labels
+          @platformos_app_app_extension_labels ||= load_file("../platformos_app_app_extension_labels")
         end
 
         def labels_only_exposed_in_certain_contexts

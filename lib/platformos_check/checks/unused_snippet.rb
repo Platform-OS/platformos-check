@@ -28,15 +28,15 @@ module PlatformosCheck
     alias on_include on_render
 
     def on_end
-      missing_snippets.each do |theme_file|
-        add_offense("This snippet is not used", theme_file:) do |corrector|
-          corrector.remove_file(@theme.storage, theme_file.relative_path.to_s)
+      missing_snippets.each do |platformos_app_file|
+        add_offense("This snippet is not used", platformos_app_file:) do |corrector|
+          corrector.remove_file(@platformos_app.storage, platformos_app_file.relative_path.to_s)
         end
       end
     end
 
     def missing_snippets
-      theme.snippets.reject { |t| @used_snippets.include?(t.name) }
+      platformos_app.snippets.reject { |t| @used_snippets.include?(t.name) }
     end
 
     private

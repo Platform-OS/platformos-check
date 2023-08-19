@@ -4,7 +4,7 @@ require "test_helper"
 
 class ConfigTest < Minitest::Test
   def test_load_file_uses_provided_config
-    storage = make_file_system_storage(".theme-check.yml" => <<~END)
+    storage = make_file_system_storage(".platformos-check.yml" => <<~END)
       TemplateLength:
         enabled: false
     END
@@ -15,7 +15,7 @@ class ConfigTest < Minitest::Test
 
   def test_load_file_in_parent_dir
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~END,
+      ".platformos-check.yml" => <<~END,
         TemplateLength:
           enabled: false
       END
@@ -34,8 +34,8 @@ class ConfigTest < Minitest::Test
   end
 
   def test_from_path_uses_empty_config_when_config_file_is_missing
-    PlatformosCheck::Config.expects(:new).with(root: 'theme/')
-    PlatformosCheck::Config.from_path('theme/')
+    PlatformosCheck::Config.expects(:new).with(root: 'app/')
+    PlatformosCheck::Config.from_path('app/')
   end
 
   def test_from_string
@@ -69,7 +69,7 @@ class ConfigTest < Minitest::Test
   end
 
   def test_empty_file
-    storage = make_file_system_storage(".theme-check.yml" => "")
+    storage = make_file_system_storage(".platformos-check.yml" => "")
     config = PlatformosCheck::Config.from_path(storage.root)
 
     assert_equal(PlatformosCheck::Config.default, config.to_h)
@@ -77,7 +77,7 @@ class ConfigTest < Minitest::Test
 
   def test_root_from_config
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~END,
+      ".platformos-check.yml" => <<~END,
         root: dist
       END
       "dist/templates/index.liquid" => ""
@@ -89,7 +89,7 @@ class ConfigTest < Minitest::Test
 
   def test_relative_extends
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~END,
+      ".platformos-check.yml" => <<~END,
         root: src
         extends: :nothing
         SyntaxError:
@@ -97,9 +97,9 @@ class ConfigTest < Minitest::Test
         MatchingTranslations:
           enabled: false
       END
-      "dist/.theme-check.yml" => <<~END,
+      "dist/.platformos-check.yml" => <<~END,
         root: '.'
-        extends: ../.theme-check.yml
+        extends: ../.platformos-check.yml
         MatchingTranslations:
           enabled: true
       END
@@ -121,14 +121,14 @@ class ConfigTest < Minitest::Test
 
   def test_relative_extends_reused_root_is_relative_to_found_root
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~END,
+      ".platformos-check.yml" => <<~END,
         root: src
       END
-      "project1/.theme-check.yml" => <<~END,
-        extends: ../.theme-check.yml
+      "project1/.platformos-check.yml" => <<~END,
+        extends: ../.platformos-check.yml
       END
-      "project2/.theme-check.yml" => <<~END
-        extends: ../.theme-check.yml
+      "project2/.platformos-check.yml" => <<~END
+        extends: ../.platformos-check.yml
       END
     )
 
@@ -143,14 +143,14 @@ class ConfigTest < Minitest::Test
 
   def test_absolute_path_config
     storage1 = make_file_system_storage(
-      ".theme-check.yml" => <<~END
+      ".platformos-check.yml" => <<~END
         SyntaxError:
           enabled: false
       END
     )
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~END
-        extends: #{storage1.root.join('.theme-check.yml')}
+      ".platformos-check.yml" => <<~END
+        extends: #{storage1.root.join('.platformos-check.yml')}
       END
     )
 
@@ -161,11 +161,11 @@ class ConfigTest < Minitest::Test
 
   def test_picks_nearest_config
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~END,
+      ".platformos-check.yml" => <<~END,
         TemplateLength:
           enabled: false
       END
-      "src/.theme-check.yml" => <<~END
+      "src/.platformos-check.yml" => <<~END
         TemplateLength:
           enabled: true
       END
@@ -277,7 +277,7 @@ class ConfigTest < Minitest::Test
 
   def test_custom_check
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~END,
+      ".platformos-check.yml" => <<~END,
         include_categories: []
         require:
           - ./checks/custom_check.rb
@@ -298,7 +298,7 @@ class ConfigTest < Minitest::Test
 
   def test_custom_check_with_root
     storage = make_file_system_storage(
-      ".config/.theme-check.yml" => <<~END,
+      ".config/.platformos-check.yml" => <<~END,
         root: dist
         include_categories: []
         require:
@@ -306,7 +306,7 @@ class ConfigTest < Minitest::Test
         CustomCheck:
           enabled: true
       END
-      "dist/layout/theme.liquid" => "",
+      "dist/layout/platformos_app.liquid" => "",
       "checks/custom_check.rb" => <<~END
         module PlatformosCheck
           class CustomCheck < Check
@@ -317,7 +317,7 @@ class ConfigTest < Minitest::Test
 
     config = PlatformosCheck::Config.new(
       root: storage.root,
-      configuration: PlatformosCheck::Config.load_config(storage.root.join('.config/.theme-check.yml'))
+      configuration: PlatformosCheck::Config.load_config(storage.root.join('.config/.platformos-check.yml'))
     )
 
     assert(check_enabled?(config, PlatformosCheck::CustomCheck))
@@ -358,7 +358,7 @@ class ConfigTest < Minitest::Test
 
   def test_ignore
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~END
+      ".platformos-check.yml" => <<~END
         ignore:
           - node_modules
           - dist/*.json
@@ -371,7 +371,7 @@ class ConfigTest < Minitest::Test
 
   def test_merged_ignored_patterns
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~END
+      ".platformos-check.yml" => <<~END
         extends: nothing
         ignore:
           - node_modules

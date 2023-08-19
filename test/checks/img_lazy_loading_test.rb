@@ -5,7 +5,7 @@ require "test_helper"
 module PlatformosCheck
   class ImgLazyLoadingTest < Minitest::Test
     def test_no_offense_with_loading_lazy_attribute
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         ImgLazyLoading.new,
         "templates/index.liquid" => <<~END
           <img src="a.jpg" loading="lazy">
@@ -19,7 +19,7 @@ module PlatformosCheck
     end
 
     def test_reports_missing_loading_lazy_attribute
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         ImgLazyLoading.new,
         "templates/index.liquid" => <<~END
           <img src="a.jpg">
@@ -32,7 +32,7 @@ module PlatformosCheck
     end
 
     def test_prefer_lazy_to_auto
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         ImgLazyLoading.new,
         "templates/index.liquid" => <<~END
           <img src="a.jpg" loading="auto">

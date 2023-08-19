@@ -59,22 +59,22 @@ module Minitest
       defined?(Liquid::C) && Liquid::C.enabled
     end
 
-    def analyze_theme(*check_classes, templates)
-      analyzer = PlatformosCheck::Analyzer.new(make_theme(templates), check_classes)
-      analyzer.analyze_theme
+    def analyze_platformos_app(*check_classes, templates)
+      analyzer = PlatformosCheck::Analyzer.new(make_platformos_app(templates), check_classes)
+      analyzer.analyze_platformos_app
       analyzer.offenses
     end
 
-    def diagnose_theme(*check_classes, templates)
+    def diagnose_platformos_app(*check_classes, templates)
       storage = PlatformosCheck::VersionedInMemoryStorage.new(templates)
       templates.each do |path, value|
         # set initial version of the files to 1
         storage.write(path, value, 1)
       end
 
-      theme = PlatformosCheck::Theme.new(storage)
-      analyzer = PlatformosCheck::Analyzer.new(theme, check_classes)
-      analyzer.analyze_theme
+      platformos_app = PlatformosCheck::App.new(storage)
+      analyzer = PlatformosCheck::Analyzer.new(platformos_app, check_classes)
+      analyzer.analyze_platformos_app
       offenses = analyzer.offenses
       diagnostics_manager = PlatformosCheck::LanguageServer::DiagnosticsManager.new
       diagnostics_manager.build_diagnostics(offenses)
@@ -84,13 +84,13 @@ module Minitest
       }
     end
 
-    def make_theme(files = {})
+    def make_platformos_app(files = {})
       storage = make_storage(files)
-      PlatformosCheck::Theme.new(storage)
+      PlatformosCheck::App.new(storage)
     end
 
     def make_storage(files = {})
-      return make_file_system_storage(files) if ENV['THEME_STORAGE'] == 'FileSystemStorage'
+      return make_file_system_storage(files) if ENV['platformos_app_STORAGE'] == 'FileSystemStorage'
 
       make_in_memory_storage(files)
     end
@@ -110,12 +110,12 @@ module Minitest
       PlatformosCheck::InMemoryStorage.new(files)
     end
 
-    def fix_theme(*check_classes, templates)
-      theme = make_theme(templates)
-      analyzer = PlatformosCheck::Analyzer.new(theme, check_classes, true)
-      analyzer.analyze_theme
+    def fix_platformos_app(*check_classes, templates)
+      platformos_app = make_platformos_app(templates)
+      analyzer = PlatformosCheck::Analyzer.new(platformos_app, check_classes, true)
+      analyzer.analyze_platformos_app
       analyzer.correct_offenses
-      sources = theme.liquid.map { |theme_file| [theme_file.relative_path.to_s, theme_file.rewriter.to_s] }
+      sources = platformos_app.liquid.map { |platformos_app_file| [platformos_app_file.relative_path.to_s, platformos_app_file.rewriter.to_s] }
       Hash[*sources.flatten]
     end
 

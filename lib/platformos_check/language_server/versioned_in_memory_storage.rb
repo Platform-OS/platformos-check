@@ -43,7 +43,7 @@ module PlatformosCheck
     #
     # Solution:
     #   - Have the LanguageServer store the version on textDocument/did{Open,Change,Close}
-    #   - Have ThemeFile store the version right after @storage.read.
+    #   - Have AppFile store the version right after @storage.read.
     #   - Add version to the diagnostic meta data
     #   - Use diagnostic meta data to determine if we can make a code edit or not
     #   - Only offer fixes on "clean" files (or offer the change but specify the version so the editor knows what to do with it)

@@ -4,7 +4,7 @@ require "test_helper"
 
 class NestedSnippetTest < Minitest::Test
   def test_reports_deep_nesting
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::NestedSnippet.new(max_nesting_level: 2),
       "templates/index.liquid" => <<~END,
         {% include 'one' %}
@@ -30,7 +30,7 @@ class NestedSnippetTest < Minitest::Test
   end
 
   def test_do_not_report_limit_nesting
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::NestedSnippet.new(max_nesting_level: 2),
       "templates/index.liquid" => <<~END,
         {% include 'one' %}

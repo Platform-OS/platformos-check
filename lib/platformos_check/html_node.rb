@@ -7,7 +7,7 @@ module PlatformosCheck
     extend Forwardable
     include RegexHelpers
     include PositionHelper
-    attr_reader :theme_file, :parent
+    attr_reader :platformos_app_file, :parent
 
     class << self
       include RegexHelpers
@@ -71,9 +71,9 @@ module PlatformosCheck
       end
     end
 
-    def initialize(value, theme_file, placeholder_values, parseable_source, parent = nil)
+    def initialize(value, platformos_app_file, placeholder_values, parseable_source, parent = nil)
       @value = value
-      @theme_file = theme_file
+      @platformos_app_file = platformos_app_file
       @placeholder_values = placeholder_values
       @parseable_source = parseable_source
       @parent = parent
@@ -92,7 +92,7 @@ module PlatformosCheck
     def children
       @children ||= @value
                     .children
-                    .map { |child| HtmlNode.new(child, theme_file, @placeholder_values, @parseable_source, self) }
+                    .map { |child| HtmlNode.new(child, platformos_app_file, @placeholder_values, @parseable_source, self) }
     end
 
     def markup
@@ -152,7 +152,7 @@ module PlatformosCheck
     rescue NoMethodError
       # Don't know what's up with the following issue. Don't think
       # null check is correct approach. This should give us more info.
-      # https://github.com/Shopify/theme-check/issues/528
+      # https://github.com/Shopify/platformos-check/issues/528
       PlatformosCheck.bug(<<~MSG)
         Can't find a parseable tag of name #{name} inside the parseable HTML.
 
@@ -160,14 +160,14 @@ module PlatformosCheck
           #{@value.name.inspect}
 
         File:
-          #{@theme_file.relative_path}
+          #{@platformos_app_file.relative_path}
 
         Line number:
           #{line_number}
 
         Excerpt:
           ```
-          #{@theme_file.source.lines[line_number - 1...line_number + 5].join("")}
+          #{@platformos_app_file.source.lines[line_number - 1...line_number + 5].join("")}
           ```
 
         Parseable Excerpt:
@@ -194,7 +194,7 @@ module PlatformosCheck
     def position
       @position ||= Position.new(
         markup,
-        theme_file.source,
+        platformos_app_file.source,
         line_number_1_indexed: line_number
       )
     end

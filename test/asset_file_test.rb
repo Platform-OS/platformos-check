@@ -4,15 +4,15 @@ require "test_helper"
 
 class AssetFileTest < Minitest::Test
   def setup
-    @asset = make_asset_file("assets/theme.js", "")
+    @asset = make_asset_file("assets/platformos_app.js", "")
   end
 
   def test_name
-    assert_equal("assets/theme.js", @asset.name)
+    assert_equal("assets/platformos_app.js", @asset.name)
   end
 
   def test_relative_path
-    assert_equal("assets/theme.js", @asset.relative_path.to_s)
+    assert_equal("assets/platformos_app.js", @asset.relative_path.to_s)
   end
 
   def test_gzipped_size

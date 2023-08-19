@@ -3,9 +3,9 @@
 require "test_helper"
 
 module PlatformosCheck
-  class ThemeFileTest < Minitest::Test
+  class AppFileTest < Minitest::Test
     def setup
-      @theme = make_theme(
+      @platformos_app = make_platformos_app(
         "assets/windows.js" => "console.log(\r\n  hi\r\n)",
         "assets/linux.js" => "console.log(\n  hi\n)",
         "liquid/windows.liquid" => "hello\r\nworld",
@@ -16,13 +16,13 @@ module PlatformosCheck
     end
 
     def test_eol_are_always_new_lines_internally
-      @theme.liquid.each do |liquid_file|
+      @platformos_app.liquid.each do |liquid_file|
         assert_equal("hello\nworld", liquid_file.source)
       end
-      @theme.json.each do |json_file|
+      @platformos_app.json.each do |json_file|
         assert_equal("{\n  \"a\": \"b\"\n}", json_file.source)
       end
-      @theme.assets.each do |asset_file|
+      @platformos_app.assets.each do |asset_file|
         assert_equal("console.log(\n  hi\n)", asset_file.source)
       end
     end
@@ -32,9 +32,9 @@ module PlatformosCheck
         ["windows", "\r\n"],
         ["linux", "\n"]
       ].each do |(platform, eol)|
-        liquid_file = @theme["liquid/#{platform}"]
+        liquid_file = @platformos_app["liquid/#{platform}"]
 
-        assert_equal("hello#{eol}world", @theme.storage.read(liquid_file.relative_path.to_s))
+        assert_equal("hello#{eol}world", @platformos_app.storage.read(liquid_file.relative_path.to_s))
         liquid_file.rewriter.replace(
           node(
             "hello\nworld".index('w'),
@@ -44,7 +44,7 @@ module PlatformosCheck
         )
         liquid_file.write
 
-        assert_equal("hello#{eol}friend", @theme.storage.read(liquid_file.relative_path.to_s))
+        assert_equal("hello#{eol}friend", @platformos_app.storage.read(liquid_file.relative_path.to_s))
       end
     end
 
@@ -53,13 +53,13 @@ module PlatformosCheck
         ["windows", "\r\n"],
         ["linux", "\n"]
       ].each do |(platform, eol)|
-        json_file = @theme["json/#{platform}"]
+        json_file = @platformos_app["json/#{platform}"]
 
-        assert_equal("{#{eol}  \"a\": \"b\"#{eol}}", @theme.storage.read(json_file.relative_path.to_s))
+        assert_equal("{#{eol}  \"a\": \"b\"#{eol}}", @platformos_app.storage.read(json_file.relative_path.to_s))
         json_file.content["a"] = "c"
         json_file.write
 
-        assert_equal("{#{eol}  \"a\": \"c\"#{eol}}", @theme.storage.read(json_file.relative_path.to_s))
+        assert_equal("{#{eol}  \"a\": \"c\"#{eol}}", @platformos_app.storage.read(json_file.relative_path.to_s))
       end
     end
 
@@ -68,9 +68,9 @@ module PlatformosCheck
         ["windows", "\r\n"],
         ["linux", "\n"]
       ].each do |(platform, eol)|
-        asset_file = @theme["assets/#{platform}.js"]
+        asset_file = @platformos_app["assets/#{platform}.js"]
 
-        assert_equal("console.log(#{eol}  hi#{eol})", @theme.storage.read(asset_file.relative_path.to_s))
+        assert_equal("console.log(#{eol}  hi#{eol})", @platformos_app.storage.read(asset_file.relative_path.to_s))
         asset_file.rewriter.replace(
           node(
             "console.log(\n  hi\n)".index('hi'),
@@ -80,7 +80,7 @@ module PlatformosCheck
         )
         asset_file.write
 
-        assert_equal("console.log(#{eol}  hello#{eol})", @theme.storage.read(asset_file.relative_path.to_s))
+        assert_equal("console.log(#{eol}  hello#{eol})", @platformos_app.storage.read(asset_file.relative_path.to_s))
       end
     end
 

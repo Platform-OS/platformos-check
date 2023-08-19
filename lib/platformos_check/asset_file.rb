@@ -3,7 +3,7 @@
 require "zlib"
 
 module PlatformosCheck
-  class AssetFile < ThemeFile
+  class AssetFile < AppFile
     def initialize(relative_path, storage)
       super
       @loaded = false
@@ -11,7 +11,7 @@ module PlatformosCheck
     end
 
     def rewriter
-      @rewriter ||= ThemeFileRewriter.new(@relative_path, source)
+      @rewriter ||= AppFileRewriter.new(@relative_path, source)
     end
 
     def write

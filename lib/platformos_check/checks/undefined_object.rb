@@ -66,30 +66,30 @@ module PlatformosCheck
     def on_document(node)
       return if ignore?(node)
 
-      @files[node.theme_file.name] = TemplateInfo.new
+      @files[node.platformos_app_file.name] = TemplateInfo.new
     end
 
     def on_assign(node)
       return if ignore?(node)
 
-      @files[node.theme_file.name].all_assigns[node.value.to] = node
+      @files[node.platformos_app_file.name].all_assigns[node.value.to] = node
     end
 
     def on_capture(node)
       return if ignore?(node)
 
-      @files[node.theme_file.name].all_captures[node.value.instance_variable_get(:@to)] = node
+      @files[node.platformos_app_file.name].all_captures[node.value.instance_variable_get(:@to)] = node
     end
 
     def on_for(node)
       return if ignore?(node)
 
-      @files[node.theme_file.name].all_forloops[node.value.variable_name] = node
+      @files[node.platformos_app_file.name].all_forloops[node.value.variable_name] = node
     end
 
     def on_include(_node)
       # NOOP: we purposely do nothing on `include` since it is deprecated
-      #   https://shopify.dev/docs/themes/liquid/reference/tags/deprecated-tags#include
+      #   https://shopify.dev/docs/platformos_apps/liquid/reference/tags/deprecated-tags#include
     end
 
     def on_render(node)
@@ -97,7 +97,7 @@ module PlatformosCheck
       return unless node.value.template_name_expr.is_a?(String)
 
       snippet_name = "snippets/#{node.value.template_name_expr}"
-      @files[node.theme_file.name].add_render(
+      @files[node.platformos_app_file.name].add_render(
         name: snippet_name,
         node:
       )
@@ -106,7 +106,7 @@ module PlatformosCheck
     def on_variable_lookup(node)
       return if ignore?(node)
 
-      @files[node.theme_file.name].add_variable_lookup(
+      @files[node.platformos_app_file.name].add_variable_lookup(
         name: node.value.name,
         node:
       )
@@ -119,12 +119,12 @@ module PlatformosCheck
       shopify_plus_objects = PlatformosCheck::ShopifyLiquid::Object.plus_labels
       shopify_plus_objects.freeze
 
-      theme_app_extension_objects = PlatformosCheck::ShopifyLiquid::Object.theme_app_extension_labels
-      theme_app_extension_objects.freeze
+      platformos_app_app_extension_objects = PlatformosCheck::ShopifyLiquid::Object.platformos_app_app_extension_labels
+      platformos_app_app_extension_objects.freeze
 
       each_template do |(name, info)|
         if 'templates/customers/reset_password' == name
-          # NOTE: `email` is exceptionally exposed as a theme object in
+          # NOTE: `email` is exceptionally exposed as a platformos_app object in
           #       the customers' reset password template
           check_object(info, all_global_objects + ['email'])
         elsif 'templates/robots.txt' == name
@@ -134,10 +134,10 @@ module PlatformosCheck
         elsif 'layout/checkout' == name
           # NOTE: Shopify Plus has exceptionally exposed objects in
           #       the checkout template
-          # https://shopify.dev/docs/themes/theme-templates/checkout-liquid#optional-objects
+          # https://shopify.dev/docs/platformos_apps/platformos_app-templates/checkout-liquid#optional-objects
           check_object(info, all_global_objects + shopify_plus_objects)
-        elsif config_type == :theme_app_extension
-          check_object(info, all_global_objects + theme_app_extension_objects)
+        elsif config_type == :platformos_app_app_extension
+          check_object(info, all_global_objects + platformos_app_app_extension_objects)
         else
           check_object(info, all_global_objects)
         end
@@ -149,7 +149,7 @@ module PlatformosCheck
     attr_reader :config_type
 
     def ignore?(node)
-      @exclude_snippets && node.theme_file.snippet?
+      @exclude_snippets && node.platformos_app_file.snippet?
     end
 
     def each_template

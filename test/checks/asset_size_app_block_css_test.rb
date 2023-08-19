@@ -19,7 +19,7 @@ module PlatformosCheck
     end
 
     def test_css_smaller_than_threshold
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         AssetSizeAppBlockCSS.new(threshold_in_bytes: 10_000_000),
         @extension_files
       )
@@ -28,13 +28,13 @@ module PlatformosCheck
     end
 
     def test_css_larger_than_threshold
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         AssetSizeAppBlockCSS.new(threshold_in_bytes: 1),
         @extension_files
       )
 
       assert_offenses(<<~END, offenses)
-        CSS in Theme App Extension blocks exceeds compressed size threshold (1 Bytes) at blocks/app.liquid:2
+        CSS in App Extension blocks exceeds compressed size threshold (1 Bytes) at blocks/app.liquid:2
       END
     end
   end

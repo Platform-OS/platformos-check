@@ -18,7 +18,7 @@ module PlatformosCheck
             }
           {% endschema %}
         LIQUID
-        instances = diagnose_theme(
+        instances = diagnose_platformos_app(
           PlatformosCheck::SpaceInsideBraces.new,
           PlatformosCheck::MatchingSchemaTranslations.new,
           PlatformosCheck::TemplateLength.new(max_length: 0),

@@ -10,7 +10,7 @@ module PlatformosCheck
       return unless file.parse_error
 
       message = format_json_parse_error(file.parse_error)
-      add_offense(message, theme_file: file)
+      add_offense(message, platformos_app_file: file)
     end
   end
 end

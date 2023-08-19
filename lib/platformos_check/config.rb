@@ -2,7 +2,7 @@
 
 module PlatformosCheck
   class Config
-    DOTFILE = '.theme-check.yml'
+    DOTFILE = '.platformos-check.yml'
     BUNDLED_CONFIGS_DIR = Pathname.new("#{__dir__}/../../config").realpath
     BOOLEAN = [true, false]
 

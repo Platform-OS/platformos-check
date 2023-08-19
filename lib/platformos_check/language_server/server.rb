@@ -60,7 +60,7 @@ module PlatformosCheck
           # without telling you.
           @bridge.send_notification("window/showMessage", {
                                       type: 1,
-                                      message: "A theme-check-language-server error has occurred, search OUTPUT logs for details."
+                                      message: "A platformos-check-language-server error has occurred, search OUTPUT logs for details."
                                     })
         end
 

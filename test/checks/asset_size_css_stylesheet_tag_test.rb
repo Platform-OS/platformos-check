@@ -5,16 +5,16 @@ require "test_helper"
 module PlatformosCheck
   class AssetSizeCSSStylesheetTagTest < Minitest::Test
     def test_css_bundles_smaller_than_threshold
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         AssetSizeCSSStylesheetTag.new(threshold_in_bytes: 10_000_000),
         {
-          "assets/theme.css" => <<~JS,
+          "assets/platformos_app.css" => <<~JS,
             console.log('hello world');
           JS
           "templates/index.liquid" => <<~END
             <html>
               <head>
-                {{ 'theme.css' | asset_url | stylesheet_tag }}
+                {{ 'platformos_app.css' | asset_url | stylesheet_tag }}
                 {{ "https://example.com" | stylesheet_tag }}
               </head>
             </html>
@@ -26,15 +26,15 @@ module PlatformosCheck
     end
 
     def test_css_bundles_bigger_than_threshold
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         AssetSizeCSSStylesheetTag.new(threshold_in_bytes: 2),
-        "assets/theme.css" => <<~JS,
+        "assets/platformos_app.css" => <<~JS,
           console.log('hello world');
         JS
         "templates/index.liquid" => <<~END
           <html>
             <head>
-              {{ 'theme.css' | asset_url | stylesheet_tag }}
+              {{ 'platformos_app.css' | asset_url | stylesheet_tag }}
               {{ "https://example.com" | stylesheet_tag }}
             </head>
           </html>
@@ -48,7 +48,7 @@ module PlatformosCheck
     end
 
     def test_no_stylesheet
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         AssetSizeCSSStylesheetTag.new(threshold_in_bytes: 100_000),
         "templates/index.liquid" => <<~END
           <html>

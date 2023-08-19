@@ -3,7 +3,7 @@
 require "json"
 
 module PlatformosCheck
-  class JsonFile < ThemeFile
+  class JsonFile < AppFile
     def initialize(relative_path, storage)
       super
       @loaded = false

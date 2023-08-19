@@ -25,7 +25,7 @@ module PlatformosCheck
 
         [
           {
-            title: "Fix all Theme Check auto-fixable problems",
+            title: "Fix all PlatformOS Check auto-fixable problems",
             kind:,
             diagnostics:,
             command: {

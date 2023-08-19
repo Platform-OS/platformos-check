@@ -35,7 +35,7 @@ module PlatformosCheck
       end
 
       def file_name
-        "layout/theme.liquid"
+        "layout/platformos_app.liquid"
       end
 
       def buffer

@@ -4,7 +4,7 @@ require "test_helper"
 
 class SchemaJsonFormatTest < Minitest::Test
   def test_valid
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SchemaJsonFormat.new(start_level: 1),
       "templates/index.liquid" => <<~END
         {% schema %}
@@ -19,7 +19,7 @@ class SchemaJsonFormatTest < Minitest::Test
   end
 
   def test_does_not_report_on_invalid_json
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SchemaJsonFormat.new(start_level: 1),
       "templates/index.liquid" => <<~END
         {% schema %}
@@ -34,7 +34,7 @@ class SchemaJsonFormatTest < Minitest::Test
   end
 
   def test_reports_offenses
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::SchemaJsonFormat.new(start_level: 1),
       "templates/index.liquid" => <<~END
         {% schema %}
@@ -68,7 +68,7 @@ class SchemaJsonFormatTest < Minitest::Test
       END
     }
 
-    source = fix_theme(
+    source = fix_platformos_app(
       PlatformosCheck::SchemaJsonFormat.new(start_level: 1),
       "sections/product.liquid" => <<~END
         {% schema %}

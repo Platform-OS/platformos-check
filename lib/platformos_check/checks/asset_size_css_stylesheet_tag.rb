@@ -29,7 +29,7 @@ module PlatformosCheck
       # asset_url
       if href =~ /asset_url/ && href =~ Liquid::QuotedString
         asset_id = Regexp.last_match(0).gsub(START_OR_END_QUOTE, "")
-        asset = @theme.assets.find { |a| a.name.end_with?("/" + asset_id) }
+        asset = @platformos_app.assets.find { |a| a.name.end_with?("/" + asset_id) }
         return if asset.nil?
 
         asset.gzipped_size

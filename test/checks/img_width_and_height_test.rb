@@ -5,7 +5,7 @@ require "test_helper"
 module PlatformosCheck
   class ImgWidthAndHeightTest < Minitest::Test
     def test_no_offense_for_good_behaviour
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         ImgWidthAndHeight.new,
         "templates/index.liquid" => <<~END
           <img src="a.jpg" width="100" height="200">
@@ -29,7 +29,7 @@ module PlatformosCheck
     end
 
     def test_doesnt_hang_on_self_closing_tag
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         ImgWidthAndHeight.new,
         "templates/index.liquid" => <<~END
           <img src="a.jpg" width="100" height="200"/>
@@ -54,7 +54,7 @@ module PlatformosCheck
     end
 
     def test_ignore_lazysizes
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         ImgWidthAndHeight.new,
         "templates/index.liquid" => <<~END
           <img data-src="a.jpg" data-sizes="auto">
@@ -66,7 +66,7 @@ module PlatformosCheck
     end
 
     def test_missing_width_and_height
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         ImgWidthAndHeight.new,
         "templates/index.liquid" => <<~END
           <img src="a.jpg">
@@ -94,7 +94,7 @@ module PlatformosCheck
     end
 
     def test_units_in_img_width_or_height
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         ImgWidthAndHeight.new,
         "templates/index.liquid" => <<~END
           <img src="d.jpg" width="100px" height="200px">

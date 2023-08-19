@@ -27,7 +27,7 @@ module PlatformosCheck
             download_file(local_path(file_name, destination), remote_path(file_name))
           end
         rescue DownloadResourceError
-          # If a request error occurs, ignore it. This ensures that Theme Check
+          # If a request error occurs, ignore it. This ensures that PlatformOS Check
           # can rely on the sources included during the bundling phase.
         end
 

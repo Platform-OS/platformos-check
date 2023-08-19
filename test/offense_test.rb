@@ -4,7 +4,7 @@ require "test_helper"
 
 class OffenseTest < Minitest::Test
   def setup
-    @theme = make_theme(
+    @platformos_app = make_platformos_app(
       "templates/index.liquid" => <<~END,
         <p>
           {{ 1 + 2 }}
@@ -28,7 +28,7 @@ class OffenseTest < Minitest::Test
 
   def test_source_excerpt
     node = stub(
-      theme_file: @theme["templates/index"],
+      platformos_app_file: @platformos_app["templates/index"],
       line_number: 2,
       markup: "1 + 2"
     )
@@ -41,7 +41,7 @@ class OffenseTest < Minitest::Test
 
   def test_truncated_source_excerpt
     node = stub(
-      theme_file: @theme["templates/long"],
+      platformos_app_file: @platformos_app["templates/long"],
       line_number: 1,
       markup: "include 'icon-error'"
     )
@@ -54,23 +54,23 @@ class OffenseTest < Minitest::Test
 
   def test_correct
     node = stub(
-      theme_file: @theme["templates/index"],
+      platformos_app_file: @platformos_app["templates/index"],
       line_number: 2,
-      start_index: @theme["templates/index"].source.index('1'),
-      end_index: @theme["templates/index"].source.index('2 ') + 2,
+      start_index: @platformos_app["templates/index"].source.index('1'),
+      end_index: @platformos_app["templates/index"].source.index('2 ') + 2,
       markup: "1 + 2"
     )
     offense = PlatformosCheck::Offense.new(check: Bogus.new, node:, correction: proc { |c| c.insert_after(node, "abc") })
     offense.correct
 
-    node.theme_file.write
+    node.platformos_app_file.write
 
-    assert_equal("{{ 1 + 2 abc}}", node.theme_file.source_excerpt(2))
+    assert_equal("{{ 1 + 2 abc}}", node.platformos_app_file.source_excerpt(2))
   end
 
   def test_location
     node = stub(
-      theme_file: @theme["templates/index"],
+      platformos_app_file: @platformos_app["templates/index"],
       line_number: 2,
       markup: "1 + 2"
     )
@@ -84,7 +84,7 @@ class OffenseTest < Minitest::Test
 
   def test_multiline_markup_location
     node = stub(
-      theme_file: @theme["templates/multiline"],
+      platformos_app_file: @platformos_app["templates/multiline"],
       line_number: 1,
       markup: "render 'product-card',\n  product: product,\n  show: true"
     )
@@ -99,7 +99,7 @@ class OffenseTest < Minitest::Test
   def test_multiline_markup_location_with_trailing_new_line
     markup = "render 'product-card',\n  product: product,\n  show: true\n\n\n"
     node = stub(
-      theme_file: make_theme("stub.liquid" => "{% #{markup}%}")["stub"],
+      platformos_app_file: make_platformos_app("stub.liquid" => "{% #{markup}%}")["stub"],
       line_number: 1,
       markup:
     )
@@ -114,7 +114,7 @@ class OffenseTest < Minitest::Test
   def test_multiline_markup_location_with_multiple_new_lines_back_to_back
     markup = "render 'product-card',\n\n\n  product: product"
     node = stub(
-      theme_file: make_theme("stub.liquid" => "{% #{markup}%}")["stub"],
+      platformos_app_file: make_platformos_app("stub.liquid" => "{% #{markup}%}")["stub"],
       line_number: 1,
       markup:
     )
@@ -128,7 +128,7 @@ class OffenseTest < Minitest::Test
 
   def test_location_without_markup
     node = stub(
-      theme_file: @theme["templates/index"],
+      platformos_app_file: @platformos_app["templates/index"],
       line_number: 1,
       markup: nil
     )
@@ -146,11 +146,11 @@ class OffenseTest < Minitest::Test
   end
 
   def test_offense_in_range
-    theme_file = stub(source: "supp world! how are you doing today?")
+    platformos_app_file = stub(source: "supp world! how are you doing today?")
     offense = PlatformosCheck::Offense.new(
       check: Bogus.new,
       markup: "world",
-      theme_file:,
+      platformos_app_file:,
       line_number: 1
     )
 
@@ -184,10 +184,10 @@ class OffenseTest < Minitest::Test
   end
 
   def test_offense_in_range_zero_length_offense
-    theme_file = stub(source: '{ "json_file_without_line_numbers": "ok" }')
+    platformos_app_file = stub(source: '{ "json_file_without_line_numbers": "ok" }')
     offense = PlatformosCheck::Offense.new(
       check: Bogus.new,
-      theme_file:
+      platformos_app_file:
     )
 
     # Showing the assumption

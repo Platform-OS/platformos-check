@@ -3,14 +3,14 @@
 module PlatformosCheck
   # A node from the Liquid AST, the result of parsing a liquid file.
   class LiquidNode < Node
-    attr_reader :value, :parent, :theme_file
+    attr_reader :value, :parent, :platformos_app_file
 
-    def initialize(value, parent, theme_file)
+    def initialize(value, parent, platformos_app_file)
       raise ArgumentError, "Expected a Liquid AST Node" if value.is_a?(LiquidNode)
 
       @value = value
       @parent = parent
-      @theme_file = theme_file
+      @platformos_app_file = platformos_app_file
       @tag_markup = nil
       @line_number_offset = 0
     end
@@ -40,7 +40,7 @@ module PlatformosCheck
         end
         nodes
           .reject(&:nil?) # We don't want nil nodes, and they can happen
-          .map { |node| LiquidNode.new(node, self, @theme_file) }
+          .map { |node| LiquidNode.new(node, self, @platformos_app_file) }
       end
     end
 
@@ -201,7 +201,7 @@ module PlatformosCheck
     end
 
     def source
-      theme_file&.source
+      platformos_app_file&.source
     end
 
     # For debugging purposes, this might be easier for the eyes.
@@ -384,7 +384,7 @@ module PlatformosCheck
     def position
       @position ||= Position.new(
         markup,
-        theme_file&.source,
+        platformos_app_file&.source,
         line_number_1_indexed: line_number
       )
     end
@@ -420,7 +420,7 @@ module PlatformosCheck
     # And the line number is the one of 'foo'\n%}. Yay!
     #
     # This breaks any kind of position logic we have since that string
-    # does not exist in the theme_file.
+    # does not exist in the platformos_app_file.
     def tag_markup
       return @tag_markup if @tag_markup
 
@@ -473,7 +473,7 @@ module PlatformosCheck
         @tag_markup = source[tag_start...tag_end]
         return @tag_markup
 
-      # See https://github.com/Shopify/theme-check/pull/423/files#r701936559 for a detailed explanation
+      # See https://github.com/Shopify/platformos-check/pull/423/files#r701936559 for a detailed explanation
       # of why we're doing the check below.
       #
       # TL;DR it's because line_numbers are not enough to accurately

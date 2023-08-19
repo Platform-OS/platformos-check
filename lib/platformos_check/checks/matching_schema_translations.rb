@@ -11,7 +11,7 @@ module PlatformosCheck
       return if schema.nil?
 
       # Get all locales used in the schema
-      used_locales = Set.new([theme.default_locale])
+      used_locales = Set.new([platformos_app.default_locale])
       visit_object(schema) do |_, locales|
         used_locales += locales
       end
@@ -40,7 +40,7 @@ module PlatformosCheck
       locales = schema["locales"]
       return unless locales.is_a?(Hash)
 
-      default_locale = locales[theme.default_locale]
+      default_locale = locales[platformos_app.default_locale]
 
       if default_locale
         locales.each_pair do |name, content|
@@ -68,7 +68,7 @@ module PlatformosCheck
 
         when Hash
           # Localized key
-          if value[theme.default_locale].is_a?(String)
+          if value[platformos_app.default_locale].is_a?(String)
             yield(path.join("."), value.keys)
           # Nested keys
           else

@@ -3,7 +3,7 @@
 module PlatformosCheck
   class DeprecatedGlobalAppBlockTypeTest < Minitest::Test
     def test_reject_invalid_global_app_block_type_in_section_schemas
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END
           {% schema %}
@@ -21,7 +21,7 @@ module PlatformosCheck
     end
 
     def test_reject_invalid_global_app_block_type_in_conditional_statement
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END
           {% for block in section.blocks %}
@@ -47,7 +47,7 @@ module PlatformosCheck
     end
 
     def test_reject_invalid_global_app_block_type_in_switch_case_statement
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END
           {% for block in section.blocks %}
@@ -73,7 +73,7 @@ module PlatformosCheck
     end
 
     def test_reject_invalid_global_app_block_type_defined_as_liquid_variable
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END
           {% assign invalid = "@global" %}
@@ -92,7 +92,7 @@ module PlatformosCheck
     end
 
     def test_does_not_reject_global_string_used_outside_liquid_control_flow_statements
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END
           <p> This is "@global" </p>
@@ -109,7 +109,7 @@ module PlatformosCheck
     end
 
     def test_accepts_valid_global_app_block_type
-      offenses = analyze_theme(
+      offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END
           {% for block in section.blocks %}

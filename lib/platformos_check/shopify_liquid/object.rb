@@ -20,8 +20,8 @@ module PlatformosCheck
         @plus_labels ||= SourceIndex.plus_labels
       end
 
-      def theme_app_extension_labels
-        @theme_app_extension_labels ||= SourceIndex.theme_app_extension_labels
+      def platformos_app_app_extension_labels
+        @platformos_app_app_extension_labels ||= SourceIndex.platformos_app_app_extension_labels
       end
     end
   end

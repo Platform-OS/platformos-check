@@ -38,10 +38,10 @@ module PlatformosCheck
 
     def add_missing_offense(name, node:)
       path = "#{name}.liquid"
-      return if ignore?(path) || theme[name]
+      return if ignore?(path) || platformos_app[name]
 
       add_offense("'#{path}' is not found", node:) do |corrector|
-        corrector.create_file(@theme.storage, "#{name}.liquid", "")
+        corrector.create_file(@platformos_app.storage, "#{name}.liquid", "")
       end
     end
   end

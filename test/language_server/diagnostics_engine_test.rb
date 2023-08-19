@@ -11,11 +11,11 @@ module PlatformosCheck
         @messenger = MockMessenger.new
         @bridge = Bridge.new(@messenger)
         @storage = make_file_system_storage(
-          "layout/theme.liquid" => "{% render 'a' %}{% render 'b' %}",
+          "layout/platformos_app.liquid" => "{% render 'a' %}{% render 'b' %}",
           "snippets/a.liquid" => "{% if unclosed %}",
           "snippets/b.liquid" => "{% if unclosed %}",
           "snippets/c.liquid" => "",
-          ".theme-check.yml" => <<~YML
+          ".platformos-check.yml" => <<~YML
             extends: :nothing
             SyntaxError:
               enabled: true
@@ -27,8 +27,8 @@ module PlatformosCheck
       end
 
       def test_analyze_and_send_offenses_full_on_first_run_partial_second_run
-        # On the first run, analyze the entire theme
-        analyze_and_send_offenses("layout/theme.liquid")
+        # On the first run, analyze the entire platformos_app
+        analyze_and_send_offenses("layout/platformos_app.liquid")
 
         # Expect diagnostics for all files
         assert_includes(@messenger.sent_messages, diagnostics_notification("snippets/a.liquid", [:syntax]))
@@ -62,7 +62,7 @@ module PlatformosCheck
         refute_includes(@messenger.sent_messages, diagnostics_notification("snippets/b.liquid", [:syntax]))
         refute_includes(@messenger.sent_messages, diagnostics_notification("snippets/c.liquid", [:unused]))
 
-        # whole theme checks are ignored in this mode
+        # whole platformos_app checks are ignored in this mode
         analyze_and_send_offenses("snippets/c.liquid", only_single_file: true)
 
         refute_includes(@messenger.sent_messages, diagnostics_notification("snippets/c.liquid", [:unused]))
@@ -89,7 +89,7 @@ module PlatformosCheck
 
       # For when you want fast checks on change but slow changes on save
       def test_analyze_and_send_offenses_mixed_mode
-        # Run a full theme check on first run
+        # Run a full platformos_app check on first run
         analyze_and_send_offenses("snippets/a.liquid")
 
         assert_includes(@messenger.sent_messages, diagnostics_notification("snippets/a.liquid", [:syntax]))
@@ -108,15 +108,15 @@ module PlatformosCheck
 
         # Fix the UnusedSnippet error by typing
         @messenger.sent_messages.clear
-        @storage.write("layout/theme.liquid", "{% render 'a' %}{% render 'b' %}{% render 'c' %}")
-        analyze_and_send_offenses("layout/theme.liquid", only_single_file: true)
+        @storage.write("layout/platformos_app.liquid", "{% render 'a' %}{% render 'b' %}{% render 'c' %}")
+        analyze_and_send_offenses("layout/platformos_app.liquid", only_single_file: true)
 
         # Don't expect empty or resent diagnostics for the fixed file
         refute_includes(@messenger.sent_messages, empty_diagnostics_notification("snippets/c.liquid"))
         refute_includes(@messenger.sent_messages, diagnostics_notification("snippets/c.liquid", [:unused]))
 
-        # Hit "save", run whole theme checks. Remove the fixed offense.
-        analyze_and_send_offenses("layout/theme.liquid")
+        # Hit "save", run whole platformos_app checks. Remove the fixed offense.
+        analyze_and_send_offenses("layout/platformos_app.liquid")
 
         assert_includes(@messenger.sent_messages, empty_diagnostics_notification("snippets/c.liquid"))
       end
@@ -174,9 +174,9 @@ module PlatformosCheck
             end: { line: 0, character: 0 }
           },
           severity: 2,
-          source: "theme-check",
+          source: "platformos-check",
           codeDescription: {
-            href: "https://github.com/Shopify/theme-check/blob/main/docs/checks/unused_snippet.md"
+            href: "https://github.com/Shopify/platformos-check/blob/main/docs/checks/unused_snippet.md"
           },
           data: {
             uri: file_uri(@storage.path(path)),
@@ -196,9 +196,9 @@ module PlatformosCheck
             end: { line: 0, character: 16 }
           },
           severity: 1,
-          source: "theme-check",
+          source: "platformos-check",
           codeDescription: {
-            href: "https://github.com/Shopify/theme-check/blob/main/docs/checks/syntax_error.md"
+            href: "https://github.com/Shopify/platformos-check/blob/main/docs/checks/syntax_error.md"
           },
           data: {
             uri: file_uri(@storage.path(path)),

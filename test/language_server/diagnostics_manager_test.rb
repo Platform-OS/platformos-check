@@ -7,20 +7,20 @@ module PlatformosCheck
     class DiagnosticsManagerTest < Minitest::Test
       Offense = Struct.new(
         :code_name,
-        :theme_file,
-        :whole_theme?
+        :platformos_app_file,
+        :whole_platformos_app?
       ) do
         def single_file?
-          !whole_theme?
+          !whole_platformos_app?
         end
 
         def inspect
-          "#<#{code_name} theme_file=\"#{theme_file.path}\" #{whole_theme? ? 'whole_theme' : 'single_file'}>"
+          "#<#{code_name} platformos_app_file=\"#{platformos_app_file.path}\" #{whole_platformos_app? ? 'whole_platformos_app' : 'single_file'}>"
         end
       end
       LiquidFile = Struct.new(:relative_path, :absolute_path)
 
-      class WholeThemeOffense < Offense
+      class WholeAppOffense < Offense
         def initialize(code_name, path)
           super(code_name, LiquidFile.new(Pathname.new(path), Pathname.new(path)), true)
         end
@@ -39,7 +39,7 @@ module PlatformosCheck
       def test_reports_all_on_first_run
         assert_diagnostics(
           offenses: [
-            WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
+            WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
             SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
             SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
           ],
@@ -49,7 +49,7 @@ module PlatformosCheck
           ],
           diagnostics: {
             "template/index.liquid" => [
-              WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
+              WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
               SingleFileOffense.new("UnusedAssign", "template/index.liquid")
             ],
             "template/collection.liquid" => [
@@ -97,14 +97,14 @@ module PlatformosCheck
       def test_include_single_file_offenses_of_previous_runs
         build_diagnostics(
           offenses: [
-            WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
+            WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
             SingleFileOffense.new("UnusedAssign", "template/index.liquid")
           ]
         )
 
         assert_diagnostics(
           offenses: [
-            WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
+            WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
             SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
           ],
           analyzed_files: [
@@ -112,7 +112,7 @@ module PlatformosCheck
           ],
           diagnostics: {
             "template/index.liquid" => [
-              WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
+              WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
               SingleFileOffense.new("UnusedAssign", "template/index.liquid")
             ],
             "template/collection.liquid" => [
@@ -122,10 +122,10 @@ module PlatformosCheck
         )
       end
 
-      def test_clears_whole_theme_offenses_from_previous_runs
+      def test_clears_whole_platformos_app_offenses_from_previous_runs
         build_diagnostics(
           offenses: [
-            WholeThemeOffense.new("MissingTemplate", "template/index.liquid")
+            WholeAppOffense.new("MissingTemplate", "template/index.liquid")
           ]
         )
 
@@ -145,24 +145,24 @@ module PlatformosCheck
         )
       end
 
-      def test_clears_single_theme_offenses_when_missing
+      def test_clears_single_platformos_app_offenses_when_missing
         build_diagnostics(
           offenses: [
-            WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
+            WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
             SingleFileOffense.new("UnusedAssign", "template/index.liquid")
           ]
         )
 
         assert_diagnostics(
           offenses: [
-            WholeThemeOffense.new("MissingTemplate", "template/index.liquid")
+            WholeAppOffense.new("MissingTemplate", "template/index.liquid")
           ],
           analyzed_files: [
             "template/index.liquid"
           ],
           diagnostics: {
             "template/index.liquid" => [
-              WholeThemeOffense.new("MissingTemplate", "template/index.liquid")
+              WholeAppOffense.new("MissingTemplate", "template/index.liquid")
             ]
           }
         )
@@ -171,14 +171,14 @@ module PlatformosCheck
       def test_diagnostics_returns_offenses_for_an_absolute_path
         build_diagnostics(
           offenses: [
-            WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
+            WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
             SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
             SingleFileOffense.new("SyntaxError", "template/index.liquid"),
             SingleFileOffense.new("SyntaxError", "template/collection.liquid")
           ]
         )
         expected = [
-          WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
+          WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
           SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
           SingleFileOffense.new("SyntaxError", "template/index.liquid")
         ]
@@ -188,8 +188,8 @@ module PlatformosCheck
       end
 
       def test_workspace_edit
-        # setup, pretend we ran diagnostics on a theme
-        diagnostics_manager = diagnose_theme(
+        # setup, pretend we ran diagnostics on a platformos_app
+        diagnostics_manager = diagnose_platformos_app(
           SpaceInsideBraces.new,
           "index.liquid" => <<~LIQUID
             {{x}}
@@ -221,7 +221,7 @@ module PlatformosCheck
       end
 
       def test_delete_applied_deletes_fixable_diagnostics
-        diagnostics_manager = diagnose_theme(
+        diagnostics_manager = diagnose_platformos_app(
           SpaceInsideBraces.new,
           TemplateLength.new(max_length: 0),
           "index.liquid" => <<~LIQUID
@@ -244,7 +244,7 @@ module PlatformosCheck
       end
 
       def test_delete_applied_returns_updated_diagnostics
-        diagnostics_manager = diagnose_theme(
+        diagnostics_manager = diagnose_platformos_app(
           SpaceInsideBraces.new,
           TemplateLength.new(max_length: 0),
           "index.liquid" => <<~LIQUID
@@ -264,7 +264,7 @@ module PlatformosCheck
       end
 
       def test_delete_applied_returns_empty_diagnostics_if_all_were_cleared
-        diagnostics_manager = diagnose_theme(
+        diagnostics_manager = diagnose_platformos_app(
           SpaceInsideBraces.new,
           "index.liquid" => <<~LIQUID
             {{x}}
@@ -284,9 +284,9 @@ module PlatformosCheck
 
       private
 
-      def diagnose_theme(*, templates)
+      def diagnose_platformos_app(*, templates)
         diagnostics_manager = PlatformosCheck::LanguageServer::DiagnosticsManager.new
-        offenses = analyze_theme(*, templates)
+        offenses = analyze_platformos_app(*, templates)
         diagnostics_manager.build_diagnostics(offenses)
         diagnostics_manager
       end

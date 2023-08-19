@@ -4,7 +4,7 @@ require "test_helper"
 
 class TranslationKeyExistsTest < Minitest::Test
   def test_noop_without_default_locale
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::TranslationKeyExists.new,
       "templates/index.liquid" => <<~END
         {{"notfound" | t}}
@@ -15,7 +15,7 @@ class TranslationKeyExistsTest < Minitest::Test
   end
 
   def test_noop_with_invalid_default_locale
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::TranslationKeyExists.new,
       "locales/en.default.json" => "{",
       "templates/index.liquid" => <<~END
@@ -27,7 +27,7 @@ class TranslationKeyExistsTest < Minitest::Test
   end
 
   def test_ignores_existing_key
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::TranslationKeyExists.new,
       "locales/en.default.json" => JSON.dump(
         key: "",
@@ -43,7 +43,7 @@ class TranslationKeyExistsTest < Minitest::Test
   end
 
   def test_ignores_key_included_in_schema
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::TranslationKeyExists.new,
       "sections/product.liquid" => <<~END
         {{"submit" | t}}
@@ -63,7 +63,7 @@ class TranslationKeyExistsTest < Minitest::Test
   end
 
   def test_reports_unknown_key
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::TranslationKeyExists.new,
       "locales/en.default.json" => JSON.dump({}),
       "templates/index.liquid" => <<~END
@@ -81,7 +81,7 @@ class TranslationKeyExistsTest < Minitest::Test
   end
 
   def test_counts_shopify_provided_translations_as_defined
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::TranslationKeyExists.new,
       "locales/en.default.json" => JSON.dump({}),
       "templates/index.liquid" => <<~END
@@ -93,7 +93,7 @@ class TranslationKeyExistsTest < Minitest::Test
   end
 
   def test_creates_missing_keys
-    theme = make_theme(
+    platformos_app = make_platformos_app(
       "locales/en.default.json" => JSON.dump({}),
       "templates/index.liquid" => <<~END
         {{"unknownkey" | t}}
@@ -102,18 +102,18 @@ class TranslationKeyExistsTest < Minitest::Test
       END
     )
 
-    analyzer = PlatformosCheck::Analyzer.new(theme, [PlatformosCheck::TranslationKeyExists.new], true)
-    analyzer.analyze_theme
+    analyzer = PlatformosCheck::Analyzer.new(platformos_app, [PlatformosCheck::TranslationKeyExists.new], true)
+    analyzer.analyze_platformos_app
     analyzer.correct_offenses
 
     expected = { "unknownkey" => "TODO", "unknown" => { "nested" => { "key" => "TODO" } } }
-    actual = theme.default_locale_json.content
+    actual = platformos_app.default_locale_json.content
 
     assert_equal(expected, actual)
   end
 
   def test_creates_nested_missing_keys
-    theme = make_theme(
+    platformos_app = make_platformos_app(
       "locales/en.default.json" => JSON.dump({
                                                key: "TODO",
                                                nested: { key: "TODO" },
@@ -127,8 +127,8 @@ class TranslationKeyExistsTest < Minitest::Test
       END
     )
 
-    analyzer = PlatformosCheck::Analyzer.new(theme, [PlatformosCheck::TranslationKeyExists.new], true)
-    analyzer.analyze_theme
+    analyzer = PlatformosCheck::Analyzer.new(platformos_app, [PlatformosCheck::TranslationKeyExists.new], true)
+    analyzer.analyze_platformos_app
     analyzer.correct_offenses
 
     expected = {
@@ -148,13 +148,13 @@ class TranslationKeyExistsTest < Minitest::Test
       },
       "unknownkey" => "TODO"
     }
-    actual = theme.default_locale_json.content
+    actual = platformos_app.default_locale_json.content
 
     assert_equal(expected, actual)
   end
 
   def test_handles_key_conflicts
-    theme = make_theme(
+    platformos_app = make_platformos_app(
       "locales/en.default.json" => JSON.dump({
                                                product: { quantity: "TODO" }
                                              }),
@@ -163,8 +163,8 @@ class TranslationKeyExistsTest < Minitest::Test
       END
     )
 
-    analyzer = PlatformosCheck::Analyzer.new(theme, [PlatformosCheck::TranslationKeyExists.new], true)
-    analyzer.analyze_theme
+    analyzer = PlatformosCheck::Analyzer.new(platformos_app, [PlatformosCheck::TranslationKeyExists.new], true)
+    analyzer.analyze_platformos_app
 
     assert_offenses(<<~END, analyzer.offenses)
       'product.quantity.decrease' does not have a matching entry in 'locales/en.default.json' at templates/index.liquid:1

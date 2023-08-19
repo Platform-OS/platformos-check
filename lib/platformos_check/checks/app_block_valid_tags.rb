@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PlatformosCheck
-  # Reports errors when invalid tags are used in a Theme App
+  # Reports errors when invalid tags are used in a App
   # Extension block
   class AppBlockValidTags < LiquidCheck
     severity :error
@@ -12,7 +12,7 @@ module PlatformosCheck
     # since we need to be able to enforce this server-side
     can_disable false
 
-    OFFENSE_MSG = "Theme app extension blocks cannot contain %s tags"
+    OFFENSE_MSG = "App extension blocks cannot contain %s tags"
 
     def on_javascript(node)
       add_offense(OFFENSE_MSG % 'javascript', node:)

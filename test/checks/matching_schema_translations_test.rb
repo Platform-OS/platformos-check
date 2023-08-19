@@ -4,7 +4,7 @@ require "test_helper"
 
 class MatchingSchemaTranslationsTest < Minitest::Test
   def test_matching
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::MatchingSchemaTranslations.new,
       "sections/product.liquid" => <<~END
         {% schema %}
@@ -31,7 +31,7 @@ class MatchingSchemaTranslationsTest < Minitest::Test
   end
 
   def test_missing
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::MatchingSchemaTranslations.new,
       "sections/product.liquid" => <<~END
         {% schema %}
@@ -81,7 +81,7 @@ class MatchingSchemaTranslationsTest < Minitest::Test
       END
     }
 
-    source = fix_theme(
+    source = fix_platformos_app(
       PlatformosCheck::MatchingSchemaTranslations.new,
       "sections/product.liquid" => <<~END
         {% schema %}
@@ -107,7 +107,7 @@ class MatchingSchemaTranslationsTest < Minitest::Test
   end
 
   def test_locales
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::MatchingSchemaTranslations.new,
       "sections/product.liquid" => <<~END
         {% schema %}
@@ -153,7 +153,7 @@ class MatchingSchemaTranslationsTest < Minitest::Test
       END
     }
 
-    source = fix_theme(
+    source = fix_platformos_app(
       PlatformosCheck::MatchingSchemaTranslations.new,
       "sections/product.liquid" => <<~END
         {% schema %}

@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 module PlatformosCheck
-  # Reports missing shopify required theme files
-  # required templates: https://shopify.dev/tutorials/review-theme-store-requirements-files
+  # Reports missing shopify required platformos_app files
+  # required templates: https://shopify.dev/tutorials/review-platformos_app-store-requirements-files
   class MissingRequiredTemplateFiles < LiquidCheck
     severity :error
     category :liquid
     doc docs_url(__FILE__)
 
-    REQUIRED_LIQUID_FILES = %w[layout/theme]
+    REQUIRED_LIQUID_FILES = %w[layout/platformos_app]
 
     REQUIRED_LIQUID_TEMPLATE_FILES = %w[
       gift_card customers/account customers/activate_account customers/addresses
@@ -23,21 +23,21 @@ module PlatformosCheck
     REQUIRED_TEMPLATE_FILES = (REQUIRED_LIQUID_TEMPLATE_FILES + REQUIRED_JSON_TEMPLATE_FILES)
 
     def on_end
-      (REQUIRED_LIQUID_FILES - theme.liquid.map(&:name)).each do |file|
+      (REQUIRED_LIQUID_FILES - platformos_app.liquid.map(&:name)).each do |file|
         add_offense("'#{file}.liquid' is missing") do |corrector|
-          corrector.create_file(@theme.storage, "#{file}.liquid", "")
+          corrector.create_file(@platformos_app.storage, "#{file}.liquid", "")
         end
       end
-      (REQUIRED_TEMPLATE_FILES - (theme.liquid + theme.json).map(&:name)).each do |file|
+      (REQUIRED_TEMPLATE_FILES - (platformos_app.liquid + platformos_app.json).map(&:name)).each do |file|
         add_offense("'#{file}.liquid' or '#{file}.json' is missing") do |corrector|
           if REQUIRED_LIQUID_TEMPLATE_FILES.include?(file)
-            corrector.create_file(@theme.storage, "#{file}.liquid", "")
+            corrector.create_file(@platformos_app.storage, "#{file}.liquid", "")
           else
-            corrector.create_file(@theme.storage, "#{file}.json", JSON.pretty_generate({
-                                                                                         name: "TODO",
-                                                                                         sections: {},
-                                                                                         order: []
-                                                                                       }))
+            corrector.create_file(@platformos_app.storage, "#{file}.json", JSON.pretty_generate({
+                                                                                                  name: "TODO",
+                                                                                                  sections: {},
+                                                                                                  order: []
+                                                                                                }))
           end
         end
       end

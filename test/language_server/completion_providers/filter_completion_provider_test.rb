@@ -157,7 +157,7 @@ module PlatformosCheck
       end
 
       def test_filters_compatible_with_the_metafield_type
-        skip("theme-liquid-docs changes causing test to fail")
+        skip("platformos_app-liquid-docs changes causing test to fail")
 
         assert_can_only_complete_with("{{ shop.metafields | ", 'metafield')
       end

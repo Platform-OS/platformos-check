@@ -6,7 +6,7 @@ module PlatformosCheck
   class Check
     include JsonHelpers
 
-    attr_accessor :theme, :options
+    attr_accessor :platformos_app, :options
     attr_writer :ignored_patterns, :offenses
 
     # The order matters.
@@ -68,7 +68,7 @@ module PlatformosCheck
       end
 
       def docs_url(path)
-        "https://github.com/Shopify/theme-check/blob/main/docs/checks/#{File.basename(path, '.rb')}.md"
+        "https://github.com/Shopify/platformos-check/blob/main/docs/checks/#{File.basename(path, '.rb')}.md"
       end
 
       def can_disable(disableable = nil)
@@ -86,8 +86,8 @@ module PlatformosCheck
       @offenses ||= []
     end
 
-    def add_offense(message, node: nil, theme_file: node&.theme_file, markup: nil, line_number: nil, node_markup_offset: 0, &block)
-      offenses << Offense.new(check: self, message:, theme_file:, node:, markup:, line_number:, node_markup_offset:, correction: block)
+    def add_offense(message, node: nil, platformos_app_file: node&.platformos_app_file, markup: nil, line_number: nil, node_markup_offset: 0, &block)
+      offenses << Offense.new(check: self, message:, platformos_app_file:, node:, markup:, line_number:, node_markup_offset:, correction: block)
     end
 
     def severity
@@ -136,7 +136,7 @@ module PlatformosCheck
       self.class.single_file
     end
 
-    def whole_theme?
+    def whole_platformos_app?
       !single_file?
     end
 

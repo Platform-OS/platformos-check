@@ -26,26 +26,26 @@ module PlatformosCheck
     end
 
     def on_document(node)
-      @templates[node.theme_file.name] = TemplateInfo.new(Set.new, {}, Set.new)
+      @templates[node.platformos_app_file.name] = TemplateInfo.new(Set.new, {}, Set.new)
     end
 
     def on_assign(node)
-      @templates[node.theme_file.name].assign_nodes[node.value.to] = node
+      @templates[node.platformos_app_file.name].assign_nodes[node.value.to] = node
     end
 
     def on_include(node)
       return unless node.value.template_name_expr.is_a?(String)
 
-      @templates[node.theme_file.name].includes << "snippets/#{node.value.template_name_expr}"
+      @templates[node.platformos_app_file.name].includes << "snippets/#{node.value.template_name_expr}"
     end
 
     def on_variable_lookup(node)
-      @templates[node.theme_file.name].used_assigns << case node.value.name
-                                                       when Liquid::VariableLookup
-                                                         node.value.name.name
-                                                       else
-                                                         node.value.name
-                                                       end
+      @templates[node.platformos_app_file.name].used_assigns << case node.value.name
+                                                                when Liquid::VariableLookup
+                                                                  node.value.name.name
+                                                                else
+                                                                  node.value.name
+                                                                end
     end
 
     def on_end

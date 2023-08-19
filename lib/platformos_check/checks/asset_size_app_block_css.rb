@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PlatformosCheck
-  # Reports errors when too much CSS is being referenced from a Theme App
+  # Reports errors when too much CSS is being referenced from a App
   # Extension block
   class AssetSizeAppBlockCSS < LiquidCheck
     severity :error
@@ -28,7 +28,7 @@ module PlatformosCheck
       return unless size && size > threshold_in_bytes
 
       add_offense(
-        "CSS in Theme App Extension blocks exceeds compressed size threshold (#{threshold_in_bytes} Bytes)",
+        "CSS in App Extension blocks exceeds compressed size threshold (#{threshold_in_bytes} Bytes)",
         node:
       )
     end
@@ -36,7 +36,7 @@ module PlatformosCheck
     private
 
     def asset_size(name)
-      asset = @theme["assets/#{name}"]
+      asset = @platformos_app["assets/#{name}"]
       return if asset.nil?
 
       asset.gzipped_size

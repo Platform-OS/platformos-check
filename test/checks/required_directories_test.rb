@@ -4,11 +4,11 @@ require "test_helper"
 
 class RequiredDirectories < Minitest::Test
   def test_does_not_report_missing_directories
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::RequiredDirectories.new,
       "assets/gift-card.js" => "",
       "config/settings_data.json" => "",
-      "layout/theme.liquid" => "",
+      "layout/platformos_app.liquid" => "",
       "locales/es.json" => "",
       "sections/footer.liquid" => "",
       "snippets/comment.liquid" => "",
@@ -19,35 +19,35 @@ class RequiredDirectories < Minitest::Test
   end
 
   def test_reports_missing_directories
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::RequiredDirectories.new,
       "assets/gift-card.js" => "",
       "config/settings_data.json" => "",
-      "layout/theme.liquid" => "",
+      "layout/platformos_app.liquid" => "",
       "sections/footer.liquid" => "",
       "snippets/comment.liquid" => "",
       "templates/index.liquid" => ""
     )
 
-    assert_includes_offense(offenses, "Theme is missing 'locales' directory")
+    assert_includes_offense(offenses, "App is missing 'locales' directory")
   end
 
   def test_creates_missing_directories
-    theme = make_theme(
+    platformos_app = make_platformos_app(
       "assets/gift-card.js" => "",
       "config/settings_data.json" => "",
-      "layout/theme.liquid" => "",
+      "layout/platformos_app.liquid" => "",
       "sections/footer.liquid" => "",
       "snippets/comment.liquid" => "",
       "templates/index.liquid" => ""
     )
 
-    analyzer = PlatformosCheck::Analyzer.new(theme, [PlatformosCheck::RequiredDirectories.new], true)
-    analyzer.analyze_theme
+    analyzer = PlatformosCheck::Analyzer.new(platformos_app, [PlatformosCheck::RequiredDirectories.new], true)
+    analyzer.analyze_platformos_app
     analyzer.correct_offenses
 
     missing_directories = ["locales"]
 
-    assert(missing_directories.all? { |file| theme.storage.directories.include?(file) })
+    assert(missing_directories.all? { |file| platformos_app.storage.directories.include?(file) })
   end
 end

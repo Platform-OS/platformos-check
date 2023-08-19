@@ -3,20 +3,20 @@
 require "test_helper"
 
 class MissingRequiredTemplateFilesTest < Minitest::Test
-  def test_reports_missing_layout_theme_file
-    offenses = analyze_theme(
+  def test_reports_missing_layout_platformos_app_file
+    offenses = analyze_platformos_app(
       PlatformosCheck::MissingRequiredTemplateFiles.new,
       "templates/index.liquid" => "",
       "templates/product.liquid" => ""
     )
 
-    assert_includes_offense(offenses, "'layout/theme.liquid' is missing")
+    assert_includes_offense(offenses, "'layout/platformos_app.liquid' is missing")
   end
 
   def test_reports_missing_template_files
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::MissingRequiredTemplateFiles.new,
-      "layout/theme.liquid" => ""
+      "layout/platformos_app.liquid" => ""
     )
 
     assert_includes_offense(offenses, "'templates/index.liquid' or 'templates/index.json' is missing")
@@ -24,9 +24,9 @@ class MissingRequiredTemplateFilesTest < Minitest::Test
   end
 
   def test_does_not_report_missing_template_files
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::MissingRequiredTemplateFiles.new,
-      "layout/theme.liquid" => "",
+      "layout/platformos_app.liquid" => "",
       "templates/index.liquid" => "",
       "templates/product.liquid" => "",
       "templates/collection.liquid" => "",
@@ -52,9 +52,9 @@ class MissingRequiredTemplateFilesTest < Minitest::Test
   end
 
   def test_does_not_report_missing_template_files_with_json_templates
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::MissingRequiredTemplateFiles.new,
-      "layout/theme.liquid" => "",
+      "layout/platformos_app.liquid" => "",
       "templates/index.json" => "",
       "templates/product.json" => "",
       "templates/collection.json" => "",
@@ -79,22 +79,22 @@ class MissingRequiredTemplateFilesTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
-  def test_creates_missing_layout_theme_file
-    theme = make_theme(
+  def test_creates_missing_layout_platformos_app_file
+    platformos_app = make_platformos_app(
       "templates/index.liquid" => "",
       "templates/product.liquid" => ""
     )
 
-    analyzer = PlatformosCheck::Analyzer.new(theme, [PlatformosCheck::MissingRequiredTemplateFiles.new], true)
-    analyzer.analyze_theme
+    analyzer = PlatformosCheck::Analyzer.new(platformos_app, [PlatformosCheck::MissingRequiredTemplateFiles.new], true)
+    analyzer.analyze_platformos_app
     analyzer.correct_offenses
 
-    assert_includes(theme.storage.files, "layout/theme.liquid")
+    assert_includes(platformos_app.storage.files, "layout/platformos_app.liquid")
   end
 
   def test_creates_missing_template_files
-    theme = make_theme(
-      "layout/theme.liquid" => "",
+    platformos_app = make_platformos_app(
+      "layout/platformos_app.liquid" => "",
       "templates/index.json" => "",
       "templates/collection.json" => "",
       "templates/cart.json" => "",
@@ -113,10 +113,10 @@ class MissingRequiredTemplateFilesTest < Minitest::Test
 
     missing_files = ["templates/product.json", "templates/search.json", "templates/customers/login.liquid", "templates/password.json", "templates/gift_card.liquid"]
 
-    analyzer = PlatformosCheck::Analyzer.new(theme, [PlatformosCheck::MissingRequiredTemplateFiles.new], true)
-    analyzer.analyze_theme
+    analyzer = PlatformosCheck::Analyzer.new(platformos_app, [PlatformosCheck::MissingRequiredTemplateFiles.new], true)
+    analyzer.analyze_platformos_app
     analyzer.correct_offenses
 
-    assert(missing_files.all? { |file| theme.storage.files.include?(file) })
+    assert(missing_files.all? { |file| platformos_app.storage.files.include?(file) })
   end
 end

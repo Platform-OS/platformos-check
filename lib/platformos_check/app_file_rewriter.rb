@@ -3,7 +3,7 @@
 require 'parser'
 
 module PlatformosCheck
-  class ThemeFileRewriter
+  class AppFileRewriter
     def initialize(name, source)
       @buffer = Parser::Source::Buffer.new(name, source:)
       @rewriter = Parser::Source::TreeRewriter.new(

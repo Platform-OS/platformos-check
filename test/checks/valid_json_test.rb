@@ -4,7 +4,7 @@ require "test_helper"
 
 class ValidJsonTest < Minitest::Test
   def test_detects_json_error
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::ValidJson.new,
       "locales/en.json" => "{"
     )
@@ -15,7 +15,7 @@ class ValidJsonTest < Minitest::Test
   end
 
   def test_valid_json
-    offenses = analyze_theme(
+    offenses = analyze_platformos_app(
       PlatformosCheck::ValidJson.new,
       "locales/en.json" => "{}"
     )

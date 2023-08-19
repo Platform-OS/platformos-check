@@ -35,8 +35,8 @@ module PlatformosCheck
         "excerpt",
         "pad_spaces",
         "distance_from",
-        "theme_url",
-        "link_to_theme",
+        "platformos_app_url",
+        "link_to_platformos_app",
         "_online_store_editor_live_setting",
         "debug"
       ]

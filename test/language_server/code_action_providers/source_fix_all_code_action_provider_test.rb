@@ -6,7 +6,7 @@ module PlatformosCheck
   module LanguageServer
     class SourceFixAllCodeActionProviderTest < Minitest::Test
       def setup
-        instances = diagnose_theme(
+        instances = diagnose_platformos_app(
           PlatformosCheck::SpaceInsideBraces.new,
           PlatformosCheck::TemplateLength.new(max_length: 0),
           "index.liquid" => <<~LIQUID,
@@ -29,7 +29,7 @@ module PlatformosCheck
                                .map(&:to_h)
         expected = [
           {
-            title: 'Fix all Theme Check auto-fixable problems',
+            title: 'Fix all PlatformOS Check auto-fixable problems',
             kind: 'source.fixAll',
             diagnostics: expected_diagnostics,
             command: {
