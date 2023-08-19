@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     # Load all files tracked in git except files in test directory
     # Include untracked files in liquid documentation folder
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^test/}) } + Dir['data/shopify_liquid/documentation/**']
+    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test/|old_theme_check/)}) } + Dir['data/shopify_liquid/documentation/**']
   end
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }

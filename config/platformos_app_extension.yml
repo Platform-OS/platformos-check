@@ -61,22 +61,6 @@ UnusedSnippet:
   enabled: true
   ignore: []
 
-MatchingSchemaTranslations:
-  enabled: true
-  ignore: []
-
-MatchingTranslations:
-  enabled: true
-  ignore: []
-
-TranslationKeyExists:
-  enabled: true
-  ignore: []
-
-ValidHTMLTranslation:
-  enabled: true
-  ignore: []
-
 ValidJson:
   enabled: true
   ignore: []

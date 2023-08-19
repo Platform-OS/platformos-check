@@ -26,4 +26,5 @@ end
 require "rubygems"
 require "bundler/setup"
 
+puts Gem.bin_path("platformos-check", "platformos-check-language-server")
 load Gem.bin_path("platformos-check", "platformos-check-language-server")

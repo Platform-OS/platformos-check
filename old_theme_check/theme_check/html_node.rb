@@ -152,7 +152,7 @@ module PlatformosCheck
     rescue NoMethodError
       # Don't know what's up with the following issue. Don't think
       # null check is correct approach. This should give us more info.
-      # https://github.com/Shopify/theme-check/issues/528
+      # https://github.com/Platform-OS/platformos-lsp/issues/528
       PlatformosCheck.bug(<<~MSG)
         Can't find a parseable tag of name #{name} inside the parseable HTML.
 

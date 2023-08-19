@@ -3,4 +3,4 @@
 
 quire "platformos_check"
 
-atformosCheck::Cli.parse_and_run(ARGV)
+PlatformosCheck::Cli.parse_and_run(ARGV)

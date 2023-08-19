@@ -52,14 +52,6 @@ class AppTest < Minitest::Test
     assert_equal(["sections/article-template/template"], @platformos_app.sections.map(&:name))
   end
 
-  def test_default_locale_json
-    assert_equal(@platformos_app["locales/fr.default"], @platformos_app.default_locale_json)
-  end
-
-  def test_default_locale
-    assert_equal("fr", @platformos_app.default_locale)
-  end
-
   def test_ignore
     storage = PlatformosCheck::FileSystemStorage.new(make_file_system_storage(
       "templates/index.liquid" => "",

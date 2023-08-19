@@ -22,9 +22,7 @@
 
 5. Merge your PR to main.
 
-6. On [Shipit](https://shipit.shopify.io/shopify/platformos-check/rubygems), deploy your commit.
-
-7. [Create a GitHub release](https://github.com/Shopify/platformos-check/releases/new) for the change.
+6. [Create a GitHub release](https://github.com/Platform-OS/platformos-lsp/releases/new) for the change.
 
    ```
    VERSION=v1.X.Y

@@ -35,17 +35,6 @@ RuboCop::RakeTask.new
 
 task default: %i[test rubocop]
 
-namespace :package do
-  require 'platformos_check/packager'
-
-  task all: [:homebrew]
-
-  desc("Builds a Homebrew package of the CLI")
-  task :homebrew do
-    PlatformosCheck::Packager.new.build_homebrew
-  end
-end
-
 desc("Builds all distribution packages of the CLI")
 task(package: 'package:all')
 
