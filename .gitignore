@@ -1,0 +1,22 @@
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+
+*.gem
+Gemfile.lock
+
+.rubocop-https---shopify-github-io-ruby-style-guide-rubocop-yml
+packaging/builds
+.vscode
+*.DS_Store
+
+.ruby-version
+.ruby-gemset
+
+# Theme Liquid docs live at git@github.com:Shopify/theme-liquid-docs.git,
+/data/shopify_liquid/documentation/

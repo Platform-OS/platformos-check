@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+quire 'platformos_check'
+
+atus_code = PlatformosCheck::LanguageServer.start
+it! status_code
