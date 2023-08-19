@@ -52,7 +52,7 @@ module PlatformosCheck
                 .gsub("\r\n", "\n")
     end
 
-    def json?
+    def yaml?
       false
     end
 

@@ -11,11 +11,11 @@ gem 'bundler'
 gem 'rake'
 
 group :test do
+  gem 'debug'
   gem 'minitest'
   gem 'minitest-focus'
   gem 'mocha'
   gem 'pry-byebug'
-  gem 'debug'
 end
 
 group :development do

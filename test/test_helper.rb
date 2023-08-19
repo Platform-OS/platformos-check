@@ -91,7 +91,7 @@ module Minitest
     end
 
     def make_storage(files = {})
-      return make_file_system_storage(files) if ENV['platformos_app_STORAGE'] == 'FileSystemStorage'
+      return make_file_system_storage(files) if ENV['PLATFORMOS_CHECK_STORAGE'] == 'FileSystemStorage'
 
       make_in_memory_storage(files)
     end

@@ -33,6 +33,22 @@ module PlatformosCheck
       @templates[node.platformos_app_file.name].assign_nodes[node.value.to] = node
     end
 
+    def on_parse_json(node)
+      @templates[node.platformos_app_file.name].assign_nodes[node.value.to] = node
+    end
+
+    def on_function(node)
+      return if node.value.to.start_with?('_')
+
+      @templates[node.platformos_app_file.name].assign_nodes[node.value.to] = node
+    end
+
+    def on_graphql(node)
+      return if node.value.to.start_with?('_')
+
+      @templates[node.platformos_app_file.name].assign_nodes[node.value.to] = node
+    end
+
     def on_include(node)
       return unless node.value.template_name_expr.is_a?(String)
 

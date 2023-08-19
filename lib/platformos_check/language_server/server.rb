@@ -108,7 +108,7 @@ module PlatformosCheck
           handle_message(message)
         end
       rescue Exception => e # rubocop:disable Lint/RescueException
-        @bridge.log("rescuing #{e.class} in handler thread")
+        @bridge.log("rescuing #{e} in handler thread")
         @error << e
       end
 

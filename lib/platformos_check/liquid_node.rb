@@ -188,6 +188,10 @@ module PlatformosCheck
       @value.is_a?(PlatformosCheck::Tags::Schema)
     end
 
+    def function?
+      @value.is_a?(PlatformosCheck::Tags::Function)
+    end
+
     # The `:under_score_name` of this type of node. Used to dispatch to the `on_<type_name>`
     # and `after_<type_name>` check methods.
     def type_name
@@ -473,7 +477,7 @@ module PlatformosCheck
         @tag_markup = source[tag_start...tag_end]
         return @tag_markup
 
-      # See https://github.com/Shopify/platformos-check/pull/423/files#r701936559 for a detailed explanation
+      # See https://github.com/Platform-OS/platformos-lsp/pull/423/files#r701936559 for a detailed explanation
       # of why we're doing the check below.
       #
       # TL;DR it's because line_numbers are not enough to accurately

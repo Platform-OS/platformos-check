@@ -61,11 +61,7 @@ UnusedSnippet:
   enabled: true
   ignore: []
 
-ValidJson:
-  enabled: true
-  ignore: []
-
-ValidSchema:
+ValidYaml:
   enabled: true
   ignore: []
 

@@ -24,7 +24,7 @@ module PlatformosCheck
       File.join(
         __dir__,
         '..',
-        doc.sub(%r{^https://.+main/}, '')
+        doc.sub(%r{^https://.+master/}, '')
       )
     end
   end

@@ -4,12 +4,16 @@ This check exists to prevent bloat in themes by surfacing variable definitions t
 
 ## Check Details
 
-This check is aimed at eliminating bloat in themes and highlight user errors.
+This check is aimed at eliminating bloat in apps and highlight user errors.
 
 :-1: Examples of **incorrect** code for this check:
 
 ```liquid
 {% assign this_variable_is_not_used = 1 %}
+```
+
+```liquid
+{% function this_variable_is_not_used = 'my_function' %}
 ```
 
 :+1: Examples of **correct** code for this check:
@@ -19,6 +23,18 @@ This check is aimed at eliminating bloat in themes and highlight user errors.
 {% if this_variable_is_used == 1 %}
   <span>Hello!</span>
 {% endif %}
+```
+
+```liquid
+{% function this_variable_is_used = 'my_function' %}
+{% if this_variable_is_used == 1 %}
+  <span>Hello!</span>
+{% endif %}
+```
+
+```liquid
+{% comment %}If you do not need to use the result of the function, start variable name with underscore{% endcomment %}
+{% function _ignore_this_var = 'my_function' %}
 ```
 
 ## Check Options

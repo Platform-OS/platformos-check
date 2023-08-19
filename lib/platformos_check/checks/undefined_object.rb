@@ -103,6 +103,36 @@ module PlatformosCheck
       )
     end
 
+    def on_function(node)
+      return if ignore?(node)
+
+      name = node.value.from.is_a?(String) ? node.value.from : node.value.from.name
+      @files[node.platformos_app_file.name].add_render(
+        name:,
+        node:
+      )
+
+      @files[node.platformos_app_file.name].all_assigns[node.value.to] = node
+    end
+
+    def on_parse_json(node)
+      @files[node.platformos_app_file.name].all_assigns[node.value.to] = node
+    end
+
+    def on_graphql(node)
+      return if ignore?(node)
+
+      @files[node.platformos_app_file.name].all_assigns[node.value.to] = node
+
+      return if node.value.inline_query
+
+      name = node.value.partial_name
+      @files[node.platformos_app_file.name].add_render(
+        name:,
+        node:
+      )
+    end
+
     def on_variable_lookup(node)
       return if ignore?(node)
 
