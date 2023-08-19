@@ -3,10 +3,10 @@
 module PlatformosCheck
   module LanguageServer
     class Configuration
-      CHECK_ON_OPEN = :'platformos_appCheck.checkOnOpen'
-      CHECK_ON_SAVE = :'platformos_appCheck.checkOnSave'
-      CHECK_ON_CHANGE = :'platformos_appCheck.checkOnChange'
-      ONLY_SINGLE_FILE = :'platformos_appCheck.onlySingleFileChecks'
+      CHECK_ON_OPEN = :'platformosCheck.checkOnOpen'
+      CHECK_ON_SAVE = :'platformosCheck.checkOnSave'
+      CHECK_ON_CHANGE = :'platformosCheck.checkOnChange'
+      ONLY_SINGLE_FILE = :'platformosCheck.onlySingleFileChecks'
 
       def initialize(bridge, capabilities)
         @bridge = bridge

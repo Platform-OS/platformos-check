@@ -3,5 +3,5 @@
 
 require 'platformos_check'
 
-PlatformosCheck::LanguageServer.start
+status_code = PlatformosCheck::LanguageServer.start
 exit! status_code
