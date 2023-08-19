@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   module ParsingHelpers
     # Yield each chunk outside of "...", '...'

@@ -4,11 +4,11 @@ module PlatformosCheck
   class LiquidFile < ThemeFile
     def write
       content = rewriter.to_s
-      if source != content
-        @storage.write(@relative_path, content.gsub("\n", @eol))
-        @source = content
-        @rewriter = nil
-      end
+      return unless source != content
+
+      @storage.write(@relative_path, content.gsub("\n", @eol))
+      @source = content
+      @rewriter = nil
     end
 
     def liquid?
@@ -34,7 +34,7 @@ module PlatformosCheck
     def source_excerpt(line)
       original_lines = source.split("\n")
       original_lines[bounded(0, line - 1, original_lines.size - 1)].strip
-    rescue => e
+    rescue StandardError => e
       PlatformosCheck.bug(<<~EOS)
         Exception while running `source_excerpt(#{line})`:
         ```
@@ -69,7 +69,7 @@ module PlatformosCheck
         source,
         line_numbers: true,
         error_mode: :warn,
-        disable_liquid_c_nodes: true,
+        disable_liquid_c_nodes: true
       )
     end
 

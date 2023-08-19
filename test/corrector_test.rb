@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -21,11 +22,12 @@ module PlatformosCheck
       node = stub(
         theme_file: @theme_file,
         start_index: @contents.index('1'),
-        end_index: @contents.index('2') + 1,
+        end_index: @contents.index('2') + 1
       )
       corrector = Corrector.new(theme_file: @theme_file)
       corrector.insert_after(node, " ")
       @theme_file.write
+
       assert_equal("{{1 + 2 }}", @theme_file.source_excerpt(2))
     end
 
@@ -33,15 +35,16 @@ module PlatformosCheck
       node = stub(
         theme_file: @theme_file,
         start_index: @contents.index('1'),
-        end_index: @contents.index('2') + 1,
+        end_index: @contents.index('2') + 1
       )
       corrector = Corrector.new(theme_file: @theme_file)
       corrector.insert_after(
         node,
         "hi muffin",
-        @contents.index("{{1 + 2}}")...@contents.index("{{1 + 2}}") + "{{1 + 2}}".size,
+        @contents.index("{{1 + 2}}")...@contents.index("{{1 + 2}}") + "{{1 + 2}}".size
       )
       @theme_file.write
+
       assert_equal("{{1 + 2}}hi muffin", @theme_file.source_excerpt(2))
     end
 
@@ -49,11 +52,12 @@ module PlatformosCheck
       node = stub(
         theme_file: @theme_file,
         start_index: @contents.index('1'),
-        end_index: @contents.index('2') + 1,
+        end_index: @contents.index('2') + 1
       )
       corrector = Corrector.new(theme_file: @theme_file)
       corrector.insert_before(node, " ")
       @theme_file.write
+
       assert_equal("{{ 1 + 2}}", @theme_file.source_excerpt(2))
     end
 
@@ -61,7 +65,7 @@ module PlatformosCheck
       node = stub(
         theme_file: @theme_file,
         start_index: @contents.index('1'),
-        end_index: @contents.index('2') + 1,
+        end_index: @contents.index('2') + 1
       )
       corrector = Corrector.new(theme_file: @theme_file)
       corrector.insert_before(
@@ -70,6 +74,7 @@ module PlatformosCheck
         @contents.index("{{1 + 2}}")...@contents.index("{{1 + 2}}") + "{{1 + 2}}".size
       )
       @theme_file.write
+
       assert_equal("hi muffin{{1 + 2}}", @theme_file.source_excerpt(2))
     end
 
@@ -83,6 +88,7 @@ module PlatformosCheck
       corrector = Corrector.new(theme_file: @theme_file)
       corrector.replace(node, "3 + 4")
       @theme_file.write
+
       assert_equal("{{3 + 4}}", @theme_file.source_excerpt(2))
     end
 
@@ -100,6 +106,7 @@ module PlatformosCheck
         @contents.index("{1 + 2}")...@contents.index("{1 + 2}") + "{1 + 2}".size
       )
       @theme_file.write
+
       assert_equal("{hi muffin}", @theme_file.source_excerpt(2))
     end
 
@@ -113,6 +120,7 @@ module PlatformosCheck
       corrector = Corrector.new(theme_file: @theme_file)
       corrector.wrap(node, "a", "b")
       @theme_file.write
+
       assert_equal("{{a1 + 2b}}", @theme_file.source_excerpt(2))
     end
 
@@ -120,13 +128,14 @@ module PlatformosCheck
       node = stub(
         theme_file: @theme_file,
         start_index: @contents.index('1'),
-        end_index: @contents.index('2') + 1,
+        end_index: @contents.index('2') + 1
       )
       corrector = Corrector.new(theme_file: @theme_file)
       corrector.wrap(node, "a", "b")
       corrector.insert_before(node, " ")
       corrector.insert_after(node, " ")
       @theme_file.write
+
       assert_equal("{{ a1 + 2b }}", @theme_file.source_excerpt(2))
     end
 
@@ -140,6 +149,7 @@ module PlatformosCheck
       corrector = Corrector.new(theme_file: @theme_file)
       corrector.replace(node, "\n    render\n    'foo',\n    product: product\n  ")
       @theme_file.write
+
       assert_equal(<<~UPDATED_SOURCE, @theme_file.source)
         <p>
           {{1 + 2}}
@@ -174,12 +184,12 @@ module PlatformosCheck
       theme = make_theme("templates/index.liquid" => contents)
       theme_file = theme["templates/index"]
       node = stub(
-        theme_file: theme_file,
+        theme_file:,
         inner_markup_start_index: 12,
         inner_markup_end_index: 205,
         :markup= => ()
       )
-      corrector = Corrector.new(theme_file: theme_file)
+      corrector = Corrector.new(theme_file:)
       schema =  { "name" => { "en" => "Hello", "fr" => "Bonjour" }, "settings" => [{ "id" => "product", "label" => { "en" => "Product", "fr" => "TODO" } }] }
       corrector.replace_inner_markup(node, "\n  #{JSON.pretty_generate(schema, array_nl: "\n  ", object_nl: "\n  ")}\n")
       theme_file.write

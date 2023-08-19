@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -7,7 +8,7 @@ module PlatformosCheck
       Offense = Struct.new(
         :code_name,
         :theme_file,
-        :whole_theme?,
+        :whole_theme?
       ) do
         def single_file?
           !whole_theme?
@@ -40,21 +41,21 @@ module PlatformosCheck
           offenses: [
             WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
             SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/collection.liquid"),
+            SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
           ],
           analyzed_files: [
             "template/index.liquid",
-            "template/collection.liquid",
+            "template/collection.liquid"
           ],
           diagnostics: {
             "template/index.liquid" => [
               WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
-              SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
+              SingleFileOffense.new("UnusedAssign", "template/index.liquid")
             ],
             "template/collection.liquid" => [
-              SingleFileOffense.new("UnusedAssign", "template/collection.liquid"),
-            ],
-          },
+              SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            ]
+          }
         )
       end
 
@@ -63,32 +64,33 @@ module PlatformosCheck
           offenses: [
             SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
             SingleFileOffense.new("UnknownFilter", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/collection.liquid"),
-          ],
+            SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+          ]
         )
+
         assert_diagnostics(
           offenses: [
-            SingleFileOffense.new("UnusedAssign", "template/collection.liquid"),
+            SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
           ],
           analyzed_files: [
             "template/index.liquid",
-            "template/collection.liquid",
+            "template/collection.liquid"
           ],
           diagnostics: {
             "template/index.liquid" => [],
             "template/collection.liquid" => [
-              SingleFileOffense.new("UnusedAssign", "template/collection.liquid"),
-            ],
-          },
+              SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            ]
+          }
         )
         assert_diagnostics(
           offenses: [],
           analyzed_files: [
-            "template/collection.liquid",
+            "template/collection.liquid"
           ],
           diagnostics: {
-            "template/collection.liquid" => [],
-          },
+            "template/collection.liquid" => []
+          }
         )
       end
 
@@ -96,48 +98,50 @@ module PlatformosCheck
         build_diagnostics(
           offenses: [
             WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
-          ],
+            SingleFileOffense.new("UnusedAssign", "template/index.liquid")
+          ]
         )
+
         assert_diagnostics(
           offenses: [
             WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/collection.liquid"),
+            SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
           ],
           analyzed_files: [
-            "template/collection.liquid",
+            "template/collection.liquid"
           ],
           diagnostics: {
             "template/index.liquid" => [
               WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
-              SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
+              SingleFileOffense.new("UnusedAssign", "template/index.liquid")
             ],
             "template/collection.liquid" => [
-              SingleFileOffense.new("UnusedAssign", "template/collection.liquid"),
-            ],
-          },
+              SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            ]
+          }
         )
       end
 
       def test_clears_whole_theme_offenses_from_previous_runs
         build_diagnostics(
           offenses: [
-            WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
-          ],
+            WholeThemeOffense.new("MissingTemplate", "template/index.liquid")
+          ]
         )
+
         assert_diagnostics(
           offenses: [
-            SingleFileOffense.new("UnusedAssign", "template/collection.liquid"),
+            SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
           ],
           analyzed_files: [
-            "template/collection.liquid",
+            "template/collection.liquid"
           ],
           diagnostics: {
             "template/index.liquid" => [],
             "template/collection.liquid" => [
-              SingleFileOffense.new("UnusedAssign", "template/collection.liquid"),
-            ],
-          },
+              SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            ]
+          }
         )
       end
 
@@ -145,21 +149,22 @@ module PlatformosCheck
         build_diagnostics(
           offenses: [
             WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
-          ],
+            SingleFileOffense.new("UnusedAssign", "template/index.liquid")
+          ]
         )
+
         assert_diagnostics(
           offenses: [
-            WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
+            WholeThemeOffense.new("MissingTemplate", "template/index.liquid")
           ],
           analyzed_files: [
-            "template/index.liquid",
+            "template/index.liquid"
           ],
           diagnostics: {
             "template/index.liquid" => [
-              WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
-            ],
-          },
+              WholeThemeOffense.new("MissingTemplate", "template/index.liquid")
+            ]
+          }
         )
       end
 
@@ -169,14 +174,15 @@ module PlatformosCheck
             WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
             SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
             SingleFileOffense.new("SyntaxError", "template/index.liquid"),
-            SingleFileOffense.new("SyntaxError", "template/collection.liquid"),
-          ],
+            SingleFileOffense.new("SyntaxError", "template/collection.liquid")
+          ]
         )
         expected = [
           WholeThemeOffense.new("MissingTemplate", "template/index.liquid"),
           SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
-          SingleFileOffense.new("SyntaxError", "template/index.liquid"),
+          SingleFileOffense.new("SyntaxError", "template/index.liquid")
         ]
+
         assert_equal(expected, @diagnostics_manager.diagnostics(Pathname.new("template/index.liquid")).map(&:offense))
         assert_equal(expected, @diagnostics_manager.diagnostics("template/index.liquid").map(&:offense))
       end
@@ -194,22 +200,23 @@ module PlatformosCheck
 
         # pretend the user wants to correct all of them, what does the workspace_edit look like?
         workspace_edit = diagnostics_manager.workspace_edit(diagnostic_hashes)
+
         assert_equal(
           {
             documentChanges: [
               {
                 textDocument: {
                   uri: diagnostic_hashes[0].dig(:data, :uri),
-                  version: diagnostic_hashes[0].dig(:data, :version),
+                  version: diagnostic_hashes[0].dig(:data, :version)
                 },
                 edits: [
                   { range: range(0, 2, 0, 2), newText: ' ' },
-                  { range: range(0, 3, 0, 3), newText: ' ' },
-                ],
-              },
-            ],
+                  { range: range(0, 3, 0, 3), newText: ' ' }
+                ]
+              }
+            ]
           },
-          workspace_edit,
+          workspace_edit
         )
       end
 
@@ -223,14 +230,16 @@ module PlatformosCheck
           LIQUID
         )
         diagnostics = diagnostics_manager.diagnostics("index.liquid")
+
         refute(diagnostics.all? { |diagnostic| diagnostic.code == "SpaceInsideBraces" })
 
         diagnostics_manager.delete_applied(diagnostics.map(&:to_h))
 
         remaining_diagnostics = diagnostics_manager.diagnostics("index.liquid")
+
         assert(
           remaining_diagnostics.all? { |diagnostic| diagnostic.code == "TemplateLength" },
-          "TemplateLength is unfixable, therefore it should remain in the collection of diagnostics",
+          "TemplateLength is unfixable, therefore it should remain in the collection of diagnostics"
         )
       end
 
@@ -245,11 +254,12 @@ module PlatformosCheck
         )
         diagnostics = diagnostics_manager.diagnostics("index.liquid")
         actual = diagnostics_manager.delete_applied(diagnostics.map(&:to_h))
+
         assert_equal(
           {
-            "index.liquid" => diagnostics.select { |d| d.code == "TemplateLength" },
+            "index.liquid" => diagnostics.select { |d| d.code == "TemplateLength" }
           },
-          actual.transform_keys(&:to_s),
+          actual.transform_keys(&:to_s)
         )
       end
 
@@ -263,33 +273,35 @@ module PlatformosCheck
         )
         diagnostics = diagnostics_manager.diagnostics("index.liquid")
         actual = diagnostics_manager.delete_applied(diagnostics.map(&:to_h))
+
         assert_equal(
           {
-            "index.liquid" => [],
+            "index.liquid" => []
           },
-          actual.transform_keys(&:to_s),
+          actual.transform_keys(&:to_s)
         )
       end
 
       private
 
-      def diagnose_theme(*check_classes, templates)
+      def diagnose_theme(*, templates)
         diagnostics_manager = PlatformosCheck::LanguageServer::DiagnosticsManager.new
-        offenses = analyze_theme(*check_classes, templates)
+        offenses = analyze_theme(*, templates)
         diagnostics_manager.build_diagnostics(offenses)
         diagnostics_manager
       end
 
       def build_diagnostics(offenses:, analyzed_files: nil)
         actual_diagnostics = {}
-        @diagnostics_manager.build_diagnostics(offenses, analyzed_files: analyzed_files).each do |path, diagnostics|
+        @diagnostics_manager.build_diagnostics(offenses, analyzed_files:).each do |path, diagnostics|
           actual_diagnostics[path] = diagnostics
         end
         actual_diagnostics
       end
 
       def assert_diagnostics(offenses:, analyzed_files:, diagnostics:)
-        actual_diagnostics = build_diagnostics(offenses: offenses, analyzed_files: analyzed_files)
+        actual_diagnostics = build_diagnostics(offenses:, analyzed_files:)
+
         assert_equal(
           diagnostics,
           actual_diagnostics
@@ -301,7 +313,7 @@ module PlatformosCheck
       def range(start_row, start_col, end_row, end_col)
         {
           start: { line: start_row, character: start_col },
-          end: { line: end_row, character: end_col },
+          end: { line: end_row, character: end_col }
         }
       end
     end

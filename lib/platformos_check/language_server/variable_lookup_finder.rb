@@ -44,7 +44,7 @@ module PlatformosCheck
           assignments_path << variable
         end
 
-        as_potential_lookup(variable, lookups: lookups)
+        as_potential_lookup(variable, lookups:)
       end
 
       def find_assignments(buffer)

@@ -11,8 +11,7 @@ module PlatformosCheck
     class IncompatibleStream < StandardError; end
 
     class Server
-      attr_reader :handler
-      attr_reader :should_raise_errors
+      attr_reader :handler, :should_raise_errors
 
       def initialize(
         messenger:,
@@ -54,15 +53,15 @@ module PlatformosCheck
           # For a reason I can't comprehend, this hangs but prints
           # anyway. So it's wrapped in this ugly timeout...
           Timeout.timeout(1) do
-            $stderr.puts err.full_message
+            warn err.full_message
           end
 
           # Warn user of error, otherwise server might restart
           # without telling you.
           @bridge.send_notification("window/showMessage", {
-            type: 1,
-            message: "A theme-check-language-server error has occurred, search OUTPUT logs for details.",
-          })
+                                      type: 1,
+                                      message: "A theme-check-language-server error has occurred, search OUTPUT logs for details."
+                                    })
         end
 
         cleanup(status_code)
@@ -134,9 +133,7 @@ module PlatformosCheck
         method_name &&= "on_#{to_snake_case(method_name)}"
         params = message[:params]
 
-        if @handler.respond_to?(method_name)
-          @handler.send(method_name, id, params)
-        end
+        @handler.send(method_name, id, params) if @handler.respond_to?(method_name)
       rescue DoneStreaming => e
         raise e
       rescue StandardError => e

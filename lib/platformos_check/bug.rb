@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'platformos_check/version'
 
 module PlatformosCheck

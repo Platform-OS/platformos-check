@@ -55,10 +55,11 @@ module PlatformosCheck
           ['1', 'number'],
           ['true', 'boolean'],
           ['"foo', 'string'],
-          ['"foo"', 'string'],
+          ['"foo"', 'string']
         ].each do |(token, expected_name)|
           token = "{{ #{token}"
           current_token = CompletionProvider::CurrentToken.new(token, token.size)
+
           assert_potential_lookup(current_token, expected_name)
         end
       end
@@ -88,7 +89,7 @@ module PlatformosCheck
       end
 
       def test_can_lookup_conditional_statements
-        ["if", "unless", "elsif"].each do |keyword|
+        %w[if unless elsif].each do |keyword|
           assert_can_lookup_tag("#{keyword} ", "")
           assert_can_lookup_tag("#{keyword} condition", "condition")
           assert_can_lookup_tag("#{keyword} condition.foo", "condition.foo")
@@ -191,7 +192,7 @@ module PlatformosCheck
           '{{ foo.selected_selling_plan.checkout_charge.val }}',
           48,
           106,
-          <<~LIQUID,
+          <<~LIQUID
             {%- liquid
               assign foo = product
             -%}
@@ -202,7 +203,7 @@ module PlatformosCheck
           LIQUID
         )
 
-        assert_potential_lookup(token, 'product', ['selected_selling_plan', 'checkout_charge', 'val'])
+        assert_potential_lookup(token, 'product', %w[selected_selling_plan checkout_charge val])
       end
 
       def test_lookup_liquid_variable_when_it_is_desclared_in_following_token
@@ -210,7 +211,7 @@ module PlatformosCheck
           '{{ foo. }}',
           7,
           26,
-          <<~LIQUID,
+          <<~LIQUID
             <div>Hello!</div>
 
             {{ foo. }}
@@ -252,11 +253,13 @@ module PlatformosCheck
       def assert_can_lookup(token, expected_markup, offset = 0)
         # Make sure nothing blows up by doing lookups at every point
         # in every test strings.
-        (0...token.size).each do |i|
-          current_token = CompletionProvider::CurrentToken.new(token, i)
+        if ENV["PARANOID"]
+          (0...token.size).each do |i|
+            current_token = CompletionProvider::CurrentToken.new(token, i)
 
-          assert(VariableLookupFinder.lookup(context(current_token)) || true)
-        end if ENV["PARANOID"]
+            assert(VariableLookupFinder.lookup(context(current_token)) || true)
+          end
+        end
 
         current_token = CompletionProvider::CurrentToken.new(token, token.size + offset)
 
@@ -285,7 +288,7 @@ module PlatformosCheck
       def assert_potential_lookup(token, expected_name, expected_lookups = [])
         assert_equal(
           VariableLookupFinder::PotentialLookup.new(expected_name, expected_lookups),
-          VariableLookupFinder.lookup(token),
+          VariableLookupFinder.lookup(token)
         )
       end
 
@@ -300,17 +303,19 @@ module PlatformosCheck
       def refute_can_lookup(token, offset = 0)
         # Make sure nothing blows up by doing lookups at every point
         # in every test strings.
-        (0...token.size).each do |i|
-          current_token = CompletionProvider::CurrentToken.new(token, i)
+        if ENV["PARANOID"]
+          (0...token.size).each do |i|
+            current_token = CompletionProvider::CurrentToken.new(token, i)
 
-          assert(VariableLookupFinder.lookup(context(current_token)) || true)
-        end if ENV["PARANOID"]
+            assert(VariableLookupFinder.lookup(context(current_token)) || true)
+          end
+        end
 
         current_token = CompletionProvider::CurrentToken.new(token, token.size + offset)
 
         assert_nil(
           VariableLookupFinder.lookup(context(current_token)),
-          <<~ERRMSG,
+          <<~ERRMSG
             Expected lookup to be nil at the specified cursor position:
             #{token}
             #{' ' * (token.size + offset)}^
@@ -320,11 +325,11 @@ module PlatformosCheck
 
       def context(token)
         stub(
-          token: token,
+          token:,
           cursor: token.cursor,
           absolute_cursor: token.absolute_cursor,
           content: token.content,
-          buffer: token.content,
+          buffer: token.content
         )
       end
     end

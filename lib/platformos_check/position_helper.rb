@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-# Note: Everything is 0-indexed here.
+
+# NOTE: Everything is 0-indexed here.
 
 module PlatformosCheck
   module PositionHelper
@@ -11,6 +12,7 @@ module PlatformosCheck
     def from_row_column_to_index(content, row, col)
       return 0 unless content.is_a?(String) && !content.empty?
       return 0 unless row.is_a?(Integer) && col.is_a?(Integer)
+
       i = 0
       safe_row = bounded(0, row, content.count("\n"))
       scanner = StringScanner.new(content)
@@ -36,6 +38,7 @@ module PlatformosCheck
     def from_index_to_row_column(content, index)
       return [0, 0] unless content.is_a?(String) && !content.empty?
       return [0, 0] unless index.is_a?(Integer)
+
       safe_index = bounded(0, index, content.size - 1)
       content_up_to_index = content[0...safe_index]
       row = content_up_to_index.count("\n")
@@ -47,6 +50,7 @@ module PlatformosCheck
     def bounded(a, x, b)
       return a if x < a
       return b if x > b
+
       x
     end
   end

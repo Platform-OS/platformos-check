@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -22,14 +23,16 @@ module PlatformosCheck
 
     def test_handles_invalid_uris
       asset = RemoteAssetFile.from_src("https://{{ settings.url }}")
+
       refute(asset.gzipped_size)
       refute(asset.content)
     end
 
     def test_handles_eaddr_not_avail_errors
       asset = RemoteAssetFile.from_src("https://localhost:0/packs/embed.js")
-      assert(asset.gzipped_size == 0)
-      assert(asset.content.empty?)
+
+      assert_equal(0, asset.gzipped_size)
+      assert_empty(asset.content)
     end
 
     private

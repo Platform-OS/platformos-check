@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   # Reports missing shopify required directories
 
@@ -7,7 +8,7 @@ module PlatformosCheck
     category :liquid
     doc docs_url(__FILE__)
 
-    REQUIRED_DIRECTORIES = %w(assets config layout locales sections snippets templates)
+    REQUIRED_DIRECTORIES = %w[assets config layout locales sections snippets templates]
 
     def on_end
       directories = theme.directories.map(&:to_s)

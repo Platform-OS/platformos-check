@@ -66,7 +66,7 @@ module PlatformosCheck
 
         def close_tag(content)
           lines = content.lines
-          end_tag = lines.last =~ VARIABLE_START ? ' }}' : ' %}'
+          end_tag = VARIABLE_START.match?(lines.last) ? ' }}' : ' %}'
 
           content + end_tag
         end

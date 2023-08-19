@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class ImgLazyLoading < HtmlCheck
     severity :suggestion
@@ -10,7 +11,8 @@ module PlatformosCheck
     def on_img(node)
       loading = node.attributes["loading"]&.downcase
       return if ACCEPTED_LOADING_VALUES.include?(loading)
-      add_offense("Use loading=\"eager\" for images visible in the viewport on load and loading=\"lazy\" for others", node: node)
+
+      add_offense("Use loading=\"eager\" for images visible in the viewport on load and loading=\"lazy\" for others", node:)
     end
   end
 end

@@ -30,7 +30,7 @@ module PlatformosCheck
           label: object.name,
           kind: CompletionItemKinds::VARIABLE,
           **format_hash(object),
-          **doc_hash(content),
+          **doc_hash(content)
         }
       end
     end

@@ -67,7 +67,7 @@ module PlatformosCheck
             'conditionA > conditionB',
             'false or condition',
             'foo contains needle',
-            'product.available',
+            'product.available'
           ].each do |condition|
             assert_parsable("{% if #{condition} %}{% endif %}", "{% if #{condition}")
             assert_parsable("{%- if #{condition} %}{% endif %}", "{%- if #{condition}")
@@ -81,7 +81,7 @@ module PlatformosCheck
           [
             'if',
             'if false or',
-            'if foo contains',
+            'if foo contains'
           ].each { |statement| refute_parsable(statement) }
         end
 
@@ -92,7 +92,7 @@ module PlatformosCheck
             'conditionA > conditionB',
             'false or condition',
             'foo contains needle',
-            'product.available',
+            'product.available'
           ].each do |condition|
             assert_parsable("{% unless #{condition} %}{% endunless %}", "{% unless #{condition}")
             assert_parsable("{%- unless #{condition} %}{% endunless %}", "{%- unless #{condition}")
@@ -106,7 +106,7 @@ module PlatformosCheck
           [
             'unless',
             'unless false or',
-            'unless foo contains',
+            'unless foo contains'
           ].each { |statement| refute_parsable(statement) }
         end
 
@@ -117,7 +117,7 @@ module PlatformosCheck
             'conditionA > conditionB',
             'false or condition',
             'foo contains needle',
-            'product.available',
+            'product.available'
           ].each do |condition|
             assert_parsable("{% if x %}{% elsif #{condition} %}{% endif %}", "{% elsif #{condition}")
             assert_parsable("{% if x %}{%- elsif #{condition} %}{% endif %}", "{%- elsif #{condition}")
@@ -131,7 +131,7 @@ module PlatformosCheck
           [
             'elsif',
             'elsif false or',
-            'elsif foo contains',
+            'elsif foo contains'
           ].each { |statement| refute_parsable(statement) }
         end
 
@@ -152,13 +152,13 @@ module PlatformosCheck
         end
 
         def test_invalid_case_when_statements
-          ['case', 'when'].each { |statement| refute_parsable(statement) }
+          %w[case when].each { |statement| refute_parsable(statement) }
         end
 
         def test_for_statements
           [
             'cart',
-            'cart.error',
+            'cart.error'
           ].each do |range|
             assert_parsable("{% for p in #{range} %}{% endfor %}", "{% for p in #{range}")
             assert_parsable("{%- for p in #{range} %}{% endfor %}", "{%- for p in #{range}")
@@ -171,7 +171,7 @@ module PlatformosCheck
         def test_invalid_for_statements
           [
             'for p in',
-            'for if',
+            'for if'
           ].each do |statement|
             refute_parsable(statement)
           end
@@ -180,7 +180,7 @@ module PlatformosCheck
         def test_tablerow_statements
           [
             'cart',
-            'cart.error',
+            'cart.error'
           ].each do |range|
             assert_parsable("{% tablerow p in #{range} %}{% endtablerow %}", "{% tablerow p in #{range}")
             assert_parsable("{%- tablerow p in #{range} %}{% endtablerow %}", "{%- tablerow p in #{range}")
@@ -212,11 +212,11 @@ module PlatformosCheck
 
           begin
             Liquid::Template.parse(actual)
-          rescue Liquid::SyntaxError => error
+          rescue Liquid::SyntaxError => e
             parse_error = <<~MESSAGE
 
               ------------------------------------------------------------------
-              Syntax error: #{error.message}
+              Syntax error: #{e.message}
               Test case: #{name}
               ------------------------------------------------------------------
             MESSAGE
@@ -230,7 +230,7 @@ module PlatformosCheck
             "{% #{content} ",
             "{%- #{content} ",
             "{% liquid\n#{content} ",
-            "{%- liquid\n#{content} ",
+            "{%- liquid\n#{content} "
           ].each do |liquid_content|
             assert_parsable('', liquid_content)
           end

@@ -5,7 +5,7 @@ require 'parser'
 module PlatformosCheck
   class ThemeFileRewriter
     def initialize(name, source)
-      @buffer = Parser::Source::Buffer.new(name, source: source)
+      @buffer = Parser::Source::Buffer.new(name, source:)
       @rewriter = Parser::Source::TreeRewriter.new(
         @buffer
       )
@@ -15,7 +15,7 @@ module PlatformosCheck
       @rewriter.insert_before(
         range(
           character_range&.begin || node.start_index,
-          character_range&.end || node.end_index,
+          character_range&.end || node.end_index
         ),
         content
       )
@@ -25,7 +25,7 @@ module PlatformosCheck
       @rewriter.insert_after(
         range(
           character_range&.begin || node.start_index,
-          character_range&.end || node.end_index,
+          character_range&.end || node.end_index
         ),
         content
       )
@@ -41,7 +41,7 @@ module PlatformosCheck
       @rewriter.replace(
         range(
           character_range&.begin || node.start_index,
-          character_range&.end || node.end_index,
+          character_range&.end || node.end_index
         ),
         content
       )
@@ -58,7 +58,7 @@ module PlatformosCheck
       @rewriter.wrap(
         range(node.start_index, node.end_index),
         insert_before,
-        insert_after,
+        insert_after
       )
     end
 
@@ -72,7 +72,7 @@ module PlatformosCheck
       Parser::Source::Range.new(
         @buffer,
         start_index,
-        end_index,
+        end_index
       )
     end
   end

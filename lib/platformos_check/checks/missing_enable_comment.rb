@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class MissingEnableComment < LiquidCheck
     severity :error
@@ -25,12 +26,12 @@ module PlatformosCheck
       return if checks_missing_end_index.empty?
 
       message = if checks_missing_end_index.any? { |name| name == :all }
-        "All checks were"
-      else
-        checks_missing_end_index.join(', ') + " " + (checks_missing_end_index.size == 1 ? "was" : "were")
-      end
+                  "All checks were"
+                else
+                  checks_missing_end_index.join(', ') + " " + (checks_missing_end_index.size == 1 ? "was" : "were")
+                end
 
-      add_offense("#{message} disabled but not re-enabled with theme-check-enable", node: node)
+      add_offense("#{message} disabled but not re-enabled with theme-check-enable", node:)
     end
   end
 end

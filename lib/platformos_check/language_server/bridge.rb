@@ -72,7 +72,7 @@ module PlatformosCheck
 
       # https://microsoft.github.io/language-server-protocol/specifications/specification-current/#responseMessage
       def send_response(id, result = nil, error = nil)
-        message = { id: id }
+        message = { id: }
         if error
           message[:error] = error
         else
@@ -88,25 +88,25 @@ module PlatformosCheck
         # It's wrapped in here because it prints anyway...
         # This shit is weird, yo.
         Timeout.timeout(1) do
-          $stderr.puts e.full_message
+          warn e.full_message
         end
       ensure
         send_response(id, nil, {
-          code: ErrorCodes::INTERNAL_ERROR,
-          message: "A theme-check-language-server has occured, inspect OUTPUT logs for details.",
-        })
+                        code: ErrorCodes::INTERNAL_ERROR,
+                        message: "A theme-check-language-server has occured, inspect OUTPUT logs for details."
+                      })
       end
 
       # https://microsoft.github.io/language-server-protocol/specifications/specification-current/#notificationMessage
       def send_notification(method, params)
-        message = { method: method }
+        message = { method: }
         message[:params] = params
         send_message(message)
       end
 
       # https://microsoft.github.io/language-server-protocol/specifications/specification-current/#progress
       def send_progress(token, value)
-        send_notification("$/progress", token: token, value: value)
+        send_notification("$/progress", token:, value:)
       end
 
       def supports_work_done_progress?
@@ -126,8 +126,8 @@ module PlatformosCheck
 
         # We're going to wait for a response here...
         send_request("window/workDoneProgress/create", {
-          token: token,
-        })
+                       token:
+                     })
 
         token
       end
@@ -136,31 +136,31 @@ module PlatformosCheck
         return unless supports_work_done_progress?
 
         send_progress(token, {
-          kind: 'begin',
-          title: title,
-          cancellable: false,
-          percentage: 0,
-        })
+                        kind: 'begin',
+                        title:,
+                        cancellable: false,
+                        percentage: 0
+                      })
       end
 
       def send_work_done_progress_report(token, message, percentage)
         return unless supports_work_done_progress?
 
         send_progress(token, {
-          kind: 'report',
-          message: message,
-          cancellable: false,
-          percentage: percentage,
-        })
+                        kind: 'report',
+                        message:,
+                        cancellable: false,
+                        percentage:
+                      })
       end
 
       def send_work_done_progress_end(token, message)
         return unless supports_work_done_progress?
 
         send_progress(token, {
-          kind: 'end',
-          message: message,
-        })
+                        kind: 'end',
+                        message:
+                      })
       end
     end
   end

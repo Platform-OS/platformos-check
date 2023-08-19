@@ -15,11 +15,11 @@ module PlatformosCheck
     )
       @needle = needle_arg
 
-      @contents = if contents_arg&.is_a?(String) && !contents_arg.empty?
-        contents_arg
-      else
-        ''
-      end
+      @contents = if contents_arg.is_a?(String) && !contents_arg.empty?
+                    contents_arg
+                  else
+                    ''
+                  end
 
       @line_number_1_indexed = line_number_1_indexed
       @node_markup_offset = node_markup_offset
@@ -38,7 +38,7 @@ module PlatformosCheck
       @strict_position ||= StrictPosition.new(
         needle,
         contents,
-        start_index,
+        start_index
       )
     end
 
@@ -80,26 +80,29 @@ module PlatformosCheck
 
     def compute_start_offset
       return start_line_offset if @node_markup.nil?
+
       node_markup_start = contents.index(@node_markup, start_line_offset)
       return start_line_offset if node_markup_start.nil?
+
       node_markup_start + @node_markup_offset
     end
 
     def line_number
       return 0 if @line_number_1_indexed.nil?
+
       bounded(0, @line_number_1_indexed - 1, content_line_count)
     end
 
     def needle
       @cached_needle ||= if has_content_and_line_number_but_no_needle?
-        entire_line_needle
-      elsif contents.empty? || @needle.nil?
-        ''
-      elsif !can_find_needle?
-        entire_line_needle
-      else
-        @needle
-      end
+                           entire_line_needle
+                         elsif contents.empty? || @needle.nil?
+                           ''
+                         elsif !can_find_needle?
+                           entire_line_needle
+                         else
+                           @needle
+                         end
     end
 
     def has_content_and_line_number_but_no_needle?
@@ -164,11 +167,13 @@ module PlatformosCheck
 
     def start_row_column
       return @start_row_column unless @start_row_column.nil?
+
       @start_row_column = from_index_to_row_column(contents, start_index)
     end
 
     def end_row_column
       return @end_row_column unless @end_row_column.nil?
+
       @end_row_column = from_index_to_row_column(contents, end_index)
     end
   end

@@ -8,10 +8,12 @@ module PlatformosCheck
       class FilterStateTest < Minitest::Test
         def test_state_changes
           FilterState.mark_up_to_date
-          refute(FilterState.outdated?)
+
+          refute_predicate(FilterState, :outdated?)
 
           FilterState.mark_outdated
-          assert(FilterState.outdated?)
+
+          assert_predicate(FilterState, :outdated?)
         end
       end
     end

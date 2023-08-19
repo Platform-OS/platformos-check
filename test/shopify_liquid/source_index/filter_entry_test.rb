@@ -11,7 +11,7 @@ module PlatformosCheck
         end
 
         def test_parameters
-          assert(@entry.parameters.any?)
+          assert_predicate(@entry.parameters, :any?)
         end
 
         def test_return_type
@@ -27,19 +27,19 @@ module PlatformosCheck
               {
                 'description' => 'The type of media that the resource [...]',
                 'name' => 'media',
-                'types' => ['string'],
+                'types' => ['string']
               },
               {
                 'description' => 'Whether the resource should be [...]',
                 'name' => 'preload',
-                'types' => ['boolean'],
-              },
+                'types' => ['boolean']
+              }
             ],
             'return_type' => [{ 'type' => 'string' }],
             'examples' => [],
             'summary' => 'Generates an HTML "link" tag for a given resource URL [...]',
             'syntax' => 'string | stylesheet_tag',
-            'name' => 'stylesheet_tag',
+            'name' => 'stylesheet_tag'
           }
         end
       end

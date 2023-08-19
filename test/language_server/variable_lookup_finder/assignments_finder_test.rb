@@ -90,10 +90,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var2' => 'var1',
-            'var3' => 'var2',
-          })
+                                      'var1' => 'product',
+                                      'var2' => 'var1',
+                                      'var3' => 'var2'
+                                    })
         end
 
         def test_assignments_finder_with_if_and_else_statements
@@ -110,10 +110,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var4' => 'var1',
-            'var5' => 'var4',
-          })
+                                      'var1' => 'product',
+                                      'var4' => 'var1',
+                                      'var5' => 'var4'
+                                    })
         end
 
         def test_assignments_finder_with_if_and_elsif_statements
@@ -130,10 +130,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var4' => 'var1',
-            'var5' => 'var4',
-          })
+                                      'var1' => 'product',
+                                      'var4' => 'var1',
+                                      'var5' => 'var4'
+                                    })
         end
 
         def test_assignments_finder_with_if_statements_when_local_scope_must_not_be_considered
@@ -156,9 +156,9 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var8' => 'cart',
-          })
+                                      'var1' => 'product',
+                                      'var8' => 'cart'
+                                    })
         end
 
         def test_assignments_finder_with_unless_statements
@@ -172,10 +172,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var2' => 'var1',
-            'var3' => 'var2',
-          })
+                                      'var1' => 'product',
+                                      'var2' => 'var1',
+                                      'var3' => 'var2'
+                                    })
         end
 
         def test_assignments_finder_with_unless_and_else_statements
@@ -192,10 +192,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var4' => 'var1',
-            'var5' => 'var4',
-          })
+                                      'var1' => 'product',
+                                      'var4' => 'var1',
+                                      'var5' => 'var4'
+                                    })
         end
 
         def test_assignments_finder_with_unless_statements_when_local_scope_must_not_be_considered
@@ -218,9 +218,9 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var8' => 'cart',
-          })
+                                      'var1' => 'product',
+                                      'var8' => 'cart'
+                                    })
         end
 
         def test_assignments_finder_with_for_statements
@@ -234,10 +234,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var2' => 'collections',
-            'var3' => 'var2',
-          })
+                                      'var1' => 'product',
+                                      'var2' => 'collections',
+                                      'var3' => 'var2'
+                                    })
         end
 
         def test_assignments_finder_with_for_statements_and_ranges
@@ -250,9 +250,9 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var2' => 'number',
-          })
+                                      'var1' => 'product',
+                                      'var2' => 'number'
+                                    })
         end
 
         def test_assignments_finder_with_for_statements_and_variable_based_ranges
@@ -267,11 +267,11 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var2' => 'number',
-            'var3' => 'number',
-            'var4' => 'var2',
-          })
+                                      'var1' => 'product',
+                                      'var2' => 'number',
+                                      'var3' => 'number',
+                                      'var4' => 'var2'
+                                    })
         end
 
         def test_assignments_finder_with_for_statements_and_variable_and_literal_ranges
@@ -285,10 +285,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var2' => 'number',
-            'var3' => 'number',
-          })
+                                      'var1' => 'product',
+                                      'var2' => 'number',
+                                      'var3' => 'number'
+                                    })
         end
 
         def test_assignments_finder_with_form_tag
@@ -299,8 +299,8 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'language' => 'localization',
-          })
+                                      'language' => 'localization'
+                                    })
         end
 
         def test_assignments_finder_with_paginate_tag
@@ -311,8 +311,8 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'collection',
-          })
+                                      'var1' => 'collection'
+                                    })
         end
 
         def test_assignments_finder_with_style_tag
@@ -324,8 +324,8 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'language' => 'localization',
-          })
+                                      'language' => 'localization'
+                                    })
         end
 
         def test_assignments_finder_with_stylesheet_tag
@@ -337,8 +337,8 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'language' => 'localization',
-          })
+                                      'language' => 'localization'
+                                    })
         end
 
         def test_assignments_finder_with_for_and_else_statements
@@ -355,10 +355,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var4' => 'var1',
-            'var5' => 'var4',
-          })
+                                      'var1' => 'product',
+                                      'var4' => 'var1',
+                                      'var5' => 'var4'
+                                    })
         end
 
         def test_assignments_finder_with_for_statements_when_local_scope_must_not_be_considered
@@ -378,9 +378,9 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var5' => 'cart',
-          })
+                                      'var1' => 'product',
+                                      'var5' => 'cart'
+                                    })
         end
 
         def test_assignments_finder_with_table_row_statements
@@ -395,10 +395,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var2' => 'collections',
-            'var3' => 'var2',
-          })
+                                      'var1' => 'product',
+                                      'var2' => 'collections',
+                                      'var3' => 'var2'
+                                    })
         end
 
         def test_assignments_finder_with_table_row_statements_when_local_scope_must_not_be_considered
@@ -417,9 +417,9 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var4' => 'cart',
-          })
+                                      'var1' => 'product',
+                                      'var4' => 'cart'
+                                    })
         end
 
         def test_assignments_finder_with_case_statements
@@ -433,10 +433,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var2' => 'var1',
-            'var3' => 'var2',
-          })
+                                      'var1' => 'product',
+                                      'var2' => 'var1',
+                                      'var3' => 'var2'
+                                    })
         end
 
         def test_assignments_finder_with_case_and_when_statements
@@ -453,10 +453,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var4' => 'var1',
-            'var5' => 'var4',
-          })
+                                      'var1' => 'product',
+                                      'var4' => 'var1',
+                                      'var5' => 'var4'
+                                    })
         end
 
         def test_assignments_finder_with_case_and_else_statements
@@ -476,10 +476,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var6' => 'var1',
-            'var7' => 'var6',
-          })
+                                      'var1' => 'product',
+                                      'var6' => 'var1',
+                                      'var7' => 'var6'
+                                    })
         end
 
         def test_assignments_finder_with_case_statements_when_local_scope_must_not_be_considered
@@ -502,9 +502,9 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var8' => 'cart',
-          })
+                                      'var1' => 'product',
+                                      'var8' => 'cart'
+                                    })
         end
 
         def test_assignments_finder_with_colisions_between_variables_and_if_statements
@@ -522,8 +522,8 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var2' => 'article',
-          })
+                                      'var2' => 'article'
+                                    })
         end
 
         def test_assignments_finder_with_colisions_between_if_statements_and_variables
@@ -540,9 +540,9 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'color',
-            'var2' => 'article',
-          })
+                                      'var1' => 'color',
+                                      'var2' => 'article'
+                                    })
         end
 
         def test_assignments_finder_with_nested_scopes
@@ -565,10 +565,10 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'product',
-            'var3' => 'var2',
-            'var5' => 'var3',
-          })
+                                      'var1' => 'product',
+                                      'var3' => 'var2',
+                                      'var5' => 'var3'
+                                    })
         end
 
         def test_assignments_finder_with_literal_types
@@ -583,12 +583,12 @@ module PlatformosCheck
           LIQUID
 
           assert_assignments_finder(template, {
-            'var1' => 'string',
-            'var2' => 'number',
-            'var3' => 'number',
-            'var4' => 'boolean',
-            'var5' => 'nil',
-          })
+                                      'var1' => 'string',
+                                      'var2' => 'number',
+                                      'var3' => 'number',
+                                      'var4' => 'boolean',
+                                      'var5' => 'nil'
+                                    })
         end
 
         private

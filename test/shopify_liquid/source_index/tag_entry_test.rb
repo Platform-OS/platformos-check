@@ -11,7 +11,7 @@ module PlatformosCheck
         end
 
         def test_parameters
-          assert(@entry.parameters.any?)
+          assert_predicate(@entry.parameters, :any?)
         end
 
         private
@@ -24,7 +24,7 @@ module PlatformosCheck
               { 'description' => 'The number of columns that  [...]', 'name' => 'cols', 'required' => false, 'types' => ['number'] },
               { 'description' => 'The number of iterations to [...]', 'name' => 'limit', 'required' => false, 'types' => ['number'] },
               { 'description' => 'The 1-based index to start  [...]', 'name' => 'offset', 'required' => false, 'types' => ['number'] },
-              { 'description' => 'A custom numeric range to   [...]', 'name' => 'range', 'required' => false, 'types' => ['untyped'] },
+              { 'description' => 'A custom numeric range to   [...]', 'name' => 'range', 'required' => false, 'types' => ['untyped'] }
             ],
             'summary' => 'Generates HTML table rows for every item in an array.',
             'name' => 'tablerow',
@@ -32,7 +32,7 @@ module PlatformosCheck
             'syntax_keywords' => [
               { 'keyword' => 'variable', 'description' => 'The current item in the array.' },
               { 'keyword' => 'array', 'description' => 'The array to iterate over.' },
-              { 'keyword' => 'expression', 'description' => 'The expression to render.' },
+              { 'keyword' => 'expression', 'description' => 'The expression to render.' }
             ],
             'examples' => [
               {
@@ -43,9 +43,9 @@ module PlatformosCheck
                 'raw_liquid' => '[...]',
                 'parameter' => true,
                 'display_type' => 'text',
-                'show_data_tab' => true,
-              },
-            ],
+                'show_data_tab' => true
+              }
+            ]
           }
         end
       end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   # Reports deeply nested {% include ... %} or {% render ... %}
   class NestedSnippet < LiquidCheck
@@ -30,16 +31,16 @@ module PlatformosCheck
     end
 
     def on_include(node)
-      if node.value.template_name_expr.is_a?(String)
-        @templates[node.theme_file.name].includes << node
-      end
+      return unless node.value.template_name_expr.is_a?(String)
+
+      @templates[node.theme_file.name].includes << node
     end
-    alias_method :on_render, :on_include
+    alias on_render on_include
 
     def on_end
       @templates.each_pair do |_, info|
         info.with_deep_nested(@templates, @max_nesting_level) do |node|
-          add_offense("Too many nested snippets", node: node)
+          add_offense("Too many nested snippets", node:)
         end
       end
     end

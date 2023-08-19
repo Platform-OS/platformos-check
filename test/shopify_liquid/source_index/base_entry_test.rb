@@ -11,7 +11,7 @@ module PlatformosCheck
         end
 
         def test_hash_with_nil_hashes
-          assert_equal({}, entry(nil).hash)
+          assert_empty(entry(nil).hash)
         end
 
         def test_name
@@ -44,7 +44,7 @@ module PlatformosCheck
           {
             'name' => 'product',
             'summary' => 'A product in the store.',
-            'description' => 'A more detailed description of a product in the store.',
+            'description' => 'A more detailed description of a product in the store.'
           }
         end
       end

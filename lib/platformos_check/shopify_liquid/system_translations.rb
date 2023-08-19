@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   module ShopifyLiquid
     module SystemTranslations
       extend self
 
       def translations
-        @translations ||= YAML.load(File.read("#{__dir__}/../../../data/shopify_translation_keys.yml")).to_set
+        @translations ||= YAML.load_file("#{__dir__}/../../../data/shopify_translation_keys.yml").to_set
       end
 
       def translations_hash

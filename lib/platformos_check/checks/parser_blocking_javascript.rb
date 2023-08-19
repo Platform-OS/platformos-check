@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   # Reports errors when trying to use parser-blocking script tags
   class ParserBlockingJavaScript < HtmlCheck
@@ -10,7 +11,7 @@ module PlatformosCheck
       return unless node.attributes["src"]
       return if node.attributes["defer"] || node.attributes["async"] || node.attributes["type"] == "module"
 
-      add_offense("Missing async or defer attribute on script tag", node: node)
+      add_offense("Missing async or defer attribute on script tag", node:)
     end
   end
 end

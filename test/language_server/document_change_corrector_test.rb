@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -16,6 +17,7 @@ module PlatformosCheck
         document_change_corrector_methods = DocumentChangeCorrector.new.methods
         corrector_methods = Corrector.new(theme_file: nil).methods
         difference = corrector_methods - document_change_corrector_methods
+
         assert_empty(difference, <<~EXPECTED)
           Expected the following methods to be implemented in DocumentChangeCorrector:
 
@@ -29,7 +31,8 @@ module PlatformosCheck
           docs/language_server/how_to_correct_code_with_code_actions_and_execute_command.md
         EXPECTED
 
-        difference = document_change_corrector_methods - corrector_methods - [:file_path, :file_uri, :document_changes]
+        difference = document_change_corrector_methods - corrector_methods - %i[file_path file_uri document_changes]
+
         assert_empty(difference, <<~EXPECTED)
           Expected the following methods to be implemented in Corrector:
 
@@ -42,19 +45,20 @@ module PlatformosCheck
 
       def test_insert_before
         @corrector.insert_before(@node, ' ')
+
         assert_equal(2, @node.start_column)
         assert_equal(
           [
             {
               textDocument: {
                 uri: file_uri(@node.theme_file.path),
-                version: nil,
+                version: nil
               },
               edits: [{
                 range: range(0, 2, 0, 2),
-                newText: ' ',
-              }],
-            },
+                newText: ' '
+              }]
+            }
           ],
           @corrector.document_changes
         )
@@ -62,19 +66,20 @@ module PlatformosCheck
 
       def test_insert_before_character_range
         @corrector.insert_before(@node, ' ', 1...5)
+
         assert_equal(2, @node.start_column)
         assert_equal(
           [
             {
               textDocument: {
                 uri: file_uri(@node.theme_file.path),
-                version: nil,
+                version: nil
               },
               edits: [{
                 range: range(0, 1, 0, 1),
-                newText: ' ',
-              }],
-            },
+                newText: ' '
+              }]
+            }
           ],
           @corrector.document_changes
         )
@@ -82,19 +87,20 @@ module PlatformosCheck
 
       def test_insert_after
         @corrector.insert_after(@node, ' ')
+
         assert_equal(3, @node.end_column)
         assert_equal(
           [
             {
               textDocument: {
                 uri: file_uri(@node.theme_file.path),
-                version: nil,
+                version: nil
               },
               edits: [{
                 range: range(0, 3, 0, 3),
-                newText: ' ',
-              }],
-            },
+                newText: ' '
+              }]
+            }
           ],
           @corrector.document_changes
         )
@@ -102,19 +108,20 @@ module PlatformosCheck
 
       def test_insert_after_character_range
         @corrector.insert_after(@node, ' ', 0...5)
+
         assert_equal(3, @node.end_column)
         assert_equal(
           [
             {
               textDocument: {
                 uri: file_uri(@node.theme_file.path),
-                version: nil,
+                version: nil
               },
               edits: [{
                 range: range(0, 5, 0, 5),
-                newText: ' ',
-              }],
-            },
+                newText: ' '
+              }]
+            }
           ],
           @corrector.document_changes
         )
@@ -122,19 +129,20 @@ module PlatformosCheck
 
       def test_replace
         @corrector.replace(@node, 'y')
+
         assert_equal(3, @node.end_column)
         assert_equal(
           [
             {
               textDocument: {
                 uri: file_uri(@node.theme_file.path),
-                version: nil,
+                version: nil
               },
               edits: [{
                 range: range(0, 2, 0, 3),
-                newText: 'y',
-              }],
-            },
+                newText: 'y'
+              }]
+            }
           ],
           @corrector.document_changes
         )
@@ -142,19 +150,20 @@ module PlatformosCheck
 
       def test_replace_character_range
         @corrector.replace(@node, 'y', 0...5)
+
         assert_equal(3, @node.end_column)
         assert_equal(
           [
             {
               textDocument: {
                 uri: file_uri(@node.theme_file.path),
-                version: nil,
+                version: nil
               },
               edits: [{
                 range: range(0, 0, 0, 5),
-                newText: 'y',
-              }],
-            },
+                newText: 'y'
+              }]
+            }
           ],
           @corrector.document_changes
         )
@@ -162,19 +171,20 @@ module PlatformosCheck
 
       def test_remove
         @corrector.remove(@node)
+
         assert_equal(3, @node.end_column)
         assert_equal(
           [
             {
               textDocument: {
                 uri: file_uri(@node.theme_file.path),
-                version: nil,
+                version: nil
               },
               edits: [{
                 range: range(0, 0, 0, 5),
-                newText: '',
-              }],
-            },
+                newText: ''
+              }]
+            }
           ],
           @corrector.document_changes
         )
@@ -187,36 +197,38 @@ module PlatformosCheck
         LIQUID
         corrector = DocumentChangeCorrector.new
         corrector.replace_inner_markup(node, "Hello cookies!")
+
         assert_equal(
           [{
             textDocument: {
               uri: file_uri(node.theme_file.path),
-              version: nil,
+              version: nil
             },
             edits: [{
               range: range(0, 12, 0, 24),
-              newText: 'Hello cookies!',
-            }],
+              newText: 'Hello cookies!'
+            }]
           }],
-          corrector.document_changes,
+          corrector.document_changes
         )
       end
 
       def test_wrap
         @corrector.wrap(@node, '<', '>')
+
         assert_equal(3, @node.end_column)
         assert_equal(
           [
             {
               textDocument: {
                 uri: file_uri(@node.theme_file.path),
-                version: nil,
+                version: nil
               },
               edits: [{
                 range: range(0, 2, 0, 3),
-                newText: '<x>',
-              }],
-            },
+                newText: '<x>'
+              }]
+            }
           ],
           @corrector.document_changes
         )
@@ -224,24 +236,25 @@ module PlatformosCheck
 
       def test_create_file
         @corrector.create_file(@node.theme_file.storage, 'test.liquid', 'hello world')
+
         assert_equal(
           [
             {
               kind: 'create',
-              uri: file_uri(@node.theme_file.storage.path('test.liquid')),
+              uri: file_uri(@node.theme_file.storage.path('test.liquid'))
             },
             {
               textDocument: {
                 uri: file_uri(@node.theme_file.storage.path('test.liquid')),
-                version: nil,
+                version: nil
               },
               edits: [
                 {
                   range: range(0, 0, 0, 0),
-                  newText: 'hello world',
-                },
-              ],
-            },
+                  newText: 'hello world'
+                }
+              ]
+            }
           ],
           @corrector.document_changes
         )
@@ -249,12 +262,13 @@ module PlatformosCheck
 
       def test_remove_file
         @corrector.remove_file(@node.theme_file.storage, 'test.liquid')
+
         assert_equal(
           [
             {
               kind: 'delete',
-              uri: file_uri(@node.theme_file.storage.path('test.liquid')),
-            },
+              uri: file_uri(@node.theme_file.storage.path('test.liquid'))
+            }
           ],
           @corrector.document_changes
         )
@@ -262,16 +276,17 @@ module PlatformosCheck
 
       def test_mkdir
         @corrector.mkdir(@node.theme_file.storage, 'test.liquid')
+
         assert_equal(
           [
             {
               kind: 'create',
-              uri: file_uri(@node.theme_file.storage.path('test.liquid').join('tmp')),
+              uri: file_uri(@node.theme_file.storage.path('test.liquid').join('tmp'))
             },
             {
               kind: 'delete',
-              uri: file_uri(@node.theme_file.storage.path('test.liquid').join('tmp')),
-            },
+              uri: file_uri(@node.theme_file.storage.path('test.liquid').join('tmp'))
+            }
           ],
           @corrector.document_changes
         )
@@ -283,21 +298,22 @@ module PlatformosCheck
         file = JsonFile.new('foo.json', storage)
         @corrector.add_translation(file, "hello", "world")
         @corrector.remove_translation(file, "a")
+
         assert_equal(
           [
             {
               textDocument: {
                 uri: file_uri(storage.path('foo.json')),
-                version: nil,
+                version: nil
               },
               edits: [{
                 range: {
                   start: { line: 0, character: 0 },
-                  end: { line: 0, character: contents.size - 1 },
+                  end: { line: 0, character: contents.size - 1 }
                 },
-                newText: JSON.pretty_generate({ hello: "world" }),
-              }],
-            },
+                newText: JSON.pretty_generate({ hello: "world" })
+              }]
+            }
           ],
           @corrector.document_changes
         )
@@ -323,14 +339,14 @@ module PlatformosCheck
           [{
             textDocument: {
               uri: file_uri(node.theme_file.path),
-              version: nil,
+              version: nil
             },
             edits: [{
               range: range(0, 12, 2, 0),
-              newText: pretty_json(json, start_level: 1),
-            }],
+              newText: pretty_json(json, start_level: 1)
+            }]
           }],
-          corrector.document_changes,
+          corrector.document_changes
         )
       end
 
@@ -341,18 +357,19 @@ module PlatformosCheck
         LiquidNode.new(theme_file.root, nil, theme_file)
       end
 
-      def find(node, &block)
-        return node if block.call(node)
+      def find(node, &)
+        return node if yield(node)
         return nil if node.children.nil? || node.children.empty?
+
         node.children
-          .map { |n| find(n, &block) }
-          .find { |n| !n.nil? }
+            .map { |n| find(n, &) }
+            .find { |n| !n.nil? }
       end
 
       def range(start_row, start_column, end_row, end_column)
         {
           start: { line: start_row, character: start_column },
-          end: { line: end_row, character: end_column },
+          end: { line: end_row, character: end_column }
         }
       end
     end

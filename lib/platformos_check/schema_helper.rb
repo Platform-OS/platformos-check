@@ -21,6 +21,7 @@ module PlatformosCheck
       path = path.split('.') if path.is_a?(String)
       path.each_with_index.reduce(hash) do |pointer, (token, index)|
         break pointer.delete(token) if index == path.size - 1
+
         pointer[token]
       end
     end
@@ -50,6 +51,7 @@ module PlatformosCheck
     # )
     def self.schema_corrector(schema, path, value)
       return schema unless schema.is_a?(Hash)
+
       path = path.split('.') if path.is_a?(String)
       path.each_with_index.reduce(schema) do |pointer, (token, index)|
         case pointer
@@ -60,6 +62,7 @@ module PlatformosCheck
 
         when Hash
           break pointer[token] = value if index == path.size - 1
+
           pointer[token] = {} unless pointer.key?(token) || pointer.key?("id")
           pointer[token].nil? && pointer["id"] == token ? pointer : pointer[token]
         end

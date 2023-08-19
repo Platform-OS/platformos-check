@@ -16,7 +16,7 @@ module PlatformosCheck
 
         def return_type_hash
           {
-            'type' => (hash['types'] || ['untyped']).first,
+            'type' => (hash['types'] || ['untyped']).first
           }
         end
       end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class LiquidFileTest < Minitest::Test
@@ -19,8 +20,8 @@ class LiquidFileTest < Minitest::Test
   end
 
   def test_type
-    assert(@theme_file.template?)
-    refute(@theme_file.snippet?)
+    assert_predicate(@theme_file, :template?)
+    refute_predicate(@theme_file, :snippet?)
   end
 
   def test_name

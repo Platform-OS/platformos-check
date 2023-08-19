@@ -10,9 +10,9 @@ module PlatformosCheck
 
         actual_doc = Documentation.filter_doc('size')
         expected_doc = "### [size](https://shopify.dev/api/liquid/filters/size)\n" \
-          "Returns the size of a string or array.\n" \
-          "\n---\n\n" \
-          'You can use the "size" filter with dot notation.'
+                       "Returns the size of a string or array.\n" \
+                       "\n---\n\n" \
+                       'You can use the "size" filter with dot notation.'
 
         assert_equal(expected_doc, actual_doc)
       end
@@ -22,7 +22,7 @@ module PlatformosCheck
 
         actual_doc = Documentation.tag_doc('tablerow')
         expected_doc = "### [tablerow](https://shopify.dev/api/liquid/tags/tablerow)\n" \
-          'The "tablerow" tag must be wrapped in HTML "table" tags.' \
+                       'The "tablerow" tag must be wrapped in HTML "table" tags.' \
 
         assert_equal(expected_doc, actual_doc)
       end
@@ -32,7 +32,7 @@ module PlatformosCheck
 
         actual_doc = Documentation.object_doc('product')
         expected_doc = "### [product](https://shopify.dev/api/liquid/objects/product)\n" \
-          'A product in the store.'
+                       'A product in the store.'
 
         assert_equal(expected_doc, actual_doc)
       end
@@ -42,7 +42,7 @@ module PlatformosCheck
 
         actual_doc = Documentation.object_property_doc('product', 'available')
         expected_doc = "### [available](https://shopify.dev/api/liquid/objects/product#product-available)\n" \
-          'Returns "true" if at least one of the variants of the product is available.'
+                       'Returns "true" if at least one of the variants of the product is available.'
 
         assert_equal(expected_doc, actual_doc)
       end
@@ -65,9 +65,9 @@ module PlatformosCheck
             {
               'summary' => 'Returns "true" if at least one of the variants of the product is available.',
               'name' => 'available',
-              'return_type' => [{ 'type' => 'string' }],
-            },
-          ],
+              'return_type' => [{ 'type' => 'string' }]
+            }
+          ]
         )
       end
 

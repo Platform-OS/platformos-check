@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -21,7 +22,7 @@ module PlatformosCheck
         LIQUID
 
         engine = make_engine(
-          "templates/product.liquid" => content,
+          "templates/product.liquid" => content
         )
 
         assert_links_include("1", content, engine.document_links("templates/product.liquid"), "snippets", ".liquid")
@@ -45,7 +46,7 @@ module PlatformosCheck
         LIQUID
 
         engine = make_engine(
-          "templates/product.liquid" => content,
+          "templates/product.liquid" => content
         )
 
         assert_links_include("1", content, engine.document_links("templates/product.liquid"), "snippets", ".liquid")
@@ -69,7 +70,7 @@ module PlatformosCheck
         LIQUID
 
         engine = make_engine(
-          "templates/product.liquid" => content,
+          "templates/product.liquid" => content
         )
 
         assert_links_include("1", content, engine.document_links("templates/product.liquid"), "sections", ".liquid")
@@ -93,7 +94,7 @@ module PlatformosCheck
         LIQUID
 
         engine = make_engine(
-          "templates/product.liquid" => content,
+          "templates/product.liquid" => content
         )
 
         assert_links_include("1", content, engine.document_links("templates/product.liquid"), "assets", "")
@@ -114,16 +115,16 @@ module PlatformosCheck
           from_index_to_row_column(content, content.index(needle)),
           [
             match.dig(:range, :start, :line),
-            match.dig(:range, :start, :character),
-          ],
+            match.dig(:range, :start, :character)
+          ]
         )
 
         assert_equal(
           from_index_to_row_column(content, content.index(needle) + 1),
           [
             match.dig(:range, :end, :line),
-            match.dig(:range, :end, :character),
-          ],
+            match.dig(:range, :end, :character)
+          ]
         )
       end
 

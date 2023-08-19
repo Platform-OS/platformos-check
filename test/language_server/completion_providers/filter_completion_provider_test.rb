@@ -20,7 +20,7 @@ module PlatformosCheck
           address: 'format_address',
           paginate: 'default_pagination',
           media: 'external_video_url',
-          font: 'font_url',
+          font: 'font_url'
         }
       end
 
@@ -40,12 +40,14 @@ module PlatformosCheck
         assert_can_complete_with(@provider, "{{ 'foo.js' | asset_url | image", "image_url")
 
         filter_not_in_source_index = 'installments_pricing'
+
         assert_includes(ShopifyLiquid::Filter::LABELS_NOT_IN_SOURCE_INDEX, filter_not_in_source_index)
         refute_can_complete_with(@provider, "{{ 'foo.js' | ", filter_not_in_source_index)
       end
 
       def test_completions_with_content_after_cursor
         offset = -2
+
         assert_can_only_complete_with("{{ form | }}", 'form', offset)
         assert_can_only_complete_with("{{ 'test%40test.com' | }}", 'string', offset)
         assert_can_only_complete_with("{% assign tp = cart.total_price %}\n{{ tp | }}", 'number', offset)
@@ -53,6 +55,7 @@ module PlatformosCheck
 
       def test_filters_compatible_with_the_array_type
         input_type = 'array'
+
         assert_can_only_complete_with("{% assign ct = current_tags | ", input_type)
         assert_can_only_complete_with("{% assign c = product.collections | ", input_type)
         assert_can_only_complete_with("{{ current_tags | ", input_type)
@@ -63,6 +66,7 @@ module PlatformosCheck
 
       def test_filters_compatible_with_the_string_type
         input_type = 'string'
+
         assert_can_only_complete_with("{% assign t = product.title | ", input_type)
         assert_can_only_complete_with("{{ page_description | ", input_type)
         assert_can_only_complete_with("{% assign t = product.title %}\n{{ t | ", input_type)
@@ -74,23 +78,27 @@ module PlatformosCheck
       def test_filters_compatible_with_the_string_type_and_assignment_and_attribute
         input_type = 'string'
         token = "{%- assign collection_product = collection.products.first -%}\n{{ collection_product.url | "
+
         assert_can_only_complete_with(token, input_type)
       end
 
       def test_filters_compatible_with_the_string_type_and_multi_level_assignments_and_attributes
         input_type = 'string'
         token = "{%- assign my_products = collection.products -%}{%- assign my_product = my_products.first -%}\n{{ my_product.url | "
+
         assert_can_only_complete_with(token, input_type)
       end
 
       def test_filters_compatible_with_the_string_type_and_assignment_in_same_line
         input_type = 'string'
+
         assert_can_only_complete_with("{% assign secret_potion = 'Polyjuice' | ", input_type)
       end
 
       def test_filters_compatible_with_the_string_type_and_assignment_and_variable_in_next_line
         input_type = 'string'
         token = "{%- assign text = '  Some potions create whitespace.      ' -%}\n{{ text | "
+
         assert_can_only_complete_with(token, input_type)
       end
 
@@ -100,6 +108,7 @@ module PlatformosCheck
 
       def test_filters_compatible_with_the_number_type
         input_type = 'number'
+
         assert_can_only_complete_with("{{ cart.total_price | ", input_type)
         assert_can_only_complete_with("{% assign tp = cart.total_price %}\n{{ tp | ", input_type)
         assert_can_only_complete_with("{{ -4.2 | ", input_type)
@@ -107,33 +116,39 @@ module PlatformosCheck
 
       def test_filters_compatible_with_the_number_type_and_assignment_in_same_line
         input_type = 'number'
+
         assert_can_only_complete_with("{% assign secret_potion = 2 | ", input_type)
       end
 
       def test_filters_compatible_with_the_form_type
         input_type = 'form'
+
         assert_can_only_complete_with("{{ form | ", input_type)
       end
 
       def test_filters_compatible_with_the_font_type
         input_type = 'font'
+
         assert_can_only_complete_with("{{ font.variants.first | ", input_type)
       end
 
       def test_filters_compatible_with_the_variable_type
         assert_can_complete_with(@provider, "{{ product | ", FILTER_WITH_INPUT_TYPE_VARIABLE)
         token = "{{ product.selected_variant.url | "
+
         assert_can_complete_with(@provider, token, FILTER_WITH_INPUT_TYPE_VARIABLE)
         assert_can_only_complete_with(token, 'string')
       end
 
       def test_filters_compatible_with_the_variable_type_and_assignment
         token = "{%- assign display_price = false -%}\n{{ display_price | "
+
         assert_can_complete_with(@provider, token, FILTER_WITH_INPUT_TYPE_VARIABLE)
       end
 
       def test_filters_compatible_with_the_media_type
         input_type = 'media'
+
         assert_can_only_complete_with("{{ product.featured_media | ", input_type)
         assert_can_only_complete_with("{% for media in product.media %}
   {% if media.media_type == 'external_video' %}
@@ -143,6 +158,7 @@ module PlatformosCheck
 
       def test_filters_compatible_with_the_metafield_type
         skip("theme-liquid-docs changes causing test to fail")
+
         assert_can_only_complete_with("{{ shop.metafields | ", 'metafield')
       end
 
@@ -159,7 +175,7 @@ module PlatformosCheck
           "{{ article.image | ", # return_type "image", but no filter with corresponding input type
           "{{ product.metafields.information.seasonal | ", # product.metafields has return_type "untyped"
           "{{ product | ", # return_type array is empty
-          "{{ settings.type_header_font | ", # return_type and properties arrays are empty
+          "{{ settings.type_header_font | " # return_type and properties arrays are empty
         ].each do |token|
           @filter_compatible_with.each do |_, filter_name|
             assert_can_complete_with(@provider, token, filter_name)
@@ -170,6 +186,7 @@ module PlatformosCheck
 
       def test_complete_deprecated_filters
         deprecated_filter = "hex_to_rgba"
+
         assert_can_complete_with(@provider, "{{ 'foo.js' | hex_to", deprecated_filter)
         assert_can_complete_with(@provider, "{% assign t = product.title | ", deprecated_filter)
       end

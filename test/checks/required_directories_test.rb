@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class RequiredDirectories < Minitest::Test
@@ -46,6 +47,7 @@ class RequiredDirectories < Minitest::Test
     analyzer.correct_offenses
 
     missing_directories = ["locales"]
+
     assert(missing_directories.all? { |file| theme.storage.directories.include?(file) })
   end
 end

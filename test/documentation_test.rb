@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -11,8 +12,9 @@ module PlatformosCheck
       @checks.each do |check_class|
         check = check_class.new
         next if check.code_name == "MockCheck"
+
         assert(check.doc, "#{check.code_name} should have `doc docs_url(__FILE__)` in the class definition.")
-        assert(File.exist?(doc_to_file_path(check.doc)), "#{check.code_name} should be documented in docs/checks/check_class_name.md")
+        assert_path_exists(doc_to_file_path(check.doc), "#{check.code_name} should be documented in docs/checks/check_class_name.md")
       end
     end
 

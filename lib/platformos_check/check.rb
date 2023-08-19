@@ -1,34 +1,33 @@
 # frozen_string_literal: true
+
 require_relative "json_helpers"
 
 module PlatformosCheck
   class Check
     include JsonHelpers
 
-    attr_accessor :theme
-    attr_accessor :options
-    attr_writer :ignored_patterns
-    attr_writer :offenses
+    attr_accessor :theme, :options
+    attr_writer :ignored_patterns, :offenses
 
     # The order matters.
-    SEVERITIES = [
-      :error,
-      :suggestion,
-      :style,
+    SEVERITIES = %i[
+      error
+      suggestion
+      style
     ]
 
     # [severity: sym] => number
     SEVERITY_VALUES = SEVERITIES
-      .map
-      .with_index { |sev, i| [sev, i] }
-      .to_h
+                      .map
+                      .with_index { |sev, i| [sev, i] }
+                      .to_h
 
-    CATEGORIES = [
-      :liquid,
-      :translation,
-      :html,
-      :json,
-      :performance,
+    CATEGORIES = %i[
+      liquid
+      translation
+      html
+      json
+      performance
     ]
 
     class << self
@@ -38,9 +37,8 @@ module PlatformosCheck
 
       def severity(severity = nil)
         if severity
-          unless SEVERITIES.include?(severity)
-            raise ArgumentError, "unknown severity. Use: #{SEVERITIES.join(', ')}"
-          end
+          raise ArgumentError, "unknown severity. Use: #{SEVERITIES.join(', ')}" unless SEVERITIES.include?(severity)
+
           @severity = severity
         end
         @severity if defined?(@severity)
@@ -56,13 +54,13 @@ module PlatformosCheck
           unknown_categories = categories.select { |category| !CATEGORIES.include?(category) }
           if unknown_categories.any?
             raise ArgumentError,
-              "unknown categories: #{unknown_categories.join(', ')}. Use: #{CATEGORIES.join(', ')}"
+                  "unknown categories: #{unknown_categories.join(', ')}. Use: #{CATEGORIES.join(', ')}"
           end
           @categories = categories
         end
         @categories
       end
-      alias_method :category, :categories
+      alias category categories
 
       def doc(doc = nil)
         @doc = doc if doc
@@ -74,16 +72,12 @@ module PlatformosCheck
       end
 
       def can_disable(disableable = nil)
-        unless disableable.nil?
-          @can_disable = disableable
-        end
+        @can_disable = disableable unless disableable.nil?
         defined?(@can_disable) ? @can_disable : true
       end
 
       def single_file(single_file = nil)
-        unless single_file.nil?
-          @single_file = single_file
-        end
+        @single_file = single_file unless single_file.nil?
         defined?(@single_file) ? @single_file : !method_defined?(:on_end)
       end
     end
@@ -93,7 +87,7 @@ module PlatformosCheck
     end
 
     def add_offense(message, node: nil, theme_file: node&.theme_file, markup: nil, line_number: nil, node_markup_offset: 0, &block)
-      offenses << Offense.new(check: self, message: message, theme_file: theme_file, node: node, markup: markup, line_number: line_number, node_markup_offset: node_markup_offset, correction: block)
+      offenses << Offense.new(check: self, message:, theme_file:, node:, markup:, line_number:, node_markup_offset:, correction: block)
     end
 
     def severity
@@ -101,9 +95,8 @@ module PlatformosCheck
     end
 
     def severity=(severity)
-      unless SEVERITIES.include?(severity)
-        raise ArgumentError, "unknown severity. Use: #{SEVERITIES.join(', ')}"
-      end
+      raise ArgumentError, "unknown severity. Use: #{SEVERITIES.join(', ')}" unless SEVERITIES.include?(severity)
+
       @severity = severity
     end
 
@@ -150,15 +143,15 @@ module PlatformosCheck
     def ==(other)
       other.is_a?(Check) && code_name == other.code_name
     end
-    alias_method :eql?, :==
+    alias eql? ==
 
     def to_s
       s = +"#{code_name}:\n"
       properties = {
-        severity: severity,
-        categories: categories,
-        doc: doc,
-        ignored_patterns: ignored_patterns,
+        severity:,
+        categories:,
+        doc:,
+        ignored_patterns:
       }.merge(options)
       properties.each_pair do |name, value|
         s << "  #{name}: #{value}\n" if value

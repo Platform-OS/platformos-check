@@ -3,5 +3,5 @@
 
 quire 'platformos_check'
 
-atus_code = PlatformosCheck::LanguageServer.start
+PlatformosCheck::LanguageServer.start
 it! status_code

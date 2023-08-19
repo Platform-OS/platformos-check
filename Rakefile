@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 require "rake/testtask"
 require "rubocop/rake_task"
 require "bundler/gem_tasks"
 
 namespace :tests do
-  task all: [:in_memory, :file_system]
+  task all: %i[in_memory file_system]
 
   Rake::TestTask.new(:suite) do |t|
     t.libs << "test"
@@ -15,23 +16,24 @@ namespace :tests do
   desc("Runs the tests with InMemoryStorage")
   task :in_memory do
     ENV["THEME_STORAGE"] = 'InMemoryStorage'
-    puts "Running tests with #{ENV['THEME_STORAGE']}"
+    puts "Running tests with #{ENV.fetch('THEME_STORAGE', nil)}"
     Rake::Task['tests:suite'].execute
   end
 
   desc("Runs the tests with FileSystemStorage")
   task :file_system do
     ENV["THEME_STORAGE"] = 'FileSystemStorage'
-    puts "Running tests with #{ENV['THEME_STORAGE']}"
+    puts "Running tests with #{ENV.fetch('THEME_STORAGE', nil)}"
     Rake::Task['tests:suite'].execute
   end
 end
 
+desc("Runs all tests")
 task(test: 'tests:all')
 
 RuboCop::RakeTask.new
 
-task default: [:test, :rubocop]
+task default: %i[test rubocop]
 
 namespace :package do
   require 'platformos_check/packager'
@@ -70,17 +72,17 @@ task :new_check, [:name] do |_t, args|
   test_source = "test/checks/#{base_name}_test.rb"
   erb(
     "lib/platformos_check/checks/TEMPLATE.rb.erb", code_source,
-    class_name: class_name,
+    class_name:
   )
   erb(
     "test/checks/TEMPLATE.rb.erb", test_source,
-    class_name: class_name,
+    class_name:
   )
   erb(
     "docs/checks/TEMPLATE.md.erb", doc_source,
-    class_name: class_name,
-    code_source: code_source,
-    doc_source: doc_source,
+    class_name:,
+    code_source:,
+    doc_source:
   )
   sh "bundle exec ruby -Itest #{test_source}"
 end

@@ -40,10 +40,10 @@ module PlatformosCheck
 
     def directories
       @directories ||= @files
-        .keys
-        .flat_map { |relative_path| Pathname.new(relative_path).ascend.to_a }
-        .map(&:to_s)
-        .uniq
+                       .keys
+                       .flat_map { |relative_path| Pathname.new(relative_path).ascend.to_a }
+                       .map(&:to_s)
+                       .uniq
     end
 
     def relative_path(absolute_path)

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "json"
 
 module PlatformosCheck
@@ -22,18 +23,19 @@ module PlatformosCheck
 
     def update_contents(new_content = {})
       raise ArgumentError if new_content.is_a?(String)
+
       @content = new_content
     end
 
     def write
       pretty = JSON.pretty_generate(@content)
-      if source.rstrip != pretty.rstrip
-        # Most editors add a trailing \n at the end of files. Here we
-        # try to maintain the convention.
-        eof = source.end_with?("\n") ? "\n" : ""
-        @storage.write(@relative_path, pretty.gsub("\n", @eol) + eof)
-        @source = pretty
-      end
+      return unless source.rstrip != pretty.rstrip
+
+      # Most editors add a trailing \n at the end of files. Here we
+      # try to maintain the convention.
+      eof = source.end_with?("\n") ? "\n" : ""
+      @storage.write(@relative_path, pretty.gsub("\n", @eol) + eof)
+      @source = pretty
     end
 
     def json?

@@ -32,7 +32,7 @@ module PlatformosCheck
 
         def return_type_hash
           {
-            'type' => "type<#{self}>",
+            'type' => "type<#{self}>"
           }
         end
       end

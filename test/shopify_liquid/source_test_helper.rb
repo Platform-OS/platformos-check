@@ -18,6 +18,7 @@ module PlatformosCheck
 
             path = DOCUMENTATION_FIXTURE_DIRECTORY + "#{file_name}.json"
             raise "File not found: #{path}" unless File.file?(path)
+
             File.read(path)
           end
         end
@@ -74,19 +75,16 @@ module PlatformosCheck
       def load_file(file_name)
         path = DOCUMENTATION_FIXTURE_DIRECTORY + "#{file_name}.json"
         raise "File not found: #{path}" unless File.file?(path)
+
         File.read(path)
       end
 
       def create_dummy_tags_file(destination)
-        File.open(destination + 'tags.json', "wb") do |file|
-          file.write({})
-        end
+        File.binwrite(destination + 'tags.json', {})
       end
 
       def create_out_of_date_revision_file(destination)
-        File.open(destination + 'latest.json', "wb") do |file|
-          file.write('{ "revision": "out_of_date_sha" }')
-        end
+        File.binwrite(destination + 'latest.json', '{ "revision": "out_of_date_sha" }')
       end
 
       def create_documentation_in_destination(destination)

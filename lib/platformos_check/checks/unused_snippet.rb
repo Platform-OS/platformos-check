@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "set"
-
 module PlatformosCheck
   class UnusedSnippet < LiquidCheck
     severity :suggestion
@@ -27,11 +25,11 @@ module PlatformosCheck
         ignore!
       end
     end
-    alias_method :on_include, :on_render
+    alias on_include on_render
 
     def on_end
       missing_snippets.each do |theme_file|
-        add_offense("This snippet is not used", theme_file: theme_file) do |corrector|
+        add_offense("This snippet is not used", theme_file:) do |corrector|
           corrector.remove_file(@theme.storage, theme_file.relative_path.to_s)
         end
       end
@@ -74,12 +72,12 @@ module PlatformosCheck
     end
 
     # @param node [Node]
-    def find_parent(node, &pred)
+    def find_parent(node, &)
       return nil unless node
 
       return node if yield node
 
-      find_parent(node.parent, &pred)
+      find_parent(node.parent, &)
     end
   end
 end

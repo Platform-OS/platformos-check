@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class DeprecatedGlobalAppBlockType < LiquidCheck
     severity :error
@@ -12,30 +13,30 @@ module PlatformosCheck
       schema = node.inner_json
       return if schema.nil?
 
-      if block_types_from(schema).include?(INVALID_GLOBAL_APP_BLOCK_TYPE)
-        add_offense(
-          "Deprecated '#{INVALID_GLOBAL_APP_BLOCK_TYPE}' block type defined in the schema, use '#{VALID_GLOBAL_APP_BLOCK_TYPE}' block type instead.",
-          node: node
-        )
-      end
+      return unless block_types_from(schema).include?(INVALID_GLOBAL_APP_BLOCK_TYPE)
+
+      add_offense(
+        "Deprecated '#{INVALID_GLOBAL_APP_BLOCK_TYPE}' block type defined in the schema, use '#{VALID_GLOBAL_APP_BLOCK_TYPE}' block type instead.",
+        node:
+      )
     end
 
     def on_case(node)
-      if node.value == INVALID_GLOBAL_APP_BLOCK_TYPE
-        report_offense(node)
-      end
+      return unless node.value == INVALID_GLOBAL_APP_BLOCK_TYPE
+
+      report_offense(node)
     end
 
     def on_condition(node)
-      if node.value.right == INVALID_GLOBAL_APP_BLOCK_TYPE || node.value.left == INVALID_GLOBAL_APP_BLOCK_TYPE
-        report_offense(node)
-      end
+      return unless node.value.right == INVALID_GLOBAL_APP_BLOCK_TYPE || node.value.left == INVALID_GLOBAL_APP_BLOCK_TYPE
+
+      report_offense(node)
     end
 
     def on_variable(node)
-      if node.value.name == INVALID_GLOBAL_APP_BLOCK_TYPE
-        report_offense(node)
-      end
+      return unless node.value.name == INVALID_GLOBAL_APP_BLOCK_TYPE
+
+      report_offense(node)
     end
 
     private
@@ -43,7 +44,7 @@ module PlatformosCheck
     def report_offense(node)
       add_offense(
         "Deprecated '#{INVALID_GLOBAL_APP_BLOCK_TYPE}' block type, use '#{VALID_GLOBAL_APP_BLOCK_TYPE}' block type instead.",
-        node: node
+        node:
       )
     end
 

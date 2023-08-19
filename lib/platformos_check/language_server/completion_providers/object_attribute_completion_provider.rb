@@ -40,7 +40,7 @@ module PlatformosCheck
           label: prop.name,
           kind: CompletionItemKinds::PROPERTY,
           **format_hash(prop),
-          **doc_hash(content),
+          **doc_hash(content)
         }
       end
     end

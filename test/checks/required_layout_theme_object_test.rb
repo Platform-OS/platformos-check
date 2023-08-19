@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class RequiredLayoutThemeObjectTest < Minitest::Test
@@ -47,7 +48,7 @@ class RequiredLayoutThemeObjectTest < Minitest::Test
 
   def test_creates_missing_content_for_layout
     expected_sources = {
-      "layout/theme.liquid" => <<~END,
+      "layout/theme.liquid" => <<~END
         <!DOCTYPE html>
         <html>
           <head>
@@ -61,7 +62,7 @@ class RequiredLayoutThemeObjectTest < Minitest::Test
     }
     sources = fix_theme(
       PlatformosCheck::RequiredLayoutThemeObject.new,
-      "layout/theme.liquid" => <<~END,
+      "layout/theme.liquid" => <<~END
         <!DOCTYPE html>
         <html>
           <head>
@@ -72,6 +73,7 @@ class RequiredLayoutThemeObjectTest < Minitest::Test
         </html>
       END
     )
+
     sources.each do |path, source|
       assert_equal(expected_sources[path], source)
     end
@@ -79,7 +81,7 @@ class RequiredLayoutThemeObjectTest < Minitest::Test
 
   def test_creates_missing_content_for_header
     expected_sources = {
-      "layout/theme.liquid" => <<~END,
+      "layout/theme.liquid" => <<~END
         <!DOCTYPE html>
         <html>
           <head>
@@ -93,7 +95,7 @@ class RequiredLayoutThemeObjectTest < Minitest::Test
     }
     sources = fix_theme(
       PlatformosCheck::RequiredLayoutThemeObject.new,
-      "layout/theme.liquid" => <<~END,
+      "layout/theme.liquid" => <<~END
         <!DOCTYPE html>
         <html>
           <head>
@@ -104,6 +106,7 @@ class RequiredLayoutThemeObjectTest < Minitest::Test
         </html>
       END
     )
+
     sources.each do |path, source|
       assert_equal(expected_sources[path], source)
     end
@@ -111,7 +114,7 @@ class RequiredLayoutThemeObjectTest < Minitest::Test
 
   def test_no_head_or_body_tag
     expected_sources = {
-      "layout/theme.liquid" => <<~END,
+      "layout/theme.liquid" => <<~END
         <!DOCTYPE html>
         <html>
         </html>
@@ -119,12 +122,13 @@ class RequiredLayoutThemeObjectTest < Minitest::Test
     }
     sources = fix_theme(
       PlatformosCheck::RequiredLayoutThemeObject.new,
-      "layout/theme.liquid" => <<~END,
+      "layout/theme.liquid" => <<~END
         <!DOCTYPE html>
         <html>
         </html>
       END
     )
+
     sources.each do |path, source|
       assert_equal(expected_sources[path], source)
     end

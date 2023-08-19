@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class Packager
-    ROOT = File.expand_path('../../..', __FILE__)
+    ROOT = File.expand_path('../..', __dir__)
     PACKAGING_DIR = File.join(ROOT, 'packaging')
     BUILDS_DIR = File.join(PACKAGING_DIR, 'builds', PlatformosCheck::VERSION)
 
@@ -38,14 +39,14 @@ module PlatformosCheck
     private
 
     def ensure_program_installed(program, installation_cmd)
-      unless system(program, '--version', out: File::NULL, err: File::NULL)
-        raise <<~MESSAGE
+      return if system(program, '--version', out: File::NULL, err: File::NULL)
 
-          Could not find program #{program} which is required to build the package.
-          You can install it by running `#{installation_cmd}`.
+      raise <<~MESSAGE
 
-        MESSAGE
-      end
+        Could not find program #{program} which is required to build the package.
+        You can install it by running `#{installation_cmd}`.
+
+      MESSAGE
     end
   end
 end

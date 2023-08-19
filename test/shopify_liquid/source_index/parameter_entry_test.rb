@@ -25,7 +25,7 @@ module PlatformosCheck
             'name' => 'media',
             'description' => 'The type of media that the resource [...]',
             'required' => false,
-            'types' => ['string'],
+            'types' => ['string']
           }
         end
       end

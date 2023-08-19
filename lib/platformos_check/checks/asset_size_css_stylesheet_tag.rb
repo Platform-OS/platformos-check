@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class AssetSizeCSSStylesheetTag < LiquidCheck
     include RegexHelpers
@@ -13,12 +14,14 @@ module PlatformosCheck
     def on_variable(node)
       used_filters = node.filters.map { |name, *_rest| name }
       return unless used_filters.include?("stylesheet_tag")
+
       file_size = stylesheet_tag_pipeline_to_file_size(node.markup)
       return if file_size.nil?
       return if file_size <= @threshold_in_bytes
+
       add_offense(
         "CSS on every page load exceeding compressed size threshold (#{@threshold_in_bytes} Bytes).",
-        node: node
+        node:
       )
     end
 
@@ -28,6 +31,7 @@ module PlatformosCheck
         asset_id = Regexp.last_match(0).gsub(START_OR_END_QUOTE, "")
         asset = @theme.assets.find { |a| a.name.end_with?("/" + asset_id) }
         return if asset.nil?
+
         asset.gzipped_size
 
       # remote URLs

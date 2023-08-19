@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   # Reports errors when too much JS is being referenced from a Theme App
   # Extension block
@@ -21,15 +22,15 @@ module PlatformosCheck
       schema = node.inner_json
       return if schema.nil?
 
-      if (javascript = schema["javascript"])
-        size = asset_size(javascript)
-        if size && size > threshold_in_bytes
-          add_offense(
-            "JavaScript in Theme App Extension blocks exceeds compressed size threshold (#{threshold_in_bytes} Bytes)",
-            node: node
-          )
-        end
-      end
+      return unless (javascript = schema["javascript"])
+
+      size = asset_size(javascript)
+      return unless size && size > threshold_in_bytes
+
+      add_offense(
+        "JavaScript in Theme App Extension blocks exceeds compressed size threshold (#{threshold_in_bytes} Bytes)",
+        node:
+      )
     end
 
     private
@@ -37,6 +38,7 @@ module PlatformosCheck
     def asset_size(name)
       asset = @theme["assets/#{name}"]
       return if asset.nil?
+
       asset.gzipped_size
     end
   end

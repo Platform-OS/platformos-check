@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "logger"
 
 module PlatformosCheck
@@ -40,12 +41,12 @@ module PlatformosCheck
           # When analyzed_files is nil, contains all offenses.
           # When analyzed_files is !nil, contains all whole theme offenses and single file offenses of the analyzed_files.
           current_diagnostics = offenses
-            .select(&:theme_file)
-            .group_by(&:theme_file)
-            .transform_keys { |theme_file| Pathname.new(theme_file.relative_path) }
-            .transform_values do |theme_file_offenses|
-              theme_file_offenses.map { |o| Diagnostic.new(o) }
-            end
+                                .select(&:theme_file)
+                                .group_by(&:theme_file)
+                                .transform_keys { |theme_file| Pathname.new(theme_file.relative_path) }
+                                .transform_values do |theme_file_offenses|
+            theme_file_offenses.map { |o| Diagnostic.new(o) }
+          end
 
           previous_paths = paths(@latest_diagnostics)
           current_paths = paths(current_diagnostics)
@@ -82,7 +83,7 @@ module PlatformosCheck
           end.to_h
 
           @latest_diagnostics = diagnostics_update
-            .reject { |_, v| v.empty? }
+                                .reject { |_, v| v.empty? }
 
           @first_run = false
 
@@ -94,16 +95,16 @@ module PlatformosCheck
 
       def workspace_edit(diagnostics)
         diagnostics = sanitize(diagnostics)
-          .select(&:correctable?)
+                      .select(&:correctable?)
 
         {
-          documentChanges: document_changes(diagnostics),
+          documentChanges: document_changes(diagnostics)
         }
       end
 
       def delete_applied(diagnostics)
         diagnostics = sanitize(diagnostics)
-          .select(&:correctable?)
+                      .select(&:correctable?)
 
         previous_paths = paths(@latest_diagnostics)
 
@@ -128,7 +129,7 @@ module PlatformosCheck
       private
 
       def sanitize(diagnostics)
-        diagnostics = diagnostics.map { |hash| find(hash) }.reject(&:nil?) if diagnostics[0]&.is_a?(Hash)
+        diagnostics = diagnostics.map { |hash| find(hash) }.reject(&:nil?) if diagnostics[0].is_a?(Hash)
         diagnostics
       end
 
@@ -145,7 +146,7 @@ module PlatformosCheck
         relative_path = sanitize_path(relative_path)
         @mutex.synchronize do
           @latest_diagnostics[relative_path]&.delete(diagnostic)
-          @latest_diagnostics.delete(relative_path) if @latest_diagnostics[relative_path]&.empty?
+          @latest_diagnostics.delete(relative_path) if @latest_diagnostics[relative_path] && @latest_diagnostics[relative_path].empty?
         end
       end
 

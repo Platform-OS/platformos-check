@@ -11,29 +11,29 @@ module PlatformosCheck
           @filters = nil if FilterState.outdated?
 
           @filters ||= FilterState.mark_up_to_date &&
-            load_file(:filters)
-              .map { |hash| FilterEntry.new(hash) }
+                       load_file(:filters)
+                       .map { |hash| FilterEntry.new(hash) }
         end
 
         def objects
           @objects = nil if ObjectState.outdated?
 
           @objects ||= ObjectState.mark_up_to_date &&
-            load_file(:objects)
-              .concat(built_in_objects)
-              .filter_map do |hash|
-                next if labels_only_exposed_in_certain_contexts.include?(hash['name'])
+                       load_file(:objects)
+                       .concat(built_in_objects)
+                       .filter_map do |hash|
+                         next if labels_only_exposed_in_certain_contexts.include?(hash['name'])
 
-                ObjectEntry.new(hash)
-              end
+                         ObjectEntry.new(hash)
+                       end
         end
 
         def tags
           @tags = nil if TagState.outdated?
 
           @tags ||= TagState.mark_up_to_date &&
-            load_file(:tags)
-              .map { |hash| TagEntry.new(hash) }
+                    load_file(:tags)
+                    .map { |hash| TagEntry.new(hash) }
         end
 
         def plus_labels
@@ -45,7 +45,7 @@ module PlatformosCheck
         end
 
         def labels_only_exposed_in_certain_contexts
-          ['robots', 'app'].freeze
+          %w[robots app].freeze
         end
 
         def deprecated_filters

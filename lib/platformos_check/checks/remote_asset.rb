@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class RemoteAsset < HtmlCheck
     severity :suggestion
@@ -19,8 +20,8 @@ module PlatformosCheck
 
       # Ignore if URL is Liquid, taken care of by AssetUrlFilters check
       return if resource_url.start_with?(CDN_ROOT)
-      return if resource_url =~ ABSOLUTE_PATH
-      return if resource_url =~ RELATIVE_PATH
+      return if ABSOLUTE_PATH.match?(resource_url)
+      return if RELATIVE_PATH.match?(resource_url)
       return if url_hosted_by_shopify?(resource_url)
 
       # Ignore non-stylesheet link tags
@@ -29,7 +30,7 @@ module PlatformosCheck
 
       add_offense(
         "Asset should be served by the Shopify CDN for better performance.",
-        node: node,
+        node:
       )
     end
 

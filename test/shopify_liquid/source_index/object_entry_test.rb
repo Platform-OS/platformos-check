@@ -11,7 +11,7 @@ module PlatformosCheck
         end
 
         def test_properties
-          assert(@entry.properties.any?)
+          assert_predicate(@entry.properties, :any?)
         end
 
         def test_return_type
@@ -29,19 +29,19 @@ module PlatformosCheck
                 'examples' => [],
                 'return_type' => [{ 'type' => 'string' }],
                 'summary' => 'The relative URL of the image.',
-                'name' => 'src',
+                'name' => 'src'
               },
               {
                 'description' => 'The "media_type" property is only available for images accessed through the following sources [...]',
                 'examples' => [{ 'name' => 'Filter for media', 'description' => 'You can use the "media_type" property  [...]' }],
                 'return_type' => [{ 'type' => 'string' }],
                 'summary' => 'The media type of the image. Always returns "image".',
-                'name' => 'media_type',
-              },
+                'name' => 'media_type'
+              }
             ],
             'summary' => 'An image, such as a product or collection image.',
             'name' => 'image',
-            'return_type' => [{ 'type' => 'array', 'name' => '', 'description' => '', 'array_value' => 'image' }],
+            'return_type' => [{ 'type' => 'array', 'name' => '', 'description' => '', 'array_value' => 'image' }]
           }
         end
       end

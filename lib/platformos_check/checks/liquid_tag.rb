@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   # Recommends using {% liquid ... %} if 5 or more consecutive {% ... %} are found.
   class LiquidTag < LiquidCheck
@@ -23,9 +24,9 @@ module PlatformosCheck
 
     def on_string(node)
       # Only reset the counter on outputted strings, and ignore empty line-breaks
-      if node.parent.block? && !node.value.strip.empty?
-        reset_consecutive_statements
-      end
+      return unless node.parent.block? && !node.value.strip.empty?
+
+      reset_consecutive_statements
     end
 
     def after_document(_node)
@@ -38,9 +39,7 @@ module PlatformosCheck
     end
 
     def reset_consecutive_statements
-      if @consecutive_statements >= @min_consecutive_statements
-        add_offense("Use {% liquid ... %} to write multiple tags", node: @first_statement)
-      end
+      add_offense("Use {% liquid ... %} to write multiple tags", node: @first_statement) if @consecutive_statements >= @min_consecutive_statements
       @first_statement = nil
       @consecutive_statements = 0
     end

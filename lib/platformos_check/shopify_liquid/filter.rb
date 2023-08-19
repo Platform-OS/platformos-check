@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'yaml'
 
 module PlatformosCheck
@@ -37,7 +38,7 @@ module PlatformosCheck
         "theme_url",
         "link_to_theme",
         "_online_store_editor_live_setting",
-        "debug",
+        "debug"
       ]
 
       def labels

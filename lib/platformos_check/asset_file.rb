@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "zlib"
 
 module PlatformosCheck
@@ -15,11 +16,11 @@ module PlatformosCheck
 
     def write
       content = rewriter.to_s
-      if source != content
-        @storage.write(@relative_path, content.gsub("\n", @eol))
-        @source = content
-        @rewriter = nil
-      end
+      return unless source != content
+
+      @storage.write(@relative_path, content.gsub("\n", @eol))
+      @source = content
+      @rewriter = nil
     end
 
     def gzipped_size

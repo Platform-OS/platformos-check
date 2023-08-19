@@ -31,8 +31,10 @@ class PlatformosCheck < Formula
 
     def gem_version
       return @version if defined?(@version) && @version
+
       @version = @resource.version if defined?(@resource)
       raise "Unable to determine version; did Homebrew change?" unless @version
+
       @version
     end
 
@@ -57,9 +59,7 @@ class PlatformosCheck < Formula
 
     # Use /usr/local/bin at the front of the path instead of Homebrew shims,
     # which mess with Ruby's own compiler config when building native extensions
-    if defined?(HOMEBREW_SHIMS_PATH)
-      ENV['PATH'] = ENV['PATH'].sub(HOMEBREW_SHIMS_PATH.to_s, '/usr/local/bin')
-    end
+    ENV['PATH'] = ENV['PATH'].sub(HOMEBREW_SHIMS_PATH.to_s, '/usr/local/bin') if defined?(HOMEBREW_SHIMS_PATH)
 
     system(
       "#{ruby_bin}/gem",

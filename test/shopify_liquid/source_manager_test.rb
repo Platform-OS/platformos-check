@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require_relative './source_test_helper'
+require_relative 'source_test_helper'
 
 module PlatformosCheck
   module ShopifyLiquid
@@ -41,7 +41,6 @@ module PlatformosCheck
         @source_manager_class.stubs(:default_destination).returns(tmp_dir)
 
         download_or_refresh_files
-
       ensure
         FileUtils.remove_entry(@tmp_dir)
       end
@@ -99,9 +98,9 @@ module PlatformosCheck
         assert_equal(revision_content, File.read(destination + "latest.json"))
 
         downloaded_files = Dir.glob(destination + '*')
-          .select { |file| File.file?(file) }
-          .map { |file| File.basename(file) }
-          .to_set
+                              .select { |file| File.file?(file) }
+                              .map { |file| File.basename(file) }
+                              .to_set
 
         assert_equal(["filters.json", "objects.json", "tags.json", "latest.json"].to_set, downloaded_files)
       end

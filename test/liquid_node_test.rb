@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -65,17 +66,23 @@ module PlatformosCheck
           a {% if a %}{% endif %}
       END
       node = find(root) { |n| n.markup == "if true " }
-      refute(node.inside_liquid_tag?)
+
+      refute_predicate(node, :inside_liquid_tag?)
       node = find(root) { |n| n.type_name == :assign }
-      assert(node.inside_liquid_tag?)
+
+      assert_predicate(node, :inside_liquid_tag?)
       node = find(root) { |n| n.type_name == :echo }
-      assert(node.inside_liquid_tag?)
+
+      assert_predicate(node, :inside_liquid_tag?)
       node = find(root) { |n| n.type_name == :render }
-      refute(node.inside_liquid_tag?)
+
+      refute_predicate(node, :inside_liquid_tag?)
       node = find(root) { |n| n.type_name == :comment }
-      refute(node.inside_liquid_tag?)
+
+      refute_predicate(node, :inside_liquid_tag?)
       node = find(root) { |n| n.markup =~ /if a/ }
-      refute(node.inside_liquid_tag?)
+
+      refute_predicate(node, :inside_liquid_tag?)
     end
 
     def test_whitespace_trimmed_start?
@@ -110,30 +117,42 @@ module PlatformosCheck
         -}}
       END
       node = find(root) { |n| n.markup =~ /assign x = 1/ }
-      assert(node.whitespace_trimmed_start?)
+
+      assert_predicate(node, :whitespace_trimmed_start?)
       node = find(root) { |n| n.markup =~ /assign x = 2/ }
-      refute(node.whitespace_trimmed_start?)
+
+      refute_predicate(node, :whitespace_trimmed_start?)
       node = find(root) { |n| n.markup =~ /assign x = 3/ }
-      assert(node.whitespace_trimmed_start?)
+
+      assert_predicate(node, :whitespace_trimmed_start?)
       node = find(root) { |n| n.markup =~ /assign x = 4/ }
-      refute(node.whitespace_trimmed_start?)
+
+      refute_predicate(node, :whitespace_trimmed_start?)
       node = find(root) { |n| n.markup =~ /assign x = 5/ }
-      assert(node.whitespace_trimmed_start?)
+
+      assert_predicate(node, :whitespace_trimmed_start?)
       node = find(root) { |n| n.markup =~ /assign x = 6/ }
-      refute(node.whitespace_trimmed_start?)
+
+      refute_predicate(node, :whitespace_trimmed_start?)
       # doesn't make sense in liquid tags
       node = find(root) { |n| n.markup =~ /assign x = 7/ }
-      refute(node.whitespace_trimmed_start?)
+
+      refute_predicate(node, :whitespace_trimmed_start?)
       node = find(root) { |n| n.markup =~ /assign x = 8/ }
-      refute(node.whitespace_trimmed_start?)
+
+      refute_predicate(node, :whitespace_trimmed_start?)
       node = find(root) { |n| n.markup =~ /yes/ }
-      assert(node.whitespace_trimmed_start?)
+
+      assert_predicate(node, :whitespace_trimmed_start?)
       node = find(root) { |n| n.markup =~ /no/ }
-      refute(node.whitespace_trimmed_start?)
+
+      refute_predicate(node, :whitespace_trimmed_start?)
       node = find(root) { |n| n.markup =~ /foo/ }
-      assert(node.whitespace_trimmed_start?)
+
+      assert_predicate(node, :whitespace_trimmed_start?)
       node = find(root) { |n| n.markup =~ /bar/ }
-      refute(node.whitespace_trimmed_start?)
+
+      refute_predicate(node, :whitespace_trimmed_start?)
     end
 
     def test_whitespace_trimmed_end?
@@ -168,30 +187,42 @@ module PlatformosCheck
         -}}
       END
       node = find(root) { |n| n.markup =~ /assign x = 1/ }
-      assert(node.whitespace_trimmed_end?)
+
+      assert_predicate(node, :whitespace_trimmed_end?)
       node = find(root) { |n| n.markup =~ /assign x = 2/ }
-      refute(node.whitespace_trimmed_end?)
+
+      refute_predicate(node, :whitespace_trimmed_end?)
       node = find(root) { |n| n.markup =~ /assign x = 3/ }
-      assert(node.whitespace_trimmed_end?)
+
+      assert_predicate(node, :whitespace_trimmed_end?)
       node = find(root) { |n| n.markup =~ /assign x = 4/ }
-      refute(node.whitespace_trimmed_end?)
+
+      refute_predicate(node, :whitespace_trimmed_end?)
       node = find(root) { |n| n.markup =~ /assign x = 5/ }
-      assert(node.whitespace_trimmed_end?)
+
+      assert_predicate(node, :whitespace_trimmed_end?)
       node = find(root) { |n| n.markup =~ /assign x = 6/ }
-      refute(node.whitespace_trimmed_end?)
+
+      refute_predicate(node, :whitespace_trimmed_end?)
       # doesn't make sense in liquid tags
       node = find(root) { |n| n.markup =~ /assign x = 7/ }
-      refute(node.whitespace_trimmed_end?)
+
+      refute_predicate(node, :whitespace_trimmed_end?)
       node = find(root) { |n| n.markup =~ /assign x = 8/ }
-      refute(node.whitespace_trimmed_end?)
+
+      refute_predicate(node, :whitespace_trimmed_end?)
       node = find(root) { |n| n.markup =~ /yes/ }
-      assert(node.whitespace_trimmed_end?)
+
+      assert_predicate(node, :whitespace_trimmed_end?)
       node = find(root) { |n| n.markup =~ /no/ }
-      refute(node.whitespace_trimmed_end?)
+
+      refute_predicate(node, :whitespace_trimmed_end?)
       node = find(root) { |n| n.markup =~ /foo/ }
-      refute(node.whitespace_trimmed_end?)
+
+      refute_predicate(node, :whitespace_trimmed_end?)
       node = find(root) { |n| n.markup =~ /bar/ }
-      assert(node.whitespace_trimmed_end?)
+
+      assert_predicate(node, :whitespace_trimmed_end?)
     end
 
     def test_block_start_and_end_schema
@@ -215,6 +246,7 @@ module PlatformosCheck
       END
 
       node = find(schema) { |n| n.type_name == :schema }
+
       assert_equal(12, node.inner_markup_start_index)
       assert_equal(205, node.inner_markup_end_index)
     end
@@ -280,6 +312,7 @@ module PlatformosCheck
           {{#{markup}}}
         LIQUID
         node = find(root) { |x| x.markup == markup }
+
         assert_equal(7, node.block_end_start_index)
         assert_equal(7, node.block_end_end_index)
       end
@@ -307,6 +340,7 @@ module PlatformosCheck
         LIQUID
         root = root_node(liquid)
         node = find(root) { |x| x.markup == markup }
+
         assert_equal(liquid.match('%}').end(0), node.block_end_start_index)
         assert_equal(liquid.match('%}').end(0), node.block_end_end_index)
       end
@@ -333,7 +367,7 @@ module PlatformosCheck
             silence
           {%- endcase %}
         LIQUID
-        BlockEndIndexTestCase.new(:for, <<~LIQUID, "{% endfor -%}"),
+        BlockEndIndexTestCase.new(:for, <<~LIQUID, "{% endfor -%}")
           {% for x in y %}
             do stuff
           {%- else %}
@@ -344,6 +378,7 @@ module PlatformosCheck
       test_cases.each do |t|
         root = root_node(t.liquid)
         node = find(root) { |x| x.type_name == t.type_name }
+
         assert_equal(t.liquid.match(t.block_end).begin(0), node.block_end_start_index)
         assert_equal(t.liquid.match(t.block_end).end(0), node.block_end_end_index)
       end
@@ -372,7 +407,7 @@ module PlatformosCheck
             endcase
           %}
         LIQUID
-        BlockEndIndexTestCase.new(:for, <<~LIQUID, /^  endfor\n/),
+        BlockEndIndexTestCase.new(:for, <<~LIQUID, /^  endfor\n/)
           {% liquid
             for thing in things
               echo scream
@@ -385,6 +420,7 @@ module PlatformosCheck
       test_cases.each do |t|
         root = root_node(t.liquid)
         node = find(root) { |x| x.type_name == t.type_name }
+
         assert_equal(t.liquid.match(t.block_end).begin(0), node.block_end_start_index)
         assert_equal(t.liquid.match(t.block_end).end(0), node.block_end_end_index)
       end
@@ -400,6 +436,7 @@ module PlatformosCheck
       END
       fo = root_node(liquid)
       node = find(fo) { |n| n.type_name == :for }
+
       assert_equal(<<~INNER, node.inner_markup)
         \nThe collection is not empty.
         {% else %}
@@ -674,19 +711,20 @@ module PlatformosCheck
     end
 
     # @returns [LiquidNode]
-    def find(node, &block)
-      return node if block.call(node)
+    def find(node, &)
+      return node if yield(node)
       return nil if node.children.nil? || node.children.empty?
+
       node.children
-        .map { |n| find(n, &block) }
-        .find { |n| !n.nil? }
+          .map { |n| find(n, &) }
+          .find { |n| !n.nil? }
     end
 
-    def map(node, &block)
+    def map(node, &)
       [
-        block.call(node),
+        yield(node),
         node.children
-          .map { |n| map(n, &block) },
+            .map { |n| map(n, &) }
       ].reject(&:nil?)
     end
 
@@ -700,9 +738,10 @@ module PlatformosCheck
     def assert_can_find_node_with_outer_markup(outer_markup, source = nil)
       source = outer_markup if source.nil?
       root = root_node(source)
+
       assert(
         find(root) { |n| n.outer_markup == outer_markup },
-        <<~ERRMSG,
+        <<~ERRMSG
           Expected to find node with outer_markup:
           ```
           #{outer_markup}
@@ -717,13 +756,12 @@ module PlatformosCheck
       source = outer_markup if source.nil?
       root = root_node(source)
       node = find(root) { |n| n.outer_markup == outer_markup && n.inner_markup != n.outer_markup }
-      if expected != node&.inner_markup
-        debug(root)
-      end
+      debug(root) if expected != node&.inner_markup
+
       refute_nil(node)
       assert_equal(
         expected,
-        node.inner_markup,
+        node.inner_markup
       )
     end
 
@@ -733,7 +771,7 @@ module PlatformosCheck
           type: n.value.class,
           outer: n.outer_markup,
           inner: n.inner_markup,
-          markup: n.markup,
+          markup: n.markup
         }
       end
     end

@@ -11,6 +11,7 @@ module PlatformosCheck
       def document_links(relative_path)
         buffer = @storage.read(relative_path)
         return [] unless buffer
+
         @providers.flat_map do |p|
           p.document_links(buffer)
         end

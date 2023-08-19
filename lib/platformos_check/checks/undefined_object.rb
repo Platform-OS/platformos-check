@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class UndefinedObject < LiquidCheck
     category :liquid
@@ -48,6 +49,7 @@ module PlatformosCheck
           name, _line_number = key
 
           next if unique_keys && seen.include?(name)
+
           seen << name
 
           yield [key, info]
@@ -63,21 +65,25 @@ module PlatformosCheck
 
     def on_document(node)
       return if ignore?(node)
+
       @files[node.theme_file.name] = TemplateInfo.new
     end
 
     def on_assign(node)
       return if ignore?(node)
+
       @files[node.theme_file.name].all_assigns[node.value.to] = node
     end
 
     def on_capture(node)
       return if ignore?(node)
-      @files[node.theme_file.name].all_captures[node.value.instance_variable_get('@to')] = node
+
+      @files[node.theme_file.name].all_captures[node.value.instance_variable_get(:@to)] = node
     end
 
     def on_for(node)
       return if ignore?(node)
+
       @files[node.theme_file.name].all_forloops[node.value.variable_name] = node
     end
 
@@ -93,15 +99,16 @@ module PlatformosCheck
       snippet_name = "snippets/#{node.value.template_name_expr}"
       @files[node.theme_file.name].add_render(
         name: snippet_name,
-        node: node,
+        node:
       )
     end
 
     def on_variable_lookup(node)
       return if ignore?(node)
+
       @files[node.theme_file.name].add_variable_lookup(
         name: node.value.name,
-        node: node,
+        node:
       )
     end
 
@@ -148,6 +155,7 @@ module PlatformosCheck
     def each_template
       @files.each do |(name, info)|
         next if name.start_with?('snippets/')
+
         yield [name, info]
       end
     end
@@ -160,7 +168,7 @@ module PlatformosCheck
         next unless snippet_info # NOTE: undefined snippet
 
         snippet_variables = node.value.attributes.keys +
-          Array[node.value.instance_variable_get("@alias_name")]
+                            [node.value.instance_variable_get(:@alias_name)]
         unless visited_snippets.include?(snippet_name)
           visited_snippets << snippet_name
           check_object(snippet_info, all_global_objects + snippet_variables, node, visited_snippets)
@@ -177,14 +185,14 @@ module PlatformosCheck
         next if all_global_objects.include?(name)
 
         node = node.parent
-        node = node.parent if %i(condition variable_lookup).include?(node.type_name)
+        node = node.parent if %i[condition variable_lookup].include?(node.type_name)
 
         next if node.variable? && node.filters.any? { |(filter_name)| filter_name == "default" }
 
         if render_node
           add_offense("Missing argument `#{name}`", node: render_node)
         else
-          add_offense("Undefined object `#{name}`", node: node, line_number: line_number)
+          add_offense("Undefined object `#{name}`", node:, line_number:)
         end
       end
     end

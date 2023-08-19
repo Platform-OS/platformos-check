@@ -8,17 +8,17 @@ module PlatformosCheck
     category :liquid
     doc docs_url(__FILE__)
 
-    REQUIRED_LIQUID_FILES = %w(layout/theme)
+    REQUIRED_LIQUID_FILES = %w[layout/theme]
 
-    REQUIRED_LIQUID_TEMPLATE_FILES = %w(
+    REQUIRED_LIQUID_TEMPLATE_FILES = %w[
       gift_card customers/account customers/activate_account customers/addresses
       customers/login customers/order customers/register customers/reset_password
-    ).map { |file| "templates/#{file}" }
+    ].map { |file| "templates/#{file}" }
 
-    REQUIRED_JSON_TEMPLATE_FILES = %w(
+    REQUIRED_JSON_TEMPLATE_FILES = %w[
       index product collection cart blog article page list-collections search 404
       password
-    ).map { |file| "templates/#{file}" }
+    ].map { |file| "templates/#{file}" }
 
     REQUIRED_TEMPLATE_FILES = (REQUIRED_LIQUID_TEMPLATE_FILES + REQUIRED_JSON_TEMPLATE_FILES)
 
@@ -34,10 +34,10 @@ module PlatformosCheck
             corrector.create_file(@theme.storage, "#{file}.liquid", "")
           else
             corrector.create_file(@theme.storage, "#{file}.json", JSON.pretty_generate({
-              name: "TODO",
-              sections: {},
-              order: [],
-            }))
+                                                                                         name: "TODO",
+                                                                                         sections: {},
+                                                                                         order: []
+                                                                                       }))
           end
         end
       end

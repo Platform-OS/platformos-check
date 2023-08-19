@@ -3,10 +3,10 @@
 module PlatformosCheck
   module LanguageServer
     class Configuration
-      CHECK_ON_OPEN = :"themeCheck.checkOnOpen"
-      CHECK_ON_SAVE = :"themeCheck.checkOnSave"
-      CHECK_ON_CHANGE = :"themeCheck.checkOnChange"
-      ONLY_SINGLE_FILE = :"themeCheck.onlySingleFileChecks"
+      CHECK_ON_OPEN = :'themeCheck.checkOnOpen'
+      CHECK_ON_SAVE = :'themeCheck.checkOnSave'
+      CHECK_ON_CHANGE = :'themeCheck.checkOnChange'
+      ONLY_SINGLE_FILE = :'themeCheck.onlySingleFileChecks'
 
       def initialize(bridge, capabilities)
         @bridge = bridge
@@ -17,7 +17,7 @@ module PlatformosCheck
           CHECK_ON_OPEN => null_coalesce(@capabilities.initialization_option(CHECK_ON_OPEN), true),
           CHECK_ON_SAVE => null_coalesce(@capabilities.initialization_option(CHECK_ON_SAVE), true),
           CHECK_ON_CHANGE => null_coalesce(@capabilities.initialization_option(CHECK_ON_CHANGE), true),
-          ONLY_SINGLE_FILE => null_coalesce(@capabilities.initialization_option(ONLY_SINGLE_FILE), false),
+          ONLY_SINGLE_FILE => null_coalesce(@capabilities.initialization_option(ONLY_SINGLE_FILE), false)
         }
       end
 
@@ -30,7 +30,7 @@ module PlatformosCheck
             CHECK_ON_OPEN,
             CHECK_ON_SAVE,
             CHECK_ON_CHANGE,
-            ONLY_SINGLE_FILE,
+            ONLY_SINGLE_FILE
           ]
 
           configs = @bridge.send_request(
@@ -50,10 +50,11 @@ module PlatformosCheck
 
       def register_did_change_capability
         return unless @capabilities.supports_workspace_did_change_configuration_dynamic_registration?
+
         @bridge.send_request('client/registerCapability', registrations: [{
-          id: "workspace/didChangeConfiguration",
-          method: "workspace/didChangeConfiguration",
-        }])
+                               id: "workspace/didChangeConfiguration",
+                               method: "workspace/didChangeConfiguration"
+                             }])
       end
 
       def initialized?

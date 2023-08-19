@@ -24,7 +24,7 @@ module PlatformosCheck
             'examples' => [],
             'return_type' => [{ 'type' => 'string', 'name' => '', 'description' => '', 'array_value' => '' }],
             'summary' => 'Returns "User-agent".',
-            'name' => 'directive',
+            'name' => 'directive'
           }
         end
       end

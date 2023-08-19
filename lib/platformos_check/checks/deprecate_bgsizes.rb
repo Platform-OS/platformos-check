@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class DeprecateBgsizes < HtmlCheck
     severity :suggestion
@@ -7,8 +8,8 @@ module PlatformosCheck
 
     def on_div(node)
       class_list = node.attributes["class"]&.split(" ")
-      add_offense("Use the native loading=\"lazy\" attribute instead of lazysizes", node: node) if class_list&.include?("lazyload")
-      add_offense("Use the CSS imageset attribute instead of data-bgset", node: node) if node.attributes["data-bgset"]
+      add_offense("Use the native loading=\"lazy\" attribute instead of lazysizes", node:) if class_list&.include?("lazyload")
+      add_offense("Use the CSS imageset attribute instead of data-bgset", node:) if node.attributes["data-bgset"]
     end
   end
 end

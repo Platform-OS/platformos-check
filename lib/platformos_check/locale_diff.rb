@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class LocaleDiff
-    PLURALIZATION_KEYS = Set.new(["zero", "one", "two", "few", "many", "other"])
+    PLURALIZATION_KEYS = Set.new(%w[zero one two few many other])
 
     attr_reader :extra_keys, :missing_keys
 
@@ -17,13 +18,13 @@ module PlatformosCheck
     def add_as_offenses(check, key_prefix: [], node: nil, theme_file: nil, schema: {})
       if extra_keys.any?
         remove_extra_keys_offense(check, "Extra translation keys", extra_keys,
-          key_prefix: key_prefix, node: node, theme_file: theme_file, schema: schema)
+                                  key_prefix:, node:, theme_file:, schema:)
       end
 
-      if missing_keys.any?
-        add_missing_keys_offense(check, "Missing translation keys", missing_keys,
-          key_prefix: key_prefix, node: node, theme_file: theme_file, schema: schema)
-      end
+      return unless missing_keys.any?
+
+      add_missing_keys_offense(check, "Missing translation keys", missing_keys,
+                               key_prefix:, node:, theme_file:, schema:)
     end
 
     private
@@ -31,40 +32,40 @@ module PlatformosCheck
     def remove_extra_keys_offense(check, cause, extra_keys, key_prefix:, node: nil, theme_file: nil, schema: {})
       message = "#{cause}: #{format_keys(key_prefix, extra_keys)}"
       if node
-        check.add_offense(message, node: node) do |corrector|
+        check.add_offense(message, node:) do |corrector|
           extra_keys.each do |k|
             SchemaHelper.delete(schema, key_prefix + k)
           end
           corrector.replace_inner_json(node, schema)
         end
       elsif theme_file.is_a?(JsonFile)
-        check.add_offense(message, theme_file: theme_file) do |corrector|
+        check.add_offense(message, theme_file:) do |corrector|
           extra_keys.each do |k|
             corrector.remove_translation(theme_file, key_prefix + k)
           end
         end
       else
-        check.add_offense(message, theme_file: theme_file)
+        check.add_offense(message, theme_file:)
       end
     end
 
     def add_missing_keys_offense(check, cause, missing_keys, key_prefix:, node: nil, theme_file: nil, schema: {})
       message = "#{cause}: #{format_keys(key_prefix, missing_keys)}"
       if node
-        check.add_offense(message, node: node) do |corrector|
+        check.add_offense(message, node:) do |corrector|
           missing_keys.each do |k|
             SchemaHelper.set(schema, key_prefix + k, "TODO")
           end
           corrector.replace_inner_json(node, schema)
         end
       elsif theme_file.is_a?(JsonFile)
-        check.add_offense(message, theme_file: theme_file) do |corrector|
+        check.add_offense(message, theme_file:) do |corrector|
           missing_keys.each do |k|
             corrector.add_translation(theme_file, key_prefix + k, "TODO")
           end
         end
       else
-        check.add_offense(message, theme_file: theme_file)
+        check.add_offense(message, theme_file:)
       end
     end
 
@@ -101,6 +102,7 @@ module PlatformosCheck
 
     def system_translations(path)
       return ShopifyLiquid::SystemTranslations.translations_hash if path.empty?
+
       ShopifyLiquid::SystemTranslations.translations_hash.dig(*path) || {}
     end
   end

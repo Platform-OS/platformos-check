@@ -25,9 +25,9 @@ module PlatformosCheck
         content = ShopifyLiquid::Documentation.object_doc(object)
 
         {
-          label: label,
+          label:,
           kind: CompletionItemKinds::VARIABLE,
-          **doc_hash(content),
+          **doc_hash(content)
         }
       end
 

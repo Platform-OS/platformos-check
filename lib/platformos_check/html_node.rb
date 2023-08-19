@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "forwardable"
 
 module PlatformosCheck
@@ -32,6 +33,7 @@ module PlatformosCheck
         matches(parseable_source, LIQUID_TAG_OR_VARIABLE).each do |m|
           value = m[0]
           next unless value.size > 4 # skip empty tags/variables {%%} and {{}}
+
           placeholder_values.push(value)
           key = (placeholder_values.size - 1).to_s(36)
 
@@ -89,8 +91,8 @@ module PlatformosCheck
 
     def children
       @children ||= @value
-        .children
-        .map { |child| HtmlNode.new(child, theme_file, @placeholder_values, @parseable_source, self) }
+                    .children
+                    .map { |child| HtmlNode.new(child, theme_file, @placeholder_values, @parseable_source, self) }
     end
 
     def markup
@@ -135,8 +137,8 @@ module PlatformosCheck
 
     def attributes
       @attributes ||= @value.attributes
-        .map { |k, v| [replace_placeholders(k), replace_placeholders(v.value)] }
-        .to_h
+                            .map { |k, v| [replace_placeholders(k), replace_placeholders(v.value)] }
+                            .to_h
     end
 
     def parseable_markup
@@ -193,14 +195,14 @@ module PlatformosCheck
       @position ||= Position.new(
         markup,
         theme_file.source,
-        line_number_1_indexed: line_number,
+        line_number_1_indexed: line_number
       )
     end
 
     def replace_placeholders(string)
       # Replace all ≬{i}####≬ with the actual content.
       string.gsub(HTML_LIQUID_PLACEHOLDER) do |match|
-        key = /[0-9a-z]+/.match(match.gsub("\n", ''))[0]
+        key = /[0-9a-z]+/.match(match.delete("\n"))[0]
         @placeholder_values[key.to_i(36)]
       end
     end

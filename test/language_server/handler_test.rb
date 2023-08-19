@@ -15,7 +15,7 @@ module PlatformosCheck
           "layout/theme.liquid" => "<html>hello world</html>",
           "sections/main.liquid" => "{% render 'error' %}",
           "snippets/error.liquid" => "{% if unclosed %}",
-          ".theme-check.yml" => <<~YAML,
+          ".theme-check.yml" => <<~YAML
             extends: nothing
             SyntaxError:
               enabled: true
@@ -27,37 +27,40 @@ module PlatformosCheck
 
       def test_handle_initialize_no_path
         initialize!(1, nil, nil)
+
         assert_includes(@mock_messenger.sent_messages, {
-          jsonrpc: "2.0",
-          id: 1,
-          result: {
-            capabilities: {},
-          },
-        })
+                          jsonrpc: "2.0",
+                          id: 1,
+                          result: {
+                            capabilities: {}
+                          }
+                        })
       end
 
       def test_handle_initialize_with_root_uri
         initialize!(1, @storage.root)
+
         assert_includes(@mock_messenger.sent_messages, {
-          jsonrpc: "2.0",
-          id: 1,
-          result: {
-            capabilities: Handler::CAPABILITIES,
-            serverInfo: Handler::SERVER_INFO,
-          },
-        })
+                          jsonrpc: "2.0",
+                          id: 1,
+                          result: {
+                            capabilities: Handler::CAPABILITIES,
+                            serverInfo: Handler::SERVER_INFO
+                          }
+                        })
       end
 
       def test_handle_initialize_with_root_path
         initialize!(1, nil, @storage.root)
+
         assert_includes(@mock_messenger.sent_messages, {
-          jsonrpc: "2.0",
-          id: 1,
-          result: {
-            capabilities: Handler::CAPABILITIES,
-            serverInfo: Handler::SERVER_INFO,
-          },
-        })
+                          jsonrpc: "2.0",
+                          id: 1,
+                          result: {
+                            capabilities: Handler::CAPABILITIES,
+                            serverInfo: Handler::SERVER_INFO
+                          }
+                        })
       end
 
       def test_handle_document_did_open_does_not_crash
@@ -97,14 +100,14 @@ module PlatformosCheck
         # we notify the handler that a file was created with a
         # workspace/didCreateFiles notification
         @handler.on_workspace_did_create_files(nil, {
-          files: [
-            { uri: uri(new_file_path) },
-          ],
-        })
+                                                 files: [
+                                                   { uri: uri(new_file_path) }
+                                                 ]
+                                               })
 
         # we make sure our handler now knows
         assert(handler_storage.read(new_file_path))
-        assert_equal(handler_storage.read(new_file_path), 'hello')
+        assert_equal('hello', handler_storage.read(new_file_path))
       end
 
       def test_handle_workspace_did_delete_files
@@ -139,15 +142,15 @@ module PlatformosCheck
         # We respond nil here because we're not doing a
         # WorkspaceEdit in response to the rename.
         assert_includes(@mock_messenger.sent_messages, {
-          jsonrpc: '2.0',
-          result: nil,
-          id: 2,
-        })
+                          jsonrpc: '2.0',
+                          result: nil,
+                          id: 2
+                        })
 
         # we make sure our handler now knows
         refute(handler_storage.read(old_file_path))
         assert(handler_storage.read(new_file_path))
-        assert_equal(handler_storage.read(new_file_path), '<html>hello world</html>')
+        assert_equal('<html>hello world</html>', handler_storage.read(new_file_path))
       end
 
       def test_handle_workspace_will_rename_files_diagnostics_handling
@@ -209,7 +212,7 @@ module PlatformosCheck
         initialize!(1, nil, @storage.root)
         initialized!
         PlatformosCheck::LanguageServer::Configuration.any_instance
-          .stubs(:only_single_file?).returns(true)
+                                                      .stubs(:only_single_file?).returns(true)
 
         file_path = "snippets/error.liquid"
 
@@ -234,7 +237,7 @@ module PlatformosCheck
         initialize!(1, nil, @storage.root)
         initialized!
         PlatformosCheck::LanguageServer::Configuration.any_instance
-          .stubs(:only_single_file?).returns(false)
+                                                      .stubs(:only_single_file?).returns(false)
 
         file_path = "snippets/error.liquid"
 
@@ -258,7 +261,7 @@ module PlatformosCheck
       private
 
       def handler_storage
-        @handler.instance_variable_get('@storage')
+        @handler.instance_variable_get(:@storage)
       end
 
       def uri(relative_path)
@@ -267,9 +270,9 @@ module PlatformosCheck
 
       def initialize!(id, root_uri_path, root_path = nil)
         @handler.on_initialize(id, {
-          rootUri: file_uri(root_uri_path),
-          rootPath: root_path,
-        })
+                                 rootUri: file_uri(root_uri_path),
+                                 rootPath: root_path
+                               })
       end
 
       def initialized!
@@ -279,28 +282,28 @@ module PlatformosCheck
 
       def did_open!(relative_path)
         @handler.on_text_document_did_open(nil, {
-          textDocument: {
-            text: @storage.read(relative_path),
-            uri: uri(relative_path),
-            version: 1,
-          },
-        })
+                                             textDocument: {
+                                               text: @storage.read(relative_path),
+                                               uri: uri(relative_path),
+                                               version: 1
+                                             }
+                                           })
       end
 
       def did_close!(relative_path)
         @handler.on_text_document_did_close(nil, {
-          textDocument: {
-            uri: uri(relative_path),
-          },
-        })
+                                              textDocument: {
+                                                uri: uri(relative_path)
+                                              }
+                                            })
       end
 
       def did_delete!(relative_path)
         @handler.on_workspace_did_delete_files(nil, {
-          files: [
-            { uri: uri(relative_path) },
-          ],
-        })
+                                                 files: [
+                                                   { uri: uri(relative_path) }
+                                                 ]
+                                               })
       end
 
       def will_rename!(old_file_path, new_file_path)
@@ -313,42 +316,46 @@ module PlatformosCheck
         refute(handler_storage.read(new_file_path))
 
         @handler.on_workspace_will_rename_files(2, {
-          files: [
-            {
-              oldUri: uri(old_file_path),
-              newUri: uri(new_file_path),
-            },
-          ],
-        })
+                                                  files: [
+                                                    {
+                                                      oldUri: uri(old_file_path),
+                                                      newUri: uri(new_file_path)
+                                                    }
+                                                  ]
+                                                })
       end
 
       # @param method [String]
       # @param &pred [Block] - a predicate (params) => Boolean
       def assert_notification_received(method, &pred)
         notifications = @mock_messenger.sent_messages
-          .filter { |message| message[:method] == method }
+                                       .filter { |message| message[:method] == method }
+
         refute_empty(notifications)
 
         return unless pred
 
         notification = notifications
-          .map { |message| message[:params] }
-          .reverse!
-          .find(&pred)
+                       .map { |message| message[:params] }
+                       .reverse!
+                       .find(&pred)
+
         assert(notification, "Did not find message matching predicate in #{JSON.pretty_generate(notifications)}")
       end
 
       def refute_notification_received(method, &pred)
         notifications = @mock_messenger.sent_messages
-          .filter { |message| message[:method] == method }
+                                       .filter { |message| message[:method] == method }
+
         refute_empty(notifications)
 
         return unless pred
 
         notification = notifications
-          .map { |message| message[:params] }
-          .reverse!
-          .find(&pred)
+                       .map { |message| message[:params] }
+                       .reverse!
+                       .find(&pred)
+
         refute(notification, "Expected not to find message matching predicate in #{JSON.pretty_generate(notifications)}")
       end
     end

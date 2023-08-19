@@ -20,7 +20,7 @@ module PlatformosCheck
       "large" => 480,
       "grande" => 600,
       "original" => 1024,
-      "master" => nil,
+      "master" => nil
     }
 
     def on_variable(node)
@@ -42,7 +42,7 @@ module PlatformosCheck
       alternatives = alternatives.map { |alt| "`#{alt}`" }
       add_offense(
         "Deprecated filter `#{filter}`, consider using an alternative: #{alternatives.join(', ')}",
-        node: node,
+        node:
       )
     end
 
@@ -55,12 +55,12 @@ module PlatformosCheck
       # Can't correct those.
       return add_default_offense(node, 'img_url', ['image_url']) unless
         (size_spec.nil? || size_spec.is_a?(String)) &&
-          (scale.nil? || scale.is_a?(Numeric))
+        (scale.nil? || scale.is_a?(Numeric))
 
       return add_default_offense(node, 'img_url', ['image_url']) if
         size_spec.is_a?(String) &&
-          size_spec !~ SIZE_REGEX &&
-          !NAMED_SIZES.key?(size_spec)
+        size_spec !~ SIZE_REGEX &&
+        !NAMED_SIZES.key?(size_spec)
 
       node_source = node.markup
 
@@ -71,31 +71,31 @@ module PlatformosCheck
 
       scale = (scale || 1).to_i
       width, height = if size_spec.nil?
-        [100, 100]
-      elsif NAMED_SIZES.key?(size_spec)
-        [NAMED_SIZES[size_spec], NAMED_SIZES[size_spec]]
-      else
-        size_spec.split('x')
-      end.map { |v| v.to_i * scale }
+                        [100, 100]
+                      elsif NAMED_SIZES.key?(size_spec)
+                        [NAMED_SIZES[size_spec], NAMED_SIZES[size_spec]]
+                      else
+                        size_spec.split('x')
+                      end.map { |v| v.to_i * scale }
 
       image_url_filter_params = [
         width && width > 0 ? "width: #{[width, MAX_SIZE].min}" : nil,
-        height && height > 0 ? "height: #{[height, MAX_SIZE].min}" : nil,
+        height && height > 0 ? "height: #{[height, MAX_SIZE].min}" : nil
       ]
       image_url_filter_params += (img_url_filter_props || {})
-        .map do |k, v|
-          case v
-          when Liquid::VariableLookup
-            "#{k}: #{v.name}"
-          when String
-            "#{k}: '#{v}'"
-          else
-            "#{k}: #{v}"
-          end
+                                 .map do |k, v|
+        case v
+        when Liquid::VariableLookup
+          "#{k}: #{v.name}"
+        when String
+          "#{k}: '#{v}'"
+        else
+          "#{k}: #{v}"
         end
+      end
       image_url_filter_params = image_url_filter_params
-        .reject(&:nil?)
-        .join(", ")
+                                .reject(&:nil?)
+                                .join(", ")
 
       trailing_whitespace = match[0].match(/\s*\Z/)[0]
 
@@ -105,18 +105,18 @@ module PlatformosCheck
 
       add_offense(
         "Deprecated filter `img_url`, consider using `image_url`",
-        node: node,
+        node:,
         markup: match[0]
       ) do |corrector|
         corrector.replace(
           node,
           image_url_filter,
-          img_url_character_range,
+          img_url_character_range
         )
       end
 
     # If anything goes wrong, fail gracefully by returning the default offense.
-    rescue
+    rescue StandardError
       add_default_offense(node, 'img_url', ['image_url'])
     end
   end

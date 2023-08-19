@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'yaml'
 
 module PlatformosCheck
@@ -18,8 +19,8 @@ module PlatformosCheck
 
       def all
         @all ||= SourceIndex.deprecated_filters
-          .values
-          .each_with_object({}) do |filters, acc|
+                            .values
+                            .each_with_object({}) do |filters, acc|
           filters.each do |(filter, alternatives)|
             acc[filter] = alternatives
           end

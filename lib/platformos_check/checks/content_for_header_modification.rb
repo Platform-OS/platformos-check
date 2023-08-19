@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class ContentForHeaderModification < LiquidCheck
     severity :error
@@ -14,12 +15,12 @@ module PlatformosCheck
       return unless node.value.name.is_a?(Liquid::VariableLookup)
       return unless node.value.name.name == "content_for_header"
 
-      if @in_assign || @in_capture || node.filters.any?
-        add_offense(
-          "Do not rely on the content of `content_for_header`",
-          node: node,
-        )
-      end
+      return unless @in_assign || @in_capture || node.filters.any?
+
+      add_offense(
+        "Do not rely on the content of `content_for_header`",
+        node:
+      )
     end
 
     def on_assign(_node)

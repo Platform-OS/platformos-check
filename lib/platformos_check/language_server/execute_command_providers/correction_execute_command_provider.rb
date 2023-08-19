@@ -23,9 +23,9 @@ module PlatformosCheck
         # attempt to apply the document changes
         workspace_edit = diagnostics_manager.workspace_edit(diagnostic_hashes)
         result = bridge.send_request('workspace/applyEdit', {
-          label: 'Theme Check correction',
-          edit: workspace_edit,
-        })
+                                       label: 'Theme Check correction',
+                                       edit: workspace_edit
+                                     })
 
         # Bail if unable to apply changes
         return unless result[:applied]
@@ -37,9 +37,9 @@ module PlatformosCheck
         diagnostics_update
           .map do |relative_path, diagnostics|
             bridge.send_notification('textDocument/publishDiagnostics', {
-              uri: file_uri(storage.path(relative_path)),
-              diagnostics: diagnostics.map(&:to_h),
-            })
+                                       uri: file_uri(storage.path(relative_path)),
+                                       diagnostics: diagnostics.map(&:to_h)
+                                     })
             storage.path(relative_path)
           end
       end

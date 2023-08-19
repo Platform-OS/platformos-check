@@ -39,7 +39,7 @@ module PlatformosCheck
         markup.scan(TAG_ATTRIBUTES) do |key, value|
           unless well_formed_object_access?(value)
             raise Liquid::SyntaxError,
-              'Invalid syntax for function tag, no spaces allowed when accessing array or hash.'
+                  'Invalid syntax for function tag, no spaces allowed when accessing array or hash.'
           end
 
           @attributes_expr[key] = Liquid::Expression.parse(value)
@@ -67,10 +67,12 @@ module PlatformosCheck
         super
 
         match = markup.match(SYNTAX)
-        raise(
-          Liquid::SyntaxError,
-          "Error in tag 'section' - Valid syntax: section '[type]'",
-        ) unless match
+        unless match
+          raise(
+            Liquid::SyntaxError,
+            "Error in tag 'section' - Valid syntax: section '[type]'"
+          )
+        end
         @section_name = match[:section_name].tr(%('"), '')
         @section_name.chomp!(".liquid") if @section_name.end_with?(".liquid")
       end
@@ -85,10 +87,12 @@ module PlatformosCheck
         super
 
         match = markup.match(SYNTAX)
-        raise(
-          Liquid::SyntaxError,
-          "Error in tag 'sections' - Valid syntax: sections '[type]'",
-        ) unless match
+        unless match
+          raise(
+            Liquid::SyntaxError,
+            "Error in tag 'sections' - Valid syntax: sections '[type]'"
+          )
+        end
         @sections_name = match[:sections_name].tr(%('"), '')
         @sections_name.chomp!(".liquid") if @sections_name.end_with?(".liquid")
       end
@@ -103,18 +107,19 @@ module PlatformosCheck
       #
       # old format: form product
       # new format: form "product", product, id: "newID", class: "custom-class", data-example: "100"
-      FORM_FORMAT = %r{
+      FORM_FORMAT = /
       (?<type>#{Liquid::QuotedFragment})
       (?:\s*,\s*(?<variable_name>#{Liquid::VariableSignature}+)(?!:))?
         (?<attributes>(?:\s*,\s*(?:#{TAG_ATTRIBUTES}))*)\s*\Z
-        }xo
+        /xo
 
-        attr_reader :type_expr, :variable_name_expr, :tag_attributes
+      attr_reader :type_expr, :variable_name_expr, :tag_attributes
 
       def initialize(tag_name, markup, options)
         super
         @match = FORM_FORMAT.match(markup)
         raise Liquid::SyntaxError, "in 'form' - Valid syntax: form 'type'[, object]" unless @match
+
         @type_expr = parse_expression(@match[:type])
         @variable_name_expr = parse_expression(@match[:variable_name])
         tag_attributes = @match[:attributes].scan(TAG_ATTRIBUTES)
@@ -138,25 +143,23 @@ module PlatformosCheck
 
       def initialize(tag_name, markup, options)
         super
-        if (matches = markup.match(SYNTAX))
-          @liquid_variable_name = matches[:liquid_variable_name]
-          @page_size = parse_expression(matches[:page_size])
-          @window_size = nil # determines how many pagination links are shown
+        raise(Liquid::SyntaxError, "in tag 'paginate' - Valid syntax: paginate [collection] by number") unless (matches = markup.match(SYNTAX))
 
-          @liquid_variable_count_expr = parse_expression("#{@liquid_variable_name}_count")
+        @liquid_variable_name = matches[:liquid_variable_name]
+        @page_size = parse_expression(matches[:page_size])
+        @window_size = nil # determines how many pagination links are shown
 
-          var_parts = @liquid_variable_name.rpartition('.')
-          @source_drop_expr = parse_expression(var_parts[0].empty? ? var_parts.last : var_parts.first)
-          @method_name = var_parts.last.to_sym
+        @liquid_variable_count_expr = parse_expression("#{@liquid_variable_name}_count")
 
-          markup.scan(Liquid::TagAttributes) do |key, value|
-            case key
-            when 'window_size'
-              @window_size = value.to_i
-            end
+        var_parts = @liquid_variable_name.rpartition('.')
+        @source_drop_expr = parse_expression(var_parts[0].empty? ? var_parts.last : var_parts.first)
+        @method_name = var_parts.last.to_sym
+
+        markup.scan(Liquid::TagAttributes) do |key, value|
+          case key
+          when 'window_size'
+            @window_size = value.to_i
           end
-        else
-          raise(Liquid::SyntaxError, "in tag 'paginate' - Valid syntax: paginate [collection] by number")
         end
       end
 
@@ -170,17 +173,19 @@ module PlatformosCheck
     class Layout < Liquid::Tag
       SYNTAX = /(?<layout>#{Liquid::QuotedFragment})/
 
-      NO_LAYOUT_KEYS = %w(false nil none).freeze
+      NO_LAYOUT_KEYS = %w[false nil none].freeze
 
       attr_reader :layout_expr
 
       def initialize(tag_name, markup, tokens)
         super
         match = markup.match(SYNTAX)
-        raise(
-          Liquid::SyntaxError,
-          "in 'layout' - Valid syntax: layout (none|[layout_name])",
-        ) unless match
+        unless match
+          raise(
+            Liquid::SyntaxError,
+            "in 'layout' - Valid syntax: layout (none|[layout_name])"
+          )
+        end
         layout_markup = match[:layout]
         @layout_expr = if NO_LAYOUT_KEYS.include?(layout_markup.downcase)
                          false
@@ -197,7 +202,7 @@ module PlatformosCheck
     end
 
     class Render < Liquid::Tag
-      SYNTAX = %r{
+      SYNTAX = /
       (
         ## for {% render "snippet" %}
           #{Liquid::QuotedString}+ |
@@ -213,40 +218,40 @@ module PlatformosCheck
            (\s+(?:as)\s+(#{Liquid::VariableSegment}+))?
                          ## variables passed into the tag (e.g. {% render "snippet", var1: value1, var2: value2 %}
                          ## are not matched by this regex and are handled by Liquid::Render.initialize
-}xo
+/xo
 
-disable_tags "include"
+      disable_tags "include"
 
-attr_reader :template_name_expr, :variable_name_expr, :attributes
+      attr_reader :template_name_expr, :variable_name_expr, :attributes
 
-def initialize(tag_name, markup, options)
-  super
+      def initialize(tag_name, markup, options)
+        super
 
-  raise Liquid::SyntaxError, options[:locale].t("errors.syntax.render") unless markup =~ SYNTAX
+        raise Liquid::SyntaxError, options[:locale].t("errors.syntax.render") unless markup =~ SYNTAX
 
-  template_name = Regexp.last_match(1)
-  with_or_for = Regexp.last_match(3)
-  variable_name = Regexp.last_match(4)
+        template_name = Regexp.last_match(1)
+        with_or_for = Regexp.last_match(3)
+        variable_name = Regexp.last_match(4)
 
-  @alias_name = Regexp.last_match(6)
-  @variable_name_expr = variable_name ? parse_expression(variable_name) : nil
-  @template_name_expr = parse_expression(template_name)
-  @for = (with_or_for == Liquid::Render::FOR)
+        @alias_name = Regexp.last_match(6)
+        @variable_name_expr = variable_name ? parse_expression(variable_name) : nil
+        @template_name_expr = parse_expression(template_name)
+        @for = (with_or_for == Liquid::Render::FOR)
 
-  @attributes = {}
-  markup.scan(Liquid::TagAttributes) do |key, value|
-    @attributes[key] = parse_expression(value)
-  end
-end
+        @attributes = {}
+        markup.scan(Liquid::TagAttributes) do |key, value|
+          @attributes[key] = parse_expression(value)
+        end
+      end
 
-class ParseTreeVisitor < Liquid::ParseTreeVisitor
-  def children
-    [
-      @node.template_name_expr,
-      @node.variable_name_expr,
-    ] + @node.attributes.values
-  end
-end
+      class ParseTreeVisitor < Liquid::ParseTreeVisitor
+        def children
+          [
+            @node.template_name_expr,
+            @node.variable_name_expr
+          ] + @node.attributes.values
+        end
+      end
     end
 
     class Style < Liquid::Block; end
@@ -326,6 +331,7 @@ end
 
       def register_tags!
         return if !register_tags? || (defined?(@registered_tags) && @registered_tags)
+
         @registered_tags = true
         register_tag('form', Form)
         register_tag('layout', Layout)
@@ -344,5 +350,4 @@ end
     end
     self.register_tags = true
   end
-
 end

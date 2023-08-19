@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -25,7 +26,7 @@ module PlatformosCheck
 
       def context(line: 0, col: 0, absolute_cursor: nil)
         ctx = CompletionContext.new(storage, file_name, line, col)
-        ctx.stubs(absolute_cursor: absolute_cursor) unless absolute_cursor.nil?
+        ctx.stubs(absolute_cursor:) unless absolute_cursor.nil?
         ctx
       end
 

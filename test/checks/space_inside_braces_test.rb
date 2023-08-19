@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class SpaceInsideBracesTest < Minitest::Test
   def test_reports_missing_space
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {% assign x = 1%}
         {% assign x = 2-%}
         {%- assign x = 3%}
@@ -17,6 +18,7 @@ class SpaceInsideBracesTest < Minitest::Test
         {%comment%}{%-endcomment-%}
       END
     )
+
     assert_offenses(<<~END, offenses)
       Space missing before '%}' at templates/index.liquid:1
       Space missing before '-%}' at templates/index.liquid:2
@@ -36,7 +38,7 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_dont_report_when_no_missing_space
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {% comment %}
         {% endcomment %}
         {%
@@ -61,13 +63,14 @@ class SpaceInsideBracesTest < Minitest::Test
         }}
       END
     )
+
     assert_offenses('', offenses)
   end
 
   def test_reports_extra_space
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{  x }}
         {{-  x }}
         {%  assign x = 1 %}
@@ -78,6 +81,7 @@ class SpaceInsideBracesTest < Minitest::Test
         {% assign x = 1  -%}
       END
     )
+
     assert_offenses(<<~END, offenses)
       Too many spaces after '{{' at templates/index.liquid:1
       Too many spaces after '{{-' at templates/index.liquid:2
@@ -93,11 +97,12 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_reports_extra_space_around_coma
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {% form 'type',  object, key:value %}
         {% endform %}
       END
     )
+
     assert_offenses(<<~END, offenses)
       Space missing after ':' at templates/index.liquid:1
       Too many spaces after ',' at templates/index.liquid:1
@@ -107,7 +112,7 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_reports_extra_space_around_pipeline
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{ url  | asset_url | img_tag }}
         {{ url |  asset_url | img_tag }}
         {% assign my_upcase_string = "Hello world"  | upcase %}
@@ -116,6 +121,7 @@ class SpaceInsideBracesTest < Minitest::Test
         {% echo "Hello world" |  upcase %}
       END
     )
+
     assert_offenses(<<~END, offenses)
       Too many spaces before '|' at templates/index.liquid:1
       Too many spaces after '|' at templates/index.liquid:2
@@ -129,13 +135,14 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_reports_missing_space_around_pipeline
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{ url| asset_url | img_tag }}
         {{ url |asset_url | img_tag }}
         {% assign my_upcase_string = "Hello world"| upcase %}
         {% assign my_upcase_string = "Hello world" |upcase %}
       END
     )
+
     assert_offenses(<<~END, offenses)
       Space missing before '|' at templates/index.liquid:1
       Space missing after '|' at templates/index.liquid:2
@@ -147,21 +154,23 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_dont_report_on_correct_spaces_around_pipeline
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{ url | asset_url | img_tag }}
         {% assign my_upcase_string = "Hello world" | upcase %}
       END
     )
+
     assert_offenses('', offenses)
   end
 
   def test_reports_extra_space_after_colon_in_assign_tag
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {% assign max_width = height | times:  image.aspect_ratio %}
       END
     )
+
     assert_offenses(<<~END, offenses)
       Too many spaces after ':' at templates/index.liquid:1
     END
@@ -170,7 +179,7 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_dont_report_on_proper_spaces_around_pipeline
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {% assign x = 1 %}
         {{ x }}
         {% form 'type', object, key: value, key2: value %}
@@ -191,23 +200,25 @@ class SpaceInsideBracesTest < Minitest::Test
             %}
       END
     )
+
     assert_equal("", offenses.join("\n"))
   end
 
   def test_corrects_missing_space
     expected_sources = {
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{ x }}
         {{ x }}
       END
     }
     sources = fix_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{ x}}
         {{x }}
       END
     )
+
     sources.each do |path, source|
       assert_equal(expected_sources[path], source)
     end
@@ -215,18 +226,19 @@ class SpaceInsideBracesTest < Minitest::Test
 
   def test_corrects_extra_space
     expected_sources = {
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{ x }}
         {{ x }}
       END
     }
     sources = fix_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{ x  }}
         {{  x }}
       END
     )
+
     sources.each do |path, source|
       assert_equal(expected_sources[path], source)
     end
@@ -235,7 +247,7 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_reports_extra_space_after_operators
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {%- if x >  y -%}{%- endif -%}
         {%- if x <  y -%}{%- endif -%}
         {%- if x ==  "x" -%}{%- endif -%}
@@ -245,6 +257,7 @@ class SpaceInsideBracesTest < Minitest::Test
         {%- if x <>  y -%}{%- endif -%}
       END
     )
+
     assert_offenses(<<~END, offenses)
       Too many spaces after '>' at templates/index.liquid:1
       Too many spaces after '<' at templates/index.liquid:2
@@ -259,7 +272,7 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_reports_missing_space_after_operators
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {%- if x >y -%}{%- endif -%}
         {%- if x <y -%}{%- endif -%}
         {%- if x =="x" -%}{%- endif -%}
@@ -269,6 +282,7 @@ class SpaceInsideBracesTest < Minitest::Test
         {%- if x <>y -%}{%- endif -%}
       END
     )
+
     assert_offenses(<<~END, offenses)
       Space missing after '>' at templates/index.liquid:1
       Space missing after '<' at templates/index.liquid:2
@@ -283,7 +297,7 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_reports_extra_space_before_operators
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {%- if x  > y -%}{%- endif -%}
         {%- if x  < y -%}{%- endif -%}
         {%- if x  == "x" -%}{%- endif -%}
@@ -293,6 +307,7 @@ class SpaceInsideBracesTest < Minitest::Test
         {%- if x  <> y -%}{%- endif -%}
       END
     )
+
     assert_offenses(<<~END, offenses)
       Too many spaces before '>' at templates/index.liquid:1
       Too many spaces before '<' at templates/index.liquid:2
@@ -307,7 +322,7 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_reports_missing_space_before_operators
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {%- if x> y -%}{%- endif -%}
         {%- if x< y -%}{%- endif -%}
         {%- if x== "x" -%}{%- endif -%}
@@ -317,6 +332,7 @@ class SpaceInsideBracesTest < Minitest::Test
         {%- if x<> y -%}{%- endif -%}
       END
     )
+
     assert_offenses(<<~END, offenses)
       Space missing before '>' at templates/index.liquid:1
       Space missing before '<' at templates/index.liquid:2
@@ -331,7 +347,7 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_dont_report_with_correct_spaces_around_operators
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {%- if x > y -%}{%- endif -%}
         {%- if x < y -%}{%- endif -%}
         {%- if x == "x" -%}{%- endif -%}
@@ -341,13 +357,14 @@ class SpaceInsideBracesTest < Minitest::Test
         {%- if x <> y -%}{%- endif -%}
       END
     )
+
     assert_offenses('', offenses)
   end
 
   def test_dont_report_missing_spaces_inside_strings
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{ filter.min_value.value | money_without_currency | replace: '.', '' | replace: ',', '.' }}
         {{ paginate | default_pagination:
           next: '<i class="icon icon--right-t"></i><span class="icon-fallback__text">Next Page</span>',
@@ -360,6 +377,7 @@ class SpaceInsideBracesTest < Minitest::Test
         %}
       END
     )
+
     assert_offenses('', offenses)
   end
 
@@ -370,47 +388,47 @@ class SpaceInsideBracesTest < Minitest::Test
         #          0000000000111111111122222222223333333333
         #          0123456789012345678901234567890123456789
         liquid: "{{all_products }}",
-        expected: "Space missing after '{{' at templates/index.liquid:2:3",
+        expected: "Space missing after '{{' at templates/index.liquid:2:3"
       },
       {
         liquid: "{{   all_products }}",
-        expected: "Too many spaces after '{{' at templates/index.liquid:2:5",
+        expected: "Too many spaces after '{{' at templates/index.liquid:2:5"
       },
       {
         liquid: "{{ all_products}}",
-        expected: "Space missing before '}}' at templates/index.liquid:14:15",
+        expected: "Space missing before '}}' at templates/index.liquid:14:15"
       },
       {
         liquid: "{{ all_products   }}",
-        expected: "Too many spaces before '}}' at templates/index.liquid:15:18",
+        expected: "Too many spaces before '}}' at templates/index.liquid:15:18"
       },
       {
         liquid: "{{ 'a' | replace: ', ',',' | split: ',' }}",
-        expected: "Space missing after ',' at templates/index.liquid:22:23",
+        expected: "Space missing after ',' at templates/index.liquid:22:23"
       },
       {
         liquid: "{% assign x = n-%}",
-        expected: "Space missing before '-%}' at templates/index.liquid:14:15",
+        expected: "Space missing before '-%}' at templates/index.liquid:14:15"
       },
       {
         liquid: "{% assign x = n  -%}",
-        expected: "Too many spaces before '-%}' at templates/index.liquid:15:17",
+        expected: "Too many spaces before '-%}' at templates/index.liquid:15:17"
       },
       {
         liquid: '{%- if x !=  "x" -%}{%- endif -%}',
-        expected: "Too many spaces after '!=' at templates/index.liquid:11:13",
+        expected: "Too many spaces after '!=' at templates/index.liquid:11:13"
       },
       {
         liquid: '{%- if x  != "x" -%}{%- endif -%}',
-        expected: "Too many spaces before '!=' at templates/index.liquid:8:10",
+        expected: "Too many spaces before '!=' at templates/index.liquid:8:10"
       },
       {
         liquid: '{%- if x !="x" -%}{%- endif -%}',
-        expected: "Space missing after '!=' at templates/index.liquid:9:11",
+        expected: "Space missing after '!=' at templates/index.liquid:9:11"
       },
       {
         liquid: '{%- if x!= "x" -%}{%- endif -%}',
-        expected: "Space missing before '!=' at templates/index.liquid:8:10",
+        expected: "Space missing before '!=' at templates/index.liquid:8:10"
       },
       {
         liquid: <<~LIQUID,
@@ -418,13 +436,14 @@ class SpaceInsideBracesTest < Minitest::Test
           {%comment %}
           {% endcomment %}
         LIQUID
-        expected: "Space missing after '{%' at templates/index.liquid:55:56",
-      },
+        expected: "Space missing after '{%' at templates/index.liquid:55:56"
+      }
     ].each do |test_desc|
       offenses = analyze_theme(
         PlatformosCheck::SpaceInsideBraces.new,
         "templates/index.liquid" => test_desc[:liquid]
       )
+
       assert_offenses_with_range(
         test_desc[:expected],
         offenses
@@ -435,13 +454,14 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_reports_properly_at_end_tag
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {% assign x = n-%}
         00000000001111111
         01234567890123456
         The two lines above are there to help identify the index
       END
     )
+
     assert_offenses_with_range(
       "Space missing before '-%}' at templates/index.liquid:14:15",
       offenses
@@ -451,10 +471,11 @@ class SpaceInsideBracesTest < Minitest::Test
   def test_dont_report_empty_variables
     offenses = analyze_theme(
       PlatformosCheck::SpaceInsideBraces.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{}}
       END
     )
+
     assert_offenses('', offenses)
   end
 end

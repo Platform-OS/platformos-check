@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class ThemeTest < Minitest::Test
@@ -10,7 +11,7 @@ class ThemeTest < Minitest::Test
       "snippets/product.liquid" => "",
       "sections/article-template/template.liquid" => "",
       "locales/fr.default.json" => "",
-      "locales/en.json" => "",
+      "locales/en.json" => ""
     )
   end
 
@@ -65,14 +66,14 @@ class ThemeTest < Minitest::Test
       "ignored/product.liquid" => "",
       "ignored/nested/product.liquid" => "",
       "locales/en.default.json" => "",
-      "locales/nested/en.default.json" => "",
+      "locales/nested/en.default.json" => ""
     ).root, ignored_patterns: [
       "ignored/*",
-      "*.json",
+      "*.json"
     ])
     theme = PlatformosCheck::Theme.new(storage)
 
-    assert_equal([], theme.json.map(&:name))
+    assert_empty(theme.json.map(&:name))
     assert_equal(["templates/index"], theme.liquid.map(&:name))
   end
 end

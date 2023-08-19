@@ -1,12 +1,12 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class PaginationSize < LiquidCheck
     severity :suggestion
     categories :performance
     doc docs_url(__FILE__)
 
-    attr_reader :min_size
-    attr_reader :max_size
+    attr_reader :min_size, :max_size
 
     def initialize(min_size: 1, max_size: 50)
       @min_size = min_size
@@ -20,9 +20,7 @@ module PlatformosCheck
 
     def on_paginate(node)
       size = node.value.page_size
-      unless @paginations.key?(size)
-        @paginations[size] = []
-      end
+      @paginations[size] = [] unless @paginations.key?(size)
       @paginations[size].push(node)
     end
 
@@ -30,9 +28,9 @@ module PlatformosCheck
       schema = node.inner_json
       return if schema.nil?
 
-      if (settings = schema["settings"])
-        @schema_settings = settings
-      end
+      return unless (settings = schema["settings"])
+
+      @schema_settings = settings
     end
 
     ##
@@ -48,21 +46,19 @@ module PlatformosCheck
     # We'll work with either an explicit value, or the default value of the section setting.
     def get_value(size)
       return size if size.is_a?(Numeric)
-      return get_setting_default_value(size) if size_is_a_section_setting?(size)
+
+      get_setting_default_value(size) if size_is_a_section_setting?(size)
     end
 
     def after_document(_node)
       @paginations.each_pair do |size, nodes|
         # Validate presence of default section setting.
-        if size_is_a_section_setting?(size) && !get_setting_default_value(size)
-          nodes.each { |node| add_offense("Default pagination size should be defined in the section settings", node: node) }
-        end
+        nodes.each { |node| add_offense("Default pagination size should be defined in the section settings", node:) } if size_is_a_section_setting?(size) && !get_setting_default_value(size)
 
         # Validate if size is within range.
         next unless (numerical_size = get_value(size))
-        if numerical_size > @max_size || numerical_size < @min_size || !numerical_size.is_a?(Integer)
-          nodes.each { |node| add_offense("Pagination size must be a positive integer between #{@min_size} and #{@max_size}", node: node) }
-        end
+
+        nodes.each { |node| add_offense("Pagination size must be a positive integer between #{@min_size} and #{@max_size}", node:) } if numerical_size > @max_size || numerical_size < @min_size || !numerical_size.is_a?(Integer)
       end
     end
 

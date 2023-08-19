@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "net/http"
 require "pathname"
 
@@ -32,13 +33,13 @@ module PlatformosCheck
       return @content unless @content.nil?
 
       @content = request(@uri)
-
     rescue OpenSSL::SSL::SSLError, Zlib::StreamError, *NET_HTTP_EXCEPTIONS
       @contents = ''
     end
 
     def gzipped_size
       return if @uri.nil?
+
       @gzipped_size ||= content.bytesize
     end
 

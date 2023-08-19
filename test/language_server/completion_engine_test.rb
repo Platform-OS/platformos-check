@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -16,13 +17,13 @@ module PlatformosCheck
         LIQUID
 
         assert_completions(engine.completions(filename, 0, 6), {
-          label: "render",
-          kind: CompletionItemKinds::KEYWORD,
-        })
+                             label: "render",
+                             kind: CompletionItemKinds::KEYWORD
+                           })
         assert_completions(engine.completions(filename, 1, 6), {
-          label: "comment",
-          kind: CompletionItemKinds::KEYWORD,
-        })
+                             label: "comment",
+                             kind: CompletionItemKinds::KEYWORD
+                           })
       end
 
       def test_cursor_on_tag?
@@ -32,13 +33,13 @@ module PlatformosCheck
         LIQUID
 
         assert_completions(engine.completions(filename, 0, 6), {
-          label: "render",
-          kind: CompletionItemKinds::KEYWORD,
-        })
+                             label: "render",
+                             kind: CompletionItemKinds::KEYWORD
+                           })
         assert_completions(engine.completions(filename, 1, 6), {
-          label: "comment",
-          kind: CompletionItemKinds::KEYWORD,
-        })
+                             label: "comment",
+                             kind: CompletionItemKinds::KEYWORD
+                           })
       end
 
       def test_complete_object
@@ -48,31 +49,34 @@ module PlatformosCheck
         LIQUID
 
         assert_completions(engine.completions(filename, 0, 7), {
-          label: "product",
-          kind: CompletionItemKinds::VARIABLE,
-        })
+                             label: "product",
+                             kind: CompletionItemKinds::VARIABLE
+                           })
         assert_completions(engine.completions(filename, 1, 7), {
-          label: "all_products",
-          kind: CompletionItemKinds::VARIABLE,
-        })
+                             label: "all_products",
+                             kind: CompletionItemKinds::VARIABLE
+                           })
       end
 
       def test_about_to_type
         engine = make_engine(filename => "{{ }}")
+
         assert_completions(engine.completions(filename, 0, 3), {
-          label: "all_products",
-          kind: CompletionItemKinds::VARIABLE,
-        })
+                             label: "all_products",
+                             kind: CompletionItemKinds::VARIABLE
+                           })
 
         engine = make_engine(filename => "{% %}")
+
         assert_completions(engine.completions(filename, 0, 3), {
-          label: "render",
-          kind: CompletionItemKinds::KEYWORD,
-        })
+                             label: "render",
+                             kind: CompletionItemKinds::KEYWORD
+                           })
       end
 
       def test_out_of_bounds
         engine = make_engine(filename => "{{ prod }}")
+
         assert_empty(engine.completions(filename, 0, 8))
         assert_empty(engine.completions(filename, 0, 1))
       end

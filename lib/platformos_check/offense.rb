@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class Offense
     include PositionHelper
@@ -50,13 +51,14 @@ module PlatformosCheck
         @markup,
         @theme_file&.source,
         line_number_1_indexed: @line_number,
-        node_markup_offset: node_markup_offset,
+        node_markup_offset:,
         node_markup: node&.markup
       )
     end
 
     def source_excerpt
       return unless line_number
+
       @source_excerpt ||= begin
         excerpt = theme_file.source_excerpt(line_number)
         if excerpt.size > MAX_SOURCE_EXCERPT_SIZE
@@ -75,10 +77,10 @@ module PlatformosCheck
 
     def range
       @range ||= if start_index == end_index
-        (start_index..end_index)
-      else
-        (start_index...end_index) # end_index is excluded
-      end
+                   (start_index..end_index)
+                 else
+                   (start_index...end_index) # end_index is excluded
+                 end
     end
 
     def start_index
@@ -145,10 +147,10 @@ module PlatformosCheck
 
     def correct(corrector = nil)
       if correctable?
-        corrector ||= Corrector.new(theme_file: theme_file)
+        corrector ||= Corrector.new(theme_file:)
         correction.call(corrector)
       end
-    rescue => e
+    rescue StandardError => e
       PlatformosCheck.bug(<<~EOS)
         Exception while running `Offense#correct`:
         ```
@@ -192,7 +194,7 @@ module PlatformosCheck
         start_index == other.start_index &&
         end_index == other.end_index
     end
-    alias_method :eql?, :==
+    alias eql? ==
 
     def to_s
       if theme_file
@@ -215,11 +217,11 @@ module PlatformosCheck
         check: check.code_name,
         path: theme_file&.relative_path,
         severity: check.severity_value,
-        start_row: start_row,
-        start_column: start_column,
-        end_row: end_row,
-        end_column: end_column,
-        message: message,
+        start_row:,
+        start_column:,
+        end_row:,
+        end_column:,
+        message:
       }
     end
   end

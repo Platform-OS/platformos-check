@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   module JsonHelpers
     def format_json_parse_error(error)
@@ -13,9 +14,9 @@ module PlatformosCheck
 
         #{start_indent}#{JSON.pretty_generate(
           hash,
-          indent: indent,
+          indent:,
           array_nl: "\n#{start_indent}",
-          object_nl: "\n#{start_indent}",
+          object_nl: "\n#{start_indent}"
         )}
       JSON
     end

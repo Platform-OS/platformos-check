@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "net/http"
 
 module PlatformosCheck
@@ -7,7 +8,7 @@ module PlatformosCheck
     Net::OpenTimeout,
     Net::WriteTimeout,
     Errno::ETIMEDOUT,
-    Timeout::Error,
+    Timeout::Error
   ]
 
   CONNECTION_EXCEPTIONS = [
@@ -22,7 +23,7 @@ module PlatformosCheck
     Errno::EAGAIN,
     Errno::EHOSTUNREACH,
     Errno::ENETUNREACH,
-    Errno::EADDRNOTAVAIL,
+    Errno::EADDRNOTAVAIL
   ]
 
   NET_HTTP_EXCEPTIONS = [
@@ -30,6 +31,6 @@ module PlatformosCheck
     Net::HTTPHeaderSyntaxError,
     Net::ProtocolError,
     *TIMEOUT_EXCEPTIONS,
-    *CONNECTION_EXCEPTIONS,
+    *CONNECTION_EXCEPTIONS
   ]
 end

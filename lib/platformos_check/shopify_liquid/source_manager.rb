@@ -7,7 +7,7 @@ require 'tmpdir'
 module PlatformosCheck
   module ShopifyLiquid
     class SourceManager
-      REQUIRED_FILE_NAMES = [:filters, :objects, :tags, :latest].freeze
+      REQUIRED_FILE_NAMES = %i[filters objects tags latest].freeze
 
       class DownloadResourceError < StandardError; end
 
@@ -79,9 +79,7 @@ module PlatformosCheck
 
         def download_file(local_path, remote_uri)
           content = open_uri(remote_uri)
-          File.open(local_path, "wb") do |file|
-            file.write(content)
-          end
+          File.binwrite(local_path, content)
         end
 
         def mark_all_indexes_outdated

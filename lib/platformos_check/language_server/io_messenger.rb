@@ -45,6 +45,7 @@ module PlatformosCheck
         while content.length < length_to_read
           chunk = @in.read(length_to_read - content.length)
           raise DoneStreaming if chunk.nil?
+
           content += chunk
         end
         content.lstrip!
@@ -84,9 +85,7 @@ module PlatformosCheck
           # gets returning nil means the stream was closed.
           raise DoneStreaming if initial_line.nil?
 
-          if initial_line.match(/Content-Length: (\d+)/)
-            break
-          end
+          break if /Content-Length: (\d+)/.match?(initial_line)
         end
         initial_line
       end
@@ -97,15 +96,13 @@ module PlatformosCheck
 
       def validate!(streams = [])
         streams.each do |stream|
-          unless supported_io_classes.find { |klass| stream.is_a?(klass) }
-            raise IncompatibleStream, incompatible_stream_message
-          end
+          raise IncompatibleStream, incompatible_stream_message unless supported_io_classes.find { |klass| stream.is_a?(klass) }
         end
       end
 
       def incompatible_stream_message
-        'if provided, in_stream, out_stream, and err_stream must be a kind of '\
-        "one of the following: #{supported_io_classes.join(', ')}"
+        'if provided, in_stream, out_stream, and err_stream must be a kind of ' \
+          "one of the following: #{supported_io_classes.join(', ')}"
       end
     end
   end

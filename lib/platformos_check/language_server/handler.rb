@@ -9,7 +9,7 @@ module PlatformosCheck
 
       SERVER_INFO = {
         name: $PROGRAM_NAME,
-        version: PlatformosCheck::VERSION,
+        version: PlatformosCheck::VERSION
       }
 
       # https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#fileOperationFilter
@@ -17,39 +17,39 @@ module PlatformosCheck
         filters: [{
           scheme: 'file',
           pattern: {
-            glob: '**/*',
-          },
-        }],
+            glob: '**/*'
+          }
+        }]
       }
 
       CAPABILITIES = {
         completionProvider: {
           triggerCharacters: ['.', '{{ ', '{% '],
-          context: true,
+          context: true
         },
         codeActionProvider: {
           codeActionKinds: CodeActionProvider.all.map(&:kind),
           resolveProvider: false,
-          workDoneProgress: false,
+          workDoneProgress: false
         },
         documentLinkProvider: true,
         executeCommandProvider: {
           workDoneProgress: false,
-          commands: ExecuteCommandProvider.all.map(&:command),
+          commands: ExecuteCommandProvider.all.map(&:command)
         },
         textDocumentSync: {
           openClose: true,
           change: TextDocumentSyncKind::FULL,
           willSave: false,
-          save: true,
+          save: true
         },
         workspace: {
           fileOperations: {
             didCreate: FILE_OPERATION_FILTER,
             didDelete: FILE_OPERATION_FILTER,
-            willRename: FILE_OPERATION_FILTER,
-          },
-        },
+            willRename: FILE_OPERATION_FILTER
+          }
+        }
       }
 
       def initialize(bridge)
@@ -76,13 +76,13 @@ module PlatformosCheck
           @diagnostics_engine,
           @storage,
           config_for_path(@root_path),
-          @configuration,
+          @configuration
         )
         @code_action_engine = CodeActionEngine.new(@storage, @diagnostics_manager)
         @bridge.send_response(id, {
-          capabilities: CAPABILITIES,
-          serverInfo: SERVER_INFO,
-        })
+                                capabilities: CAPABILITIES,
+                                serverInfo: SERVER_INFO
+                              })
       end
 
       def on_initialized(_id, _params)
@@ -151,11 +151,11 @@ module PlatformosCheck
         end_position = range_element(params, :end)
         only_code_action_kinds = params.dig(:context, :only) || []
         @bridge.send_response(id, @code_action_engine.code_actions(
-          absolute_path,
-          start_position,
-          end_position,
-          only_code_action_kinds,
-        ))
+                                    absolute_path,
+                                    start_position,
+                                    end_position,
+                                    only_code_action_kinds
+                                  ))
       end
 
       def on_workspace_did_create_files(_id, params)
@@ -206,9 +206,9 @@ module PlatformosCheck
 
       def on_workspace_execute_command(id, params)
         @bridge.send_response(id, @execute_command_engine.execute(
-          params[:command],
-          params[:arguments],
-        ))
+                                    params[:command],
+                                    params[:arguments]
+                                  ))
       end
 
       def on_workspace_did_change_configuration(_id, _params)
@@ -228,8 +228,8 @@ module PlatformosCheck
 
         # Turn that into a hash of buffers
         files = fs.files
-          .map { |fn| [fn, fs.read(fn)] }
-          .to_h
+                  .map { |fn| [fn, fs.read(fn)] }
+                  .to_h
 
         VersionedInMemoryStorage.new(files, config.root)
       end
@@ -285,7 +285,7 @@ module PlatformosCheck
       def range_element(params, start_or_end)
         [
           params.dig(:range, start_or_end, :line),
-          params.dig(:range, start_or_end, :character),
+          params.dig(:range, start_or_end, :character)
         ]
       end
 

@@ -39,7 +39,7 @@ module PlatformosCheck
         matches(buffer, partial_regexp).map do |match|
           start_row, start_column = from_index_to_row_column(
             buffer,
-            match.begin(:partial),
+            match.begin(:partial)
           )
 
           end_row, end_column = from_index_to_row_column(
@@ -52,13 +52,13 @@ module PlatformosCheck
             range: {
               start: {
                 line: start_row,
-                character: start_column,
+                character: start_column
               },
               end: {
                 line: end_row,
-                character: end_column,
-              },
-            },
+                character: end_column
+              }
+            }
           }
         end
       end

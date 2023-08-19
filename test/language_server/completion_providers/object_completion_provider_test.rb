@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -55,6 +56,7 @@ module PlatformosCheck
         assert_can_complete_with(@provider, "{{ all_", 'all_products')
 
         object_not_in_source_index = 'customer_address'
+
         refute_can_complete_with(@provider, "{{ cust", object_not_in_source_index)
         refute_can_complete_with(@provider, "{{ all_", 'cart')
       end

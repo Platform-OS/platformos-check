@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class MatchingSchemaTranslations < LiquidCheck
     severity :suggestion
@@ -8,6 +9,7 @@ module PlatformosCheck
     def on_schema(node)
       schema = node.inner_json
       return if schema.nil?
+
       # Get all locales used in the schema
       used_locales = Set.new([theme.default_locale])
       visit_object(schema) do |_, locales|
@@ -19,7 +21,7 @@ module PlatformosCheck
       visit_object(schema) do |key, locales|
         missing = used_locales - locales
         if missing.any?
-          add_offense("#{key} missing translations for #{missing.join(', ')}", node: node) do |corrector|
+          add_offense("#{key} missing translations for #{missing.join(', ')}", node:) do |corrector|
             key = key.split(".")
             missing.each do |language|
               SchemaHelper.schema_corrector(schema, key + [language], "TODO")
@@ -29,7 +31,7 @@ module PlatformosCheck
         end
       end
 
-      check_locales(schema, node: node)
+      check_locales(schema, node:)
     end
 
     private
@@ -43,15 +45,16 @@ module PlatformosCheck
       if default_locale
         locales.each_pair do |name, content|
           diff = LocaleDiff.new(default_locale, content)
-          diff.add_as_offenses(self, key_prefix: ["locales", name], node: node, schema: schema)
+          diff.add_as_offenses(self, key_prefix: ["locales", name], node:, schema:)
         end
       else
-        add_offense("Missing default locale in key: locales", node: node)
+        add_offense("Missing default locale in key: locales", node:)
       end
     end
 
-    def visit_object(object, top_path = [], &block)
+    def visit_object(object, top_path = [], &)
       return unless object.is_a?(Hash)
+
       top_path += [object["id"]] if object["id"].is_a?(String)
 
       object.each_pair do |key, value|
@@ -60,16 +63,16 @@ module PlatformosCheck
         case value
         when Array
           value.each do |item|
-            visit_object(item, path, &block)
+            visit_object(item, path, &)
           end
 
         when Hash
           # Localized key
           if value[theme.default_locale].is_a?(String)
-            block.call(path.join("."), value.keys)
+            yield(path.join("."), value.keys)
           # Nested keys
           else
-            visit_object(value, path, &block)
+            visit_object(value, path, &)
           end
 
         end

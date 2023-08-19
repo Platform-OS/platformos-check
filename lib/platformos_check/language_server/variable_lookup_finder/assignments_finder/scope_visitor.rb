@@ -5,7 +5,7 @@ module PlatformosCheck
     module VariableLookupFinder
       class AssignmentsFinder
         class ScopeVisitor
-          SCOPE_UNAWARE_NODES = %i(range range_lookup variable variable_lookup)
+          SCOPE_UNAWARE_NODES = %i[range range_lookup variable variable_lookup]
 
           attr_reader :global_scope, :current_scope
 

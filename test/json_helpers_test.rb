@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -8,21 +9,21 @@ module PlatformosCheck
     def setup
       @test_obj = {
         "a" => {
-          "b" => "c",
+          "b" => "c"
         },
-        "d" => [
-          "e",
-          "f",
-          "g",
+        "d" => %w[
+          e
+          f
+          g
         ],
         "h" => {
           "i" => "j",
-          "k" => [
-            "l",
-            "m",
-            "n",
-          ],
-        },
+          "k" => %w[
+            l
+            m
+            n
+          ]
+        }
       }
     end
 

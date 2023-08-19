@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 require "minitest/focus"
 
@@ -7,8 +8,9 @@ class MatchingTranslationsTest < Minitest::Test
     offenses = analyze_theme(
       PlatformosCheck::MatchingTranslations.new,
       "locales/en.json" => JSON.dump(a: "a"),
-      "locales/fr.json" => JSON.dump(b: "b"),
+      "locales/fr.json" => JSON.dump(b: "b")
     )
+
     assert_offenses("", offenses)
   end
 
@@ -16,8 +18,9 @@ class MatchingTranslationsTest < Minitest::Test
     offenses = analyze_theme(
       PlatformosCheck::MatchingTranslations.new,
       "locales/en.default.json" => "}",
-      "locales/fr.json" => JSON.dump(b: "b"),
+      "locales/fr.json" => JSON.dump(b: "b")
     )
+
     assert_offenses("", offenses)
   end
 
@@ -25,8 +28,9 @@ class MatchingTranslationsTest < Minitest::Test
     offenses = analyze_theme(
       PlatformosCheck::MatchingTranslations.new,
       "locales/en.default.json" => JSON.dump({}),
-      "locales/fr.json" => JSON.dump([]),
+      "locales/fr.json" => JSON.dump([])
     )
+
     assert_offenses("", offenses)
   end
 
@@ -41,8 +45,9 @@ class MatchingTranslationsTest < Minitest::Test
       ),
       "locales/es-ES.json" => JSON.dump(
         hello: { world: "Hola, mundo" }
-      ),
+      )
     )
+
     assert_offenses("", offenses)
   end
 
@@ -50,7 +55,7 @@ class MatchingTranslationsTest < Minitest::Test
     offenses = analyze_theme(
       PlatformosCheck::MatchingTranslations.new,
       "locales/en.default.json" => JSON.dump(hello: "Hello"),
-      "locales/fr.json" => JSON.dump({}),
+      "locales/fr.json" => JSON.dump({})
     )
 
     assert_offenses(<<~END, offenses)
@@ -62,12 +67,13 @@ class MatchingTranslationsTest < Minitest::Test
     offenses = analyze_theme(
       PlatformosCheck::MatchingTranslations.new,
       "locales/en.default.json" => JSON.dump(
-        "hello": { "world": "Hello, world" }
+        hello: { world: "Hello, world" }
       ),
       "locales/fr.json" => JSON.dump(
-        "hello": {}
-      ),
+        hello: {}
+      )
     )
+
     assert_offenses(<<~END, offenses)
       Missing translation keys: hello.world at locales/fr.json
     END
@@ -77,8 +83,9 @@ class MatchingTranslationsTest < Minitest::Test
     offenses = analyze_theme(
       PlatformosCheck::MatchingTranslations.new,
       "locales/en.default.json" => JSON.dump({}),
-      "locales/fr.json" => JSON.dump(hello: "Bonjour"),
+      "locales/fr.json" => JSON.dump(hello: "Bonjour")
     )
+
     assert_offenses(<<~END, offenses)
       Extra translation keys: hello at locales/fr.json
     END
@@ -92,8 +99,9 @@ class MatchingTranslationsTest < Minitest::Test
       ),
       "locales/fr.json" => JSON.dump(
         hello: { world: "Bonjour, monde" }
-      ),
+      )
     )
+
     assert_offenses(<<~END, offenses)
       Extra translation keys: hello.world at locales/fr.json
     END
@@ -107,8 +115,9 @@ class MatchingTranslationsTest < Minitest::Test
       ),
       "locales/fr.json" => JSON.dump(
         hello: { world: "Bonjour, monde" }
-      ),
+      )
     )
+
     assert_offenses(<<~END, offenses)
       Extra translation keys: hello.world at locales/fr.json
     END
@@ -122,8 +131,9 @@ class MatchingTranslationsTest < Minitest::Test
       ),
       "locales/fr.json" => JSON.dump(
         hello: "Bonjour"
-      ),
+      )
     )
+
     assert_offenses(<<~END, offenses)
       Missing translation keys: hello.world at locales/fr.json
     END
@@ -135,15 +145,15 @@ class MatchingTranslationsTest < Minitest::Test
       "locales/en.default.json" => JSON.dump(
         hello: {
           one: "Hello, you",
-          other: "Hello, y'all",
+          other: "Hello, y'all"
         }
       ),
       "locales/fr.json" => JSON.dump(
         hello: {
           zero: "Je suis seul :(",
-          few: "Salut, petit gang",
+          few: "Salut, petit gang"
         }
-      ),
+      )
     )
 
     assert_offenses("", offenses)
@@ -157,19 +167,19 @@ class MatchingTranslationsTest < Minitest::Test
         shopify: {
           checkout: {
             general: {
-              page_title: 'Checkout',
-            },
-          },
-        },
+              page_title: 'Checkout'
+            }
+          }
+        }
       ),
       "locales/fr.json" => JSON.dump(
         hello: "Bonjour",
         shopify: {
           sentence: {
-            words_connector: "hello world",
-          },
-        },
-      ),
+            words_connector: "hello world"
+          }
+        }
+      )
     )
 
     assert_offenses("", offenses)
@@ -183,14 +193,14 @@ class MatchingTranslationsTest < Minitest::Test
         shopify: {
           checkout: {
             general: {
-              page_title: 'Checkout',
-            },
-          },
-        },
+              page_title: 'Checkout'
+            }
+          }
+        }
       ),
       "locales/fr.schema.json" => JSON.dump(
-        hello: "Bonjour",
-      ),
+        hello: "Bonjour"
+      )
     )
 
     assert_offenses("", offenses)
@@ -202,27 +212,28 @@ class MatchingTranslationsTest < Minitest::Test
       "locales/en.default.json" => JSON.dump(
         hello: {
           another_key: "world",
-          shape_change: "world",
-        },
+          shape_change: "world"
+        }
       ),
       "locales/fr.json" => JSON.dump(
-        hello: "Bonjour",
-      ),
+        hello: "Bonjour"
+      )
     )
     expected_sources = {
       "locales/en.default.json" => JSON.dump(
         hello: {
           another_key: "world",
-          shape_change: "world",
-        },
+          shape_change: "world"
+        }
       ),
       "locales/fr.json" => JSON.dump(
         hello: {
           another_key: "TODO",
-          shape_change: "TODO",
-        },
-      ),
+          shape_change: "TODO"
+        }
+      )
     }
+
     sources.each do |path, source|
       assert_equal(expected_sources[path], source)
     end

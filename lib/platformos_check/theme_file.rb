@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "pathname"
 
 module PlatformosCheck
@@ -39,6 +40,7 @@ module PlatformosCheck
     # source file.
     def source
       return @source if @source
+
       if @storage.versioned?
         @source, @version = @storage.read_version(@relative_path)
       else
@@ -46,8 +48,8 @@ module PlatformosCheck
       end
       @eol = @source.include?("\r\n") ? "\r\n" : "\n"
       @source = @source
-        .gsub(/\r(?!\n)/, "\r\n") # fix rogue \r without followup \n with \r\n
-        .gsub("\r\n", "\n")
+                .gsub(/\r(?!\n)/, "\r\n") # fix rogue \r without followup \n with \r\n
+                .gsub("\r\n", "\n")
     end
 
     def json?
@@ -61,6 +63,6 @@ module PlatformosCheck
     def ==(other)
       other.is_a?(self.class) && relative_path == other.relative_path
     end
-    alias_method :eql?, :==
+    alias eql? ==
   end
 end

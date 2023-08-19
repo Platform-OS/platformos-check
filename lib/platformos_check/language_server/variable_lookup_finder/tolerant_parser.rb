@@ -100,7 +100,7 @@ module PlatformosCheck
               'style' => Style,
               'stylesheet' => Stylesheet,
               'tablerow' => TableRow,
-              'unless' => Unless,
+              'unless' => Unless
             }
           end
 

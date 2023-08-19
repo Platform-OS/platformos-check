@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   # Reports missing include/render/section liquid file
   class MissingTemplate < LiquidCheck
@@ -13,16 +14,16 @@ module PlatformosCheck
 
     def on_include(node)
       snippet = node.value.template_name_expr
-      if snippet.is_a?(String)
-        add_missing_offense("snippets/#{snippet}", node: node)
-      end
+      return unless snippet.is_a?(String)
+
+      add_missing_offense("snippets/#{snippet}", node:)
     end
 
-    alias_method :on_render, :on_include
+    alias on_render on_include
 
     def on_section(node)
       section = node.value.section_name
-      add_missing_offense("sections/#{section}", node: node)
+      add_missing_offense("sections/#{section}", node:)
     end
 
     private
@@ -37,10 +38,10 @@ module PlatformosCheck
 
     def add_missing_offense(name, node:)
       path = "#{name}.liquid"
-      unless ignore?(path) || theme[name]
-        add_offense("'#{path}' is not found", node: node) do |corrector|
-          corrector.create_file(@theme.storage, "#{name}.liquid", "")
-        end
+      return if ignore?(path) || theme[name]
+
+      add_offense("'#{path}' is not found", node:) do |corrector|
+        corrector.create_file(@theme.storage, "#{name}.liquid", "")
       end
     end
   end

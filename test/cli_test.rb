@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class CliTest < Minitest::Test
   def test_help
     out, _err = capture_io do
-      PlatformosCheck::Cli.parse_and_run!(%w(--help))
+      PlatformosCheck::Cli.parse_and_run!(%w[--help])
     end
 
     assert_includes(out, "Usage: theme-check")
@@ -16,6 +17,7 @@ class CliTest < Minitest::Test
         PlatformosCheck::Cli.parse_and_run!([__dir__ + "/theme"])
       end
     end
+
     assert_includes(out, "files inspected")
   end
 
@@ -32,7 +34,7 @@ class CliTest < Minitest::Test
       "templates/example.liquid" => <<~LIQUID,
         {% assign z = 1 %}
       LIQUID
-      ".theme-check.yml" => <<~YAML,
+      ".theme-check.yml" => <<~YAML
         extends: :nothing
         UnusedAssign:
           enabled: true
@@ -48,67 +50,67 @@ class CliTest < Minitest::Test
 
     assert_equal(
       JSON.dump([
-        {
-          "path" => nil,
-          "offenses" => [
-            {
-              "check" => "RequiredDirectories",
-              "severity" => 1,
-              "start_row" => 0,
-              "start_column" => 0,
-              "end_row" => 0,
-              "end_column" => 0,
-              "message" => "Theme is missing 'sections' directory",
-            },
-          ],
-          "errorCount" => 0,
-          "suggestionCount" => 1,
-          "styleCount" => 0,
-        },
-        {
-          "path" => "layout/theme.liquid",
-          "offenses" => [
-            {
-              "check" => "UnusedAssign",
-              "severity" => 1,
-              "start_row" => 0,
-              "start_column" => 3,
-              "end_row" => 0,
-              "end_column" => 16,
-              "message" => "`x` is never used",
-            },
-            {
-              "check" => "UnusedAssign",
-              "severity" => 1,
-              "start_row" => 1,
-              "start_column" => 3,
-              "end_row" => 1,
-              "end_column" => 16,
-              "message" => "`y` is never used",
-            },
-          ],
-          "errorCount" => 0,
-          "suggestionCount" => 2,
-          "styleCount" => 0,
-        },
-        {
-          "path" => "templates/example.liquid",
-          "offenses" => [
-            {
-              "check" => "UnusedAssign",
-              "severity" => 1,
-              "start_row" => 0,
-              "start_column" => 3,
-              "end_row" => 0,
-              "end_column" => 16,
-              "message" => "`z` is never used",
-            },
-          ],
-          "errorCount" => 0,
-          "suggestionCount" => 1,
-          "styleCount" => 0,
-        },
-      ]),
+                  {
+                    "path" => nil,
+                    "offenses" => [
+                      {
+                        "check" => "RequiredDirectories",
+                        "severity" => 1,
+                        "start_row" => 0,
+                        "start_column" => 0,
+                        "end_row" => 0,
+                        "end_column" => 0,
+                        "message" => "Theme is missing 'sections' directory"
+                      }
+                    ],
+                    "errorCount" => 0,
+                    "suggestionCount" => 1,
+                    "styleCount" => 0
+                  },
+                  {
+                    "path" => "layout/theme.liquid",
+                    "offenses" => [
+                      {
+                        "check" => "UnusedAssign",
+                        "severity" => 1,
+                        "start_row" => 0,
+                        "start_column" => 3,
+                        "end_row" => 0,
+                        "end_column" => 16,
+                        "message" => "`x` is never used"
+                      },
+                      {
+                        "check" => "UnusedAssign",
+                        "severity" => 1,
+                        "start_row" => 1,
+                        "start_column" => 3,
+                        "end_row" => 1,
+                        "end_column" => 16,
+                        "message" => "`y` is never used"
+                      }
+                    ],
+                    "errorCount" => 0,
+                    "suggestionCount" => 2,
+                    "styleCount" => 0
+                  },
+                  {
+                    "path" => "templates/example.liquid",
+                    "offenses" => [
+                      {
+                        "check" => "UnusedAssign",
+                        "severity" => 1,
+                        "start_row" => 0,
+                        "start_column" => 3,
+                        "end_row" => 0,
+                        "end_column" => 16,
+                        "message" => "`z` is never used"
+                      }
+                    ],
+                    "errorCount" => 0,
+                    "suggestionCount" => 1,
+                    "styleCount" => 0
+                  }
+                ]),
       out.chomp
     )
   end
@@ -126,7 +128,7 @@ class CliTest < Minitest::Test
 
   def test_config_flag
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~YAML,
+      ".theme-check.yml" => <<~YAML
         SyntaxError:
           enabled: false
       YAML
@@ -148,6 +150,7 @@ class CliTest < Minitest::Test
         PlatformosCheck::Cli.parse_and_run!([__dir__ + "/theme", "-c", "translation", "--fail-level", "style"])
       end
     end
+
     refute_includes(out, "liquid")
   end
 
@@ -157,6 +160,7 @@ class CliTest < Minitest::Test
         PlatformosCheck::Cli.parse_and_run!([__dir__ + "/theme", "-x", "liquid", "--fail-level", "style"])
       end
     end
+
     refute_includes(out, "liquid")
   end
 
@@ -170,8 +174,9 @@ class CliTest < Minitest::Test
 
   def test_list
     out, _err = capture_io do
-      PlatformosCheck::Cli.parse_and_run!(%w(--list))
+      PlatformosCheck::Cli.parse_and_run!(%w[--list])
     end
+
     assert_includes(out, "LiquidTag:")
   end
 
@@ -180,7 +185,7 @@ class CliTest < Minitest::Test
 
     storage = make_file_system_storage(
       'layout/theme.liquid' => '',
-      '.theme-check.yml' => <<~YAML,
+      '.theme-check.yml' => <<~YAML
         extends: :nothing
         RequiredDirectories:
           enabled: false
@@ -196,68 +201,69 @@ class CliTest < Minitest::Test
 
   def test_auto_correct
     storage = make_file_system_storage(
-      "templats/theme.liquid" => <<~LIQUID,
+      "templats/theme.liquid" => <<~LIQUID
         {{ content_for_header }}
       LIQUID
     )
     out, _err = capture_io do
       PlatformosCheck::Cli.parse_and_run!([storage.root.to_s, "-a"])
     end
+
     assert_includes(out, "corrected")
   end
 
   def test_fail_level_and_exit_codes
     assert_exit_code(2, "error",
-      "templates/theme.liquid" => <<~YAML,
-        {% unknown %}
-      YAML
-      "crash_test_check.rb" => <<~RUBY,
-        # frozen_string_literal: true
-        module PlatformosCheck
-          class MockCheck < LiquidCheck
-            severity :error
-            category :liquid
-            doc docs_url(__FILE__)
+                     "templates/theme.liquid" => <<~YAML,
+                       {% unknown %}
+                     YAML
+                     "crash_test_check.rb" => <<~RUBY,
+                       # frozen_string_literal: true
+                       module PlatformosCheck
+                         class MockCheck < LiquidCheck
+                           severity :error
+                           category :liquid
+                           doc docs_url(__FILE__)
 
-            def on_end
-              raise StandardError, "This is a crash test."
-            end
-          end
-        end
-      RUBY
-      ".theme-check.yml" => <<~YAML,
-        extends: :nothing
-        require:
-          - ./crash_test_check.rb
-        MockCheck:
-          enabled: true
-      YAML
+                           def on_end
+                             raise StandardError, "This is a crash test."
+                           end
+                         end
+                       end
+                     RUBY
+                     ".theme-check.yml" => <<~YAML
+                       extends: :nothing
+                       require:
+                         - ./crash_test_check.rb
+                       MockCheck:
+                         enabled: true
+                     YAML
     )
 
     # Teardown code so that Checks.all doesn't have MockCheck in it
     PlatformosCheck::Check.all.delete(PlatformosCheck::MockCheck)
 
     assert_exit_code(1, "error",
-      "templates/theme.liquid" => <<~YAML,
-        {% unknown %}
-      YAML
-      ".theme-check.yml" => <<~YAML,
-        extends: :nothing
-        SyntaxError:
-          enabled: true
-      YAML
+                     "templates/theme.liquid" => <<~YAML,
+                       {% unknown %}
+                     YAML
+                     ".theme-check.yml" => <<~YAML
+                       extends: :nothing
+                       SyntaxError:
+                         enabled: true
+                     YAML
     )
 
     assert_exit_code(0, "error",
-      "templates/theme.liquid" => <<~YAML,
-        {% unknown %}
-      YAML
-      ".theme-check.yml" => <<~YAML,
-        extends: :nothing
-        SyntaxError:
-          enabled: true
-          severity: suggestion
-      YAML
+                     "templates/theme.liquid" => <<~YAML,
+                       {% unknown %}
+                     YAML
+                     ".theme-check.yml" => <<~YAML
+                       extends: :nothing
+                       SyntaxError:
+                         enabled: true
+                         severity: suggestion
+                     YAML
     )
   end
 
@@ -266,12 +272,13 @@ class CliTest < Minitest::Test
     out, _err = capture_io do
       PlatformosCheck::Cli.parse_and_run!([storage.root, "--init"])
     end
+
     assert_includes(out, "Writing new .theme-check.yml")
   end
 
   def test_init_abort_with_existing_config_file
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~END,
+      ".theme-check.yml" => <<~END
         root: .
       END
     )
@@ -284,12 +291,10 @@ class CliTest < Minitest::Test
 
   private
 
-  def capture_io(&block)
+  def capture_io(&)
     err = nil
     out = capture(:stdout) do
-      err = capture(:stderr) do
-        block.call
-      end
+      err = capture(:stderr, &)
     end
     [out, err]
   end

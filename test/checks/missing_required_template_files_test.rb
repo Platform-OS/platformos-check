@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class MissingRequiredTemplateFilesTest < Minitest::Test
@@ -6,7 +7,7 @@ class MissingRequiredTemplateFilesTest < Minitest::Test
     offenses = analyze_theme(
       PlatformosCheck::MissingRequiredTemplateFiles.new,
       "templates/index.liquid" => "",
-      "templates/product.liquid" => "",
+      "templates/product.liquid" => ""
     )
 
     assert_includes_offense(offenses, "'layout/theme.liquid' is missing")
@@ -15,7 +16,7 @@ class MissingRequiredTemplateFilesTest < Minitest::Test
   def test_reports_missing_template_files
     offenses = analyze_theme(
       PlatformosCheck::MissingRequiredTemplateFiles.new,
-      "layout/theme.liquid" => "",
+      "layout/theme.liquid" => ""
     )
 
     assert_includes_offense(offenses, "'templates/index.liquid' or 'templates/index.json' is missing")
@@ -44,7 +45,7 @@ class MissingRequiredTemplateFilesTest < Minitest::Test
       "templates/customers/order.liquid" => "",
       "templates/customers/register.liquid" => "",
       "templates/customers/reset_password.liquid" => "",
-      "templates/password.liquid" => "",
+      "templates/password.liquid" => ""
     )
 
     assert_empty(offenses)
@@ -72,7 +73,7 @@ class MissingRequiredTemplateFilesTest < Minitest::Test
       "templates/customers/order.liquid" => "",
       "templates/customers/register.liquid" => "",
       "templates/customers/reset_password.liquid" => "",
-      "templates/password.liquid" => "",
+      "templates/password.liquid" => ""
     )
 
     assert_offenses("", offenses)
@@ -81,14 +82,14 @@ class MissingRequiredTemplateFilesTest < Minitest::Test
   def test_creates_missing_layout_theme_file
     theme = make_theme(
       "templates/index.liquid" => "",
-      "templates/product.liquid" => "",
+      "templates/product.liquid" => ""
     )
 
     analyzer = PlatformosCheck::Analyzer.new(theme, [PlatformosCheck::MissingRequiredTemplateFiles.new], true)
     analyzer.analyze_theme
     analyzer.correct_offenses
 
-    assert(theme.storage.files.include?("layout/theme.liquid"))
+    assert_includes(theme.storage.files, "layout/theme.liquid")
   end
 
   def test_creates_missing_template_files
@@ -107,7 +108,7 @@ class MissingRequiredTemplateFilesTest < Minitest::Test
       "templates/customers/addresses.liquid" => "",
       "templates/customers/order.liquid" => "",
       "templates/customers/register.liquid" => "",
-      "templates/customers/reset_password.liquid" => "",
+      "templates/customers/reset_password.liquid" => ""
     )
 
     missing_files = ["templates/product.json", "templates/search.json", "templates/customers/login.liquid", "templates/password.json", "templates/gift_card.liquid"]

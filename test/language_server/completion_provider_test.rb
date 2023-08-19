@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -13,8 +14,8 @@ module PlatformosCheck
         expected_hash = {
           documentation: {
             kind: "markdown",
-            value: "### content",
-          },
+            value: "### content"
+          }
         }
         actual_hash = make_provider.doc_hash('### content')
 
@@ -22,8 +23,8 @@ module PlatformosCheck
       end
 
       def test_doc_hash_with_empty_content
-        assert_equal({}, make_provider.doc_hash(nil))
-        assert_equal({}, make_provider.doc_hash(''))
+        assert_empty(make_provider.doc_hash(nil))
+        assert_empty(make_provider.doc_hash(''))
       end
 
       def test_format_hash_when_entry_is_nil

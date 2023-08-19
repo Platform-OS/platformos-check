@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class MatchingSchemaTranslationsTest < Minitest::Test
   def test_matching
     offenses = analyze_theme(
       PlatformosCheck::MatchingSchemaTranslations.new,
-      "sections/product.liquid" => <<~END,
+      "sections/product.liquid" => <<~END
         {% schema %}
           {
             "name": {
@@ -25,13 +26,14 @@ class MatchingSchemaTranslationsTest < Minitest::Test
         {% endschema %}
       END
     )
+
     assert_offenses("", offenses)
   end
 
   def test_missing
     offenses = analyze_theme(
       PlatformosCheck::MatchingSchemaTranslations.new,
-      "sections/product.liquid" => <<~END,
+      "sections/product.liquid" => <<~END
         {% schema %}
           {
             "name": {
@@ -50,6 +52,7 @@ class MatchingSchemaTranslationsTest < Minitest::Test
         {% endschema %}
       END
     )
+
     assert_offenses(<<~END, offenses)
       settings.product.label missing translations for fr at sections/product.liquid:1
     END
@@ -57,7 +60,7 @@ class MatchingSchemaTranslationsTest < Minitest::Test
 
   def test_creates_missing
     expected_source = {
-      "sections/product.liquid" => <<~END,
+      "sections/product.liquid" => <<~END
         {% schema %}
           {
             "name": {
@@ -80,7 +83,7 @@ class MatchingSchemaTranslationsTest < Minitest::Test
 
     source = fix_theme(
       PlatformosCheck::MatchingSchemaTranslations.new,
-      "sections/product.liquid" => <<~END,
+      "sections/product.liquid" => <<~END
         {% schema %}
           {
             "name": {
@@ -106,7 +109,7 @@ class MatchingSchemaTranslationsTest < Minitest::Test
   def test_locales
     offenses = analyze_theme(
       PlatformosCheck::MatchingSchemaTranslations.new,
-      "sections/product.liquid" => <<~END,
+      "sections/product.liquid" => <<~END
         {% schema %}
           {
             "locales": {
@@ -123,6 +126,7 @@ class MatchingSchemaTranslationsTest < Minitest::Test
         {% endschema %}
       END
     )
+
     assert_offenses(<<~END, offenses)
       Extra translation keys: locales.fr.extra at sections/product.liquid:1
       Missing translation keys: locales.fr.missing at sections/product.liquid:1
@@ -131,7 +135,7 @@ class MatchingSchemaTranslationsTest < Minitest::Test
 
   def test_creates_missing_translation_key
     expected_source = {
-      "sections/product.liquid" => <<~END,
+      "sections/product.liquid" => <<~END
         {% schema %}
           {
             "locales": {
@@ -151,7 +155,7 @@ class MatchingSchemaTranslationsTest < Minitest::Test
 
     source = fix_theme(
       PlatformosCheck::MatchingSchemaTranslations.new,
-      "sections/product.liquid" => <<~END,
+      "sections/product.liquid" => <<~END
         {% schema %}
           {
             "locales": {

@@ -27,7 +27,7 @@ module PlatformosCheck
       end
 
       def cursor
-        @cursor ||= absolute_cursor - token&.start || 0
+        @cursor ||= (absolute_cursor - token&.start) || 0
       end
 
       def content

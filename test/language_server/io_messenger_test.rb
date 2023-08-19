@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -16,7 +17,7 @@ module PlatformosCheck
       end
 
       def test_read_message_with_content_length_header
-        messages = ["hi", "muffin"]
+        messages = %w[hi muffin]
         messages.each do |message|
           @in.puts "Content-Length: #{message.bytesize}\r\n\r\n#{message}"
         end
@@ -68,6 +69,7 @@ module PlatformosCheck
         message = "hi muffin"
         @messenger.send_message(message)
         @out.rewind
+
         assert_equal("Content-Length: #{message.size}\r\n\r\n#{message}", @out.string)
       end
     end

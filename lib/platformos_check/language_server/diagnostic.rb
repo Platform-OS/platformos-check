@@ -23,13 +23,14 @@ module PlatformosCheck
 
       def to_h
         return @diagnostic unless @diagnostic.nil?
+
         @diagnostic = {
           source: "theme-check",
-          code: code,
-          message: message,
-          range: range,
-          severity: severity,
-          data: data,
+          code:,
+          message:,
+          range:,
+          severity:,
+          data:
         }
         @diagnostic[:codeDescription] = code_description unless offense.doc.nil?
         @diagnostic
@@ -61,7 +62,7 @@ module PlatformosCheck
 
       def code_description
         {
-          href: offense.doc,
+          href: offense.doc
         }
       end
 
@@ -82,12 +83,12 @@ module PlatformosCheck
         {
           start: {
             line: offense.start_row,
-            character: offense.start_column,
+            character: offense.start_column
           },
           end: {
             line: offense.end_row,
-            character: offense.end_column,
-          },
+            character: offense.end_column
+          }
         }
       end
 
@@ -119,8 +120,8 @@ module PlatformosCheck
         {
           absolute_path: absolute_path.to_s,
           relative_path: relative_path.to_s,
-          uri: uri,
-          version: file_version,
+          uri:,
+          version: file_version
         }
       end
     end

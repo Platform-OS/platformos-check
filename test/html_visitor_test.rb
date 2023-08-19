@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -14,21 +15,22 @@ module PlatformosCheck
         <img src="a.jpg" width="{{ image.width }}" height="{{ image.height }}">
       END
       @visitor.visit_liquid_file(liquid_file)
+
       assert_equal([
-        :on_document,
-        :on_element,
-        :on_a,
-        :on_text, "About",
-        :after_a,
-        :after_element,
-        :on_text, "\n",
-        :on_element,
-        :on_img,
-        :after_img,
-        :after_element,
-        :on_text, "\n",
-        :after_document
-      ], @tracer.calls)
+                     :on_document,
+                     :on_element,
+                     :on_a,
+                     :on_text, "About",
+                     :after_a,
+                     :after_element,
+                     :on_text, "\n",
+                     :on_element,
+                     :on_img,
+                     :after_img,
+                     :after_element,
+                     :on_text, "\n",
+                     :after_document
+                   ], @tracer.calls)
     end
 
     def test_elements_with_liquid_tags
@@ -38,17 +40,18 @@ module PlatformosCheck
         {% endcapture %}
       END
       @visitor.visit_liquid_file(liquid_file)
+
       assert_equal([
-        :on_document,
-        :on_text, "{% capture x %}\n  ",
-        :on_element,
-        :on_a,
-        :on_text, "About",
-        :after_a,
-        :after_element,
-        :on_text, "\n{% endcapture %}\n",
-        :after_document
-      ], @tracer.calls)
+                     :on_document,
+                     :on_text, "{% capture x %}\n  ",
+                     :on_element,
+                     :on_a,
+                     :on_text, "About",
+                     :after_a,
+                     :after_element,
+                     :on_text, "\n{% endcapture %}\n",
+                     :after_document
+                   ], @tracer.calls)
     end
 
     def test_elements_with_quotes_inside_quotes
@@ -63,20 +66,21 @@ module PlatformosCheck
       END
 
       @visitor.visit_liquid_file(liquid_file)
+
       [
         {
           name: "script",
           attributes: {
             "href" => '{{ "a.js" | asset_url }}',
-            "defer" => '',
-          },
+            "defer" => ''
+          }
         },
         {
           name: "script",
           attributes: {
             "href" => "{{ 'b.js' | asset_url }}",
-            "defer" => '',
-          },
+            "defer" => ''
+          }
         },
         {
           name: "script",
@@ -86,23 +90,23 @@ module PlatformosCheck
             # have to make do. This means the asset_url will be wrong
             # if that happens.
             "href" => "{{ 'don\\'t you love quotes' | asset_url }}",
-            "defer" => '',
-          },
+            "defer" => ''
+          }
         },
         {
           name: "script",
           attributes: {
             "href" => "fun{{ 'hardcode+variable' | asset_url }}",
-            "defer" => '',
-          },
+            "defer" => ''
+          }
         },
         {
           name: "script",
           attributes: {
             "href" => "fun{%- if 'hardcode' -%}somemore{%- endif -%}",
-            "defer" => '',
-          },
-        },
+            "defer" => ''
+          }
+        }
       ].each_with_index do |element, i|
         assert_equal(element, @attribute_checker.elements[i])
       end
@@ -118,13 +122,14 @@ module PlatformosCheck
       END
 
       @visitor.visit_liquid_file(liquid_file)
+
       [
         {
           name: "img",
           attributes: {
-            "srcset" => '{%- if image.width > 800 -%}{{ image | img_url: "800x" }} 800w, {%- endif -%}',
-          },
-        },
+            "srcset" => '{%- if image.width > 800 -%}{{ image | img_url: "800x" }} 800w, {%- endif -%}'
+          }
+        }
       ].each_with_index do |element, i|
         assert_equal(element, @attribute_checker.elements[i])
       end
@@ -144,14 +149,15 @@ module PlatformosCheck
       END
 
       @visitor.visit_liquid_file(liquid_file)
+
       [
         {
           name: "img",
           attributes: {
             "{% if image.width > 800 %}width" => "800",
-            "{% endif %}" => "",
-          },
-        },
+            "{% endif %}" => ""
+          }
+        }
       ].each_with_index do |element, i|
         assert_equal(element, @attribute_checker.elements[i])
       end
@@ -175,9 +181,10 @@ module PlatformosCheck
           "b" => "{{}}",
           "x" => "{% %}",
           "y" => "{{ }}",
-          "z" => "{{}}",
-        },
+          "z" => "{{}}"
+        }
       }
+
       number_of_html_tags.times do |i|
         assert_equal(expected, @attribute_checker.elements[i], "i #{i}")
       end
@@ -192,9 +199,9 @@ module PlatformosCheck
 
       def on_element(node)
         elements.push({
-          name: node.name,
-          attributes: node.attributes,
-        })
+                        name: node.name,
+                        attributes: node.attributes
+                      })
       end
     end
   end

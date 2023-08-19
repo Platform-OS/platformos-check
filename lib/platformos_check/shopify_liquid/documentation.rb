@@ -20,8 +20,8 @@ module PlatformosCheck
 
         def object_property_doc(object_name, property_name)
           property_entry = SourceIndex
-            .objects
-            .find { |entry| entry.name == object_name }
+                           .objects
+                           .find { |entry| entry.name == object_name }
             &.properties
             &.find { |prop| prop.name == property_name }
 
@@ -30,6 +30,7 @@ module PlatformosCheck
 
         def render_doc(entry)
           return nil unless entry
+
           markdown_template.render(entry)
         end
 

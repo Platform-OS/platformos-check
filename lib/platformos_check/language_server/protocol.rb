@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Here we define the Language Server Protocol Constants we're using.
 # For complete docs, see the following:
 # https://microsoft.github.io/language-server-protocol/specifications/specification-current
@@ -39,7 +40,7 @@ module PlatformosCheck
     end
 
     module ErrorCodes
-      INTERNAL_ERROR = -32603
+      INTERNAL_ERROR = -32_603
     end
 
     module MarkupKinds

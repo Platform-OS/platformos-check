@@ -27,7 +27,7 @@ class LanguageServerTest < Minitest::Test
     :end_row,
     :doc,
     :whole_theme?,
-    :version,
+    :version
   ) do
     def single_file?
       !whole_theme?
@@ -45,7 +45,7 @@ class LanguageServerTest < Minitest::Test
         9,
         "https://path.to/docs.md",
         true,
-        0,
+        0
       )
     end
   end
@@ -61,43 +61,43 @@ class LanguageServerTest < Minitest::Test
     PlatformosCheck::Analyzer.any_instance.stubs(:offenses).returns([offense])
 
     send_messages({
-      jsonrpc: "2.0",
-      id: "123",
-      method: "initialize",
-      params: {
-        rootUri: file_uri(storage.root),
-      },
-    }, {
-      jsonrpc: "2.0",
-      id: "123",
-      method: "initialized",
-    }, {
-      jsonrpc: "2.0",
-      method: "textDocument/didOpen",
-      params: {
-        textDocument: {
-          text: storage.read('layout/theme.liquid'),
-          uri: file_uri(storage.path('layout/theme.liquid')),
-          version: 1,
-        },
-      },
-    })
+                    jsonrpc: "2.0",
+                    id: "123",
+                    method: "initialize",
+                    params: {
+                      rootUri: file_uri(storage.root)
+                    }
+                  }, {
+                    jsonrpc: "2.0",
+                    id: "123",
+                    method: "initialized"
+                  }, {
+                    jsonrpc: "2.0",
+                    method: "textDocument/didOpen",
+                    params: {
+                      textDocument: {
+                        text: storage.read('layout/theme.liquid'),
+                        uri: file_uri(storage.path('layout/theme.liquid')),
+                        version: 1
+                      }
+                    }
+                  })
 
     assert_responses({
-      jsonrpc: "2.0",
-      id: "123",
-      result: {
-        capabilities: CAPABILITIES,
-        serverInfo: SERVER_INFO,
-      },
-    }, {
-      jsonrpc: "2.0",
-      method: "textDocument/publishDiagnostics",
-      params: {
-        uri: file_uri(storage.path('layout/theme.liquid')),
-        diagnostics: [Diagnostic.new(offense).to_h],
-      },
-    })
+                       jsonrpc: "2.0",
+                       id: "123",
+                       result: {
+                         capabilities: CAPABILITIES,
+                         serverInfo: SERVER_INFO
+                       }
+                     }, {
+                       jsonrpc: "2.0",
+                       method: "textDocument/publishDiagnostics",
+                       params: {
+                         uri: file_uri(storage.path('layout/theme.liquid')),
+                         diagnostics: [Diagnostic.new(offense).to_h]
+                       }
+                     })
   end
 
   def test_sends_offenses_on_text_document_did_save
@@ -106,65 +106,65 @@ class LanguageServerTest < Minitest::Test
     PlatformosCheck::Analyzer.any_instance.expects(:offenses).returns([offense])
 
     send_messages({
-      jsonrpc: "2.0",
-      id: "123",
-      method: "initialize",
-      params: {
-        rootUri: file_uri(storage.root),
-      },
-    }, {
-      jsonrpc: "2.0",
-      method: "textDocument/didSave",
-      params: {
-        textDocument: {
-          uri: file_uri(storage.path('layout/theme.liquid')),
-          version: 1,
-        },
-      },
-    })
+                    jsonrpc: "2.0",
+                    id: "123",
+                    method: "initialize",
+                    params: {
+                      rootUri: file_uri(storage.root)
+                    }
+                  }, {
+                    jsonrpc: "2.0",
+                    method: "textDocument/didSave",
+                    params: {
+                      textDocument: {
+                        uri: file_uri(storage.path('layout/theme.liquid')),
+                        version: 1
+                      }
+                    }
+                  })
 
     assert_responses({
-      jsonrpc: "2.0",
-      id: "123",
-      result: {
-        capabilities: CAPABILITIES,
-        serverInfo: SERVER_INFO,
-      },
-    }, {
-      jsonrpc: "2.0",
-      method: "textDocument/publishDiagnostics",
-      params: {
-        uri: file_uri(storage.path('layout/theme.liquid')),
-        diagnostics: [Diagnostic.new(offense).to_h],
-      },
-    })
+                       jsonrpc: "2.0",
+                       id: "123",
+                       result: {
+                         capabilities: CAPABILITIES,
+                         serverInfo: SERVER_INFO
+                       }
+                     }, {
+                       jsonrpc: "2.0",
+                       method: "textDocument/publishDiagnostics",
+                       params: {
+                         uri: file_uri(storage.path('layout/theme.liquid')),
+                         diagnostics: [Diagnostic.new(offense).to_h]
+                       }
+                     })
   end
 
   def test_finds_root_from_file
     storage = make_file_system_storage(
       "src/layout/theme.liquid" => "",
       "src/.theme-check.yml" => "",
-      ".theme-check.yml" => "",
+      ".theme-check.yml" => ""
     )
 
     send_messages({
-      jsonrpc: "2.0",
-      id: "123",
-      method: "initialize",
-      params: {
-        rootUri: file_uri(storage.root),
-      },
-    }, {
-      jsonrpc: "2.0",
-      method: "textDocument/didOpen",
-      params: {
-        textDocument: {
-          text: storage.read('src/layout/theme.liquid'),
-          uri: file_uri(storage.path("src/layout/theme.liquid")),
-          version: 1,
-        },
-      },
-    })
+                    jsonrpc: "2.0",
+                    id: "123",
+                    method: "initialize",
+                    params: {
+                      rootUri: file_uri(storage.root)
+                    }
+                  }, {
+                    jsonrpc: "2.0",
+                    method: "textDocument/didOpen",
+                    params: {
+                      textDocument: {
+                        text: storage.read('src/layout/theme.liquid'),
+                        uri: file_uri(storage.path("src/layout/theme.liquid")),
+                        version: 1
+                      }
+                    }
+                  })
 
     assert_includes(@messenger.logs.join("\n"), "Checking #{storage.root}")
   end
@@ -177,50 +177,50 @@ class LanguageServerTest < Minitest::Test
     storage = make_file_system_storage
 
     send_messages({
-      jsonrpc: "2.0",
-      id: "123",
-      method: "initialize",
-      params: {
-        rootUri: file_uri(storage.root),
-      },
-    }, {
-      jsonrpc: "2.0",
-      method: "textDocument/didOpen",
-      params: {
-        textDocument: {
-          uri: file_uri(storage.path('layout/theme.liquid')),
-          text: contents,
-          version: 1,
-        },
-      },
-    }, {
-      jsonrpc: "2.0",
-      id: 1,
-      method: "textDocument/documentLink",
-      params: {
-        textDocument: {
-          uri: file_uri(storage.path('layout/theme.liquid')),
-        },
-      },
-    })
+                    jsonrpc: "2.0",
+                    id: "123",
+                    method: "initialize",
+                    params: {
+                      rootUri: file_uri(storage.root)
+                    }
+                  }, {
+                    jsonrpc: "2.0",
+                    method: "textDocument/didOpen",
+                    params: {
+                      textDocument: {
+                        uri: file_uri(storage.path('layout/theme.liquid')),
+                        text: contents,
+                        version: 1
+                      }
+                    }
+                  }, {
+                    jsonrpc: "2.0",
+                    id: 1,
+                    method: "textDocument/documentLink",
+                    params: {
+                      textDocument: {
+                        uri: file_uri(storage.path('layout/theme.liquid'))
+                      }
+                    }
+                  })
 
     assert_responses_include({
-      jsonrpc: "2.0",
-      id: 1,
-      result: [{
-        target: file_uri(storage.path('snippets/a.liquid')),
-        range: {
-          start: {
-            line: 0,
-            character: contents.index('a'),
-          },
-          end: {
-            line: 0,
-            character: contents.index('a') + 1,
-          },
-        },
-      }],
-    })
+                               jsonrpc: "2.0",
+                               id: 1,
+                               result: [{
+                                 target: file_uri(storage.path('snippets/a.liquid')),
+                                 range: {
+                                   start: {
+                                     line: 0,
+                                     character: contents.index('a')
+                                   },
+                                   end: {
+                                     line: 0,
+                                     character: contents.index('a') + 1
+                                   }
+                                 }
+                               }]
+                             })
   end
 
   def test_document_links_from_correct_root
@@ -230,76 +230,76 @@ class LanguageServerTest < Minitest::Test
 
     storage = make_file_system_storage(
       "src/theme/layout/theme.liquid" => "",
-      ".theme-check.yml" => <<~CONFIG,
+      ".theme-check.yml" => <<~CONFIG
         root: src/theme
       CONFIG
     )
 
     send_messages({
-      jsonrpc: "2.0",
-      id: "123",
-      method: "initialize",
-      params: {
-        rootUri: file_uri(storage.root),
-      },
-    }, {
-      jsonrpc: "2.0",
-      method: "textDocument/didOpen",
-      params: {
-        textDocument: {
-          uri: file_uri(storage.path('src/theme/layout/theme.liquid')),
-          text: contents,
-          version: 1,
-        },
-      },
-    }, {
-      jsonrpc: "2.0",
-      id: 1,
-      method: "textDocument/documentLink",
-      params: {
-        textDocument: {
-          uri: file_uri(storage.path('src/theme/layout/theme.liquid')),
-        },
-      },
-    })
+                    jsonrpc: "2.0",
+                    id: "123",
+                    method: "initialize",
+                    params: {
+                      rootUri: file_uri(storage.root)
+                    }
+                  }, {
+                    jsonrpc: "2.0",
+                    method: "textDocument/didOpen",
+                    params: {
+                      textDocument: {
+                        uri: file_uri(storage.path('src/theme/layout/theme.liquid')),
+                        text: contents,
+                        version: 1
+                      }
+                    }
+                  }, {
+                    jsonrpc: "2.0",
+                    id: 1,
+                    method: "textDocument/documentLink",
+                    params: {
+                      textDocument: {
+                        uri: file_uri(storage.path('src/theme/layout/theme.liquid'))
+                      }
+                    }
+                  })
 
     assert_responses_include({
-      jsonrpc: "2.0",
-      id: 1,
-      result: [{
-        target: file_uri(storage.path('src/theme/snippets/a.liquid')),
-        range: {
-          start: {
-            line: 0,
-            character: contents.index('a'),
-          },
-          end: {
-            line: 0,
-            character: contents.index('a') + 1,
-          },
-        },
-      }],
-    })
+                               jsonrpc: "2.0",
+                               id: 1,
+                               result: [{
+                                 target: file_uri(storage.path('src/theme/snippets/a.liquid')),
+                                 range: {
+                                   start: {
+                                     line: 0,
+                                     character: contents.index('a')
+                                   },
+                                   end: {
+                                     line: 0,
+                                     character: contents.index('a') + 1
+                                   }
+                                 }
+                               }]
+                             })
   end
 
   def test_handles_on_initialize_with_null_paths
     send_messages({
-      jsonrpc: "2.0",
-      id: "123",
-      method: "initialize",
-      params: {
-        rootPath: nil,
-        rootUri: nil,
-      },
-    })
+                    jsonrpc: "2.0",
+                    id: "123",
+                    method: "initialize",
+                    params: {
+                      rootPath: nil,
+                      rootUri: nil
+                    }
+                  })
 
     assert_responses({
-      jsonrpc: "2.0",
-      id: "123",
-      result: {
-        capabilities: {},
-      },
-    })
+                       jsonrpc: "2.0",
+                       id: "123",
+                       result: {
+                         capabilities: {}
+                       }
+                     })
   end
 
   # This is a repetition of the document_links test but with a path that is URL encoded the same way
@@ -310,56 +310,56 @@ class LanguageServerTest < Minitest::Test
     LIQUID
 
     storage = make_file_system_storage(
-      ".theme-check.yml" => <<~YAML,
+      ".theme-check.yml" => <<~YAML
         root: "path with spaces/"
       YAML
     )
 
     send_messages({
-      jsonrpc: "2.0",
-      id: "123",
-      method: "initialize",
-      params: {
-        rootUri: file_uri(storage.root),
-      },
-    }, {
-      jsonrpc: "2.0",
-      method: "textDocument/didOpen",
-      params: {
-        textDocument: {
-          uri: file_uri(storage.path('path with spaces/layout/theme.liquid')),
-          text: contents,
-          version: 1,
-        },
-      },
-    }, {
-      jsonrpc: "2.0",
-      id: 1,
-      method: "textDocument/documentLink",
-      params: {
-        textDocument: {
-          uri: file_uri(storage.path('path with spaces/layout/theme.liquid')),
-        },
-      },
-    })
+                    jsonrpc: "2.0",
+                    id: "123",
+                    method: "initialize",
+                    params: {
+                      rootUri: file_uri(storage.root)
+                    }
+                  }, {
+                    jsonrpc: "2.0",
+                    method: "textDocument/didOpen",
+                    params: {
+                      textDocument: {
+                        uri: file_uri(storage.path('path with spaces/layout/theme.liquid')),
+                        text: contents,
+                        version: 1
+                      }
+                    }
+                  }, {
+                    jsonrpc: "2.0",
+                    id: 1,
+                    method: "textDocument/documentLink",
+                    params: {
+                      textDocument: {
+                        uri: file_uri(storage.path('path with spaces/layout/theme.liquid'))
+                      }
+                    }
+                  })
 
     assert_responses_include({
-      jsonrpc: "2.0",
-      id: 1,
-      result: [{
-        target: file_uri(storage.path('path with spaces/snippets/a.liquid')),
-        range: {
-          start: {
-            line: 0,
-            character: contents.index('a'),
-          },
-          end: {
-            line: 0,
-            character: contents.index('a') + 1,
-          },
-        },
-      }],
-    })
+                               jsonrpc: "2.0",
+                               id: 1,
+                               result: [{
+                                 target: file_uri(storage.path('path with spaces/snippets/a.liquid')),
+                                 range: {
+                                   start: {
+                                     line: 0,
+                                     character: contents.index('a')
+                                   },
+                                   end: {
+                                     line: 0,
+                                     character: contents.index('a') + 1
+                                   }
+                                 }
+                               }]
+                             })
   end
 
   private
@@ -367,24 +367,26 @@ class LanguageServerTest < Minitest::Test
   def send_messages(*messages)
     messages << {
       jsonrpc: "2.0",
-      method: "exit",
+      method: "exit"
     }
     messages.each do |message|
       @messenger.send_mock_message(JSON.dump(message))
     end
     status_code = @server.listen
+
     assert_equal(0, status_code, "@server exited with error")
   end
 
   def assert_responses_include(*expected_responses)
     actual_responses = @messenger.sent_messages
+
     expected_responses.each do |response|
       assert(
         actual_responses.find do |actual|
           # Avoid conversion problems. We only care about the JSON.
           JSON.parse(JSON.generate(actual)) == JSON.parse(JSON.generate(response))
         end,
-        <<~ERR,
+        <<~ERR
           Expected to find the following object:
 
           #{JSON.pretty_generate(response)}
@@ -397,5 +399,5 @@ class LanguageServerTest < Minitest::Test
       )
     end
   end
-  alias_method :assert_responses, :assert_responses_include
+  alias assert_responses assert_responses_include
 end

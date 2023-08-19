@@ -26,10 +26,10 @@ module PlatformosCheck
       return unless value.is_a?(String)
 
       html = Nokogiri::HTML5.fragment(value, max_errors: -1)
-      unless html.errors.empty?
-        err_msg = html.errors.join("\n")
-        add_offense("'#{key}' contains invalid HTML:\n#{err_msg}")
-      end
+      return if html.errors.empty?
+
+      err_msg = html.errors.join("\n")
+      add_offense("'#{key}' contains invalid HTML:\n#{err_msg}")
     end
 
     def visit_nested(value, keys = [])

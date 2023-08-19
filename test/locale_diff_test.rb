@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class LocaleDiffTest < Minitest::Test
@@ -7,6 +8,7 @@ class LocaleDiffTest < Minitest::Test
       { "title" => "Hello" },
       { "title" => "Bonjour" }
     )
+
     assert_empty(diff.extra_keys)
     assert_empty(diff.missing_keys)
   end
@@ -18,14 +20,15 @@ class LocaleDiffTest < Minitest::Test
         "title" => "Bonjour",
         "help" => "Aide",
         "sections" => {
-          "name" => "Nom",
+          "name" => "Nom"
         },
         "general" => {
-          "product" => "Produit",
-        },
-      },
+          "product" => "Produit"
+        }
+      }
     )
-    assert_equal([["help"], ["sections"], ["general", "product"]], diff.extra_keys)
+
+    assert_equal([["help"], ["sections"], %w[general product]], diff.extra_keys)
     assert_empty(diff.missing_keys)
   end
 
@@ -35,12 +38,13 @@ class LocaleDiffTest < Minitest::Test
         "title" => "Bonjour",
         "help" => "Aide",
         "general" => {
-          "product" => "Produit",
-        },
+          "product" => "Produit"
+        }
       },
-      { "title" => "Hello", "general" => {} },
+      { "title" => "Hello", "general" => {} }
     )
-    assert_equal([["help"], ["general", "product"]], diff.missing_keys)
+
+    assert_equal([["help"], %w[general product]], diff.missing_keys)
     assert_empty(diff.extra_keys)
   end
 
@@ -49,10 +53,11 @@ class LocaleDiffTest < Minitest::Test
   def test_add_as_offenses
     diff = PlatformosCheck::LocaleDiff.new(
       { "help" => "Aide" },
-      { "title" => "Hello" },
+      { "title" => "Hello" }
     )
     check = MockCheck.new
     diff.add_as_offenses(check, key_prefix: ["locales"])
+
     assert_offenses(<<~END, check.offenses)
       Extra translation keys: locales.title
       Missing translation keys: locales.help

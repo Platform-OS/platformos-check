@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class UnusedSnippetTest < Minitest::Test
@@ -11,10 +12,11 @@ class UnusedSnippetTest < Minitest::Test
       "snippets/muffin.liquid" => <<~END,
         Here's a muffin
       END
-      "snippets/unused.liquid" => <<~END,
+      "snippets/unused.liquid" => <<~END
         This is not used
       END
     )
+
     assert_offenses(<<~END, offenses)
       This snippet is not used at snippets/unused.liquid
     END
@@ -30,10 +32,11 @@ class UnusedSnippetTest < Minitest::Test
       "snippets/muffin.liquid" => <<~END,
         Here's a muffin
       END
-      "snippets/unused.liquid" => <<~END,
+      "snippets/unused.liquid" => <<~END
         This is not used
       END
     )
+
     assert_offenses("", offenses)
   end
 
@@ -45,10 +48,11 @@ class UnusedSnippetTest < Minitest::Test
           {% render name %}
         {% endfor %}
       END
-      "snippets/unused.liquid" => <<~END,
+      "snippets/unused.liquid" => <<~END
         This is not used
       END
     )
+
     assert_offenses(<<~END, offenses)
       This snippet is not used at snippets/unused.liquid
     END
@@ -62,10 +66,11 @@ class UnusedSnippetTest < Minitest::Test
           {% include name %}
         {% endfor %}
       END
-      "snippets/unused.liquid" => <<~END,
+      "snippets/unused.liquid" => <<~END
         This is not used
       END
     )
+
     assert_offenses("", offenses)
   end
 
@@ -77,7 +82,7 @@ class UnusedSnippetTest < Minitest::Test
       "snippets/muffin.liquid" => <<~END,
         Here's a muffin
       END
-      "snippets/unused.liquid" => <<~END,
+      "snippets/unused.liquid" => <<~END
         This is not used
       END
     )
@@ -86,6 +91,6 @@ class UnusedSnippetTest < Minitest::Test
     analyzer.analyze_theme
     analyzer.correct_offenses
 
-    refute(theme.storage.files.include?("snippets/unused.liquid"))
+    refute_includes(theme.storage.files, "snippets/unused.liquid")
   end
 end

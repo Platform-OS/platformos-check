@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "nokogiri"
 require "forwardable"
 
@@ -22,14 +23,14 @@ module PlatformosCheck
       call_checks(:on_element, node) if node.element?
       call_checks(:"on_#{node.name}", node)
       node.children.each { |child| visit(child) }
-      unless node.literal?
-        call_checks(:"after_#{node.name}", node)
-        call_checks(:after_element, node) if node.element?
-      end
+      return if node.literal?
+
+      call_checks(:"after_#{node.name}", node)
+      call_checks(:after_element, node) if node.element?
     end
 
-    def call_checks(method, *args)
-      checks.call(method, *args)
+    def call_checks(method, *)
+      checks.call(method, *)
     end
   end
 end

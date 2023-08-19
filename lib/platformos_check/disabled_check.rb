@@ -16,16 +16,18 @@ module PlatformosCheck
 
     def start_index=(index)
       return unless ranges.empty? || !last.end.nil?
+
       @ranges << (index..)
     end
 
     def end_index=(index)
       return if ranges.empty? || !last.end.nil?
+
       @ranges << (@ranges.pop.begin..index)
     end
 
     def disabled?(index)
-      index == 0 && first_line ||
+      (index == 0 && first_line) ||
         ranges.any? { |range| range.cover?(index) }
     end
 
@@ -35,6 +37,7 @@ module PlatformosCheck
 
     def missing_end_index?
       return false if first_line && ranges.size == 1
+
       last&.end.nil?
     end
   end

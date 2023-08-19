@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-$LOAD_PATH.unshift(File.expand_path("../../lib", __FILE__))
+
+$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
 require "platformos_check"
 require "minitest/autorun"
 require "minitest/focus"
@@ -27,7 +28,9 @@ module Minitest
     def capture(stream)
       stream = stream.to_s
       captured_stream = Tempfile.new(stream)
-      stream_io = eval("$#{stream}") # # rubocop:disable Security/Eval
+      # rubocop:disable Security/Eval
+      stream_io = eval("$#{stream}")
+      # rubocop:enable Security/Eval
       origin_stream = stream_io.dup
       stream_io.reopen(captured_stream)
 
@@ -76,8 +79,8 @@ module Minitest
       diagnostics_manager = PlatformosCheck::LanguageServer::DiagnosticsManager.new
       diagnostics_manager.build_diagnostics(offenses)
       {
-        diagnostics_manager: diagnostics_manager,
-        storage: storage,
+        diagnostics_manager:,
+        storage:
       }
     end
 
@@ -88,6 +91,7 @@ module Minitest
 
     def make_storage(files = {})
       return make_file_system_storage(files) if ENV['THEME_STORAGE'] == 'FileSystemStorage'
+
       make_in_memory_storage(files)
     end
 
@@ -157,9 +161,10 @@ module Minitest
     module CompletionProviderTestHelper
       def assert_can_complete(provider, token, offset = 0)
         context = mock_context(provider, token, offset)
+
         refute_empty(
           provider.completions(context).map { |x| x[:label] },
-          <<~ERRMSG,
+          <<~ERRMSG
             Expected completions at the specified cursor position:
             #{token}
             #{' ' * (token.size + offset)}^
@@ -169,10 +174,11 @@ module Minitest
 
       def assert_can_complete_with(provider, token, label, offset = 0)
         context = mock_context(provider, token, offset)
+
         assert_includes(
           provider.completions(context).map { |x| x[:label] },
           label,
-          <<~ERRMSG,
+          <<~ERRMSG
             Expected '#{label}' to be suggested at the specified cursor position:
             #{token}
             #{' ' * (token.size + offset)}^
@@ -182,9 +188,10 @@ module Minitest
 
       def refute_can_complete(provider, token, offset = 0)
         context = mock_context(provider, token, offset)
+
         assert_empty(
           provider.completions(context),
-          <<~ERRMSG,
+          <<~ERRMSG
             Expected no completions at the specified cursor location:
             #{token}
             #{' ' * (token.size + offset)}^
@@ -198,7 +205,7 @@ module Minitest
         refute_includes(
           provider.completions(context).map { |x| x[:label] },
           label,
-          <<~ERRMSG,
+          <<~ERRMSG
             Expected '#{label}' not to be suggested at the specified cursor position:
             #{token}
             #{' ' * (token.size + offset)}^
@@ -230,7 +237,7 @@ module Minitest
       end
 
       def respond_to?(method)
-        method.to_s.start_with?("on_") || method.to_s.start_with?("after_") || super
+        method.to_s.start_with?("on_", "after_") || super
       end
 
       def method_missing(method, node)

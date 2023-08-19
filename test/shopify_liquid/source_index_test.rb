@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require_relative './source_test_helper'
+require_relative 'source_test_helper'
 
 module PlatformosCheck
   module ShopifyLiquid
@@ -20,18 +20,21 @@ module PlatformosCheck
           .stubs(:default_destination)
           .returns(SourceManager.send(:default_destination))
         @source_index_class.filters
+
         assert_operator(@source_index_class.filters.length, :>=, 138)
 
         SourceIndex::FilterState.mark_outdated
-        assert(SourceIndex::FilterState.outdated?)
+
+        assert_predicate(SourceIndex::FilterState, :outdated?)
 
         # Stub documentation directory to load test fixture data
         @source_index_class.stubs(:default_destination).returns(@pathname_tmp_dir)
 
         # Confirm filters reloads
         @source_index_class.filters
+
         assert_equal(1, @source_index_class.filters.length)
-        refute(SourceIndex::FilterState.outdated?)
+        refute_predicate(SourceIndex::FilterState, :outdated?)
       ensure
         FileUtils.remove_entry(@pathname_tmp_dir)
       end
@@ -48,18 +51,21 @@ module PlatformosCheck
           .stubs(:default_destination)
           .returns(SourceManager.send(:default_destination))
         @source_index_class.objects
+
         assert_operator(@source_index_class.objects.length, :>=, 111)
 
         SourceIndex::ObjectState.mark_outdated
-        assert(SourceIndex::ObjectState.outdated?)
+
+        assert_predicate(SourceIndex::ObjectState, :outdated?)
 
         # Stub documentation directory to load test fixture data
         @source_index_class.stubs(:default_destination).returns(@pathname_tmp_dir)
 
         # Confirm objects reloads
         @source_index_class.objects
+
         assert_equal(1, @source_index_class.objects.length)
-        refute(SourceIndex::ObjectState.outdated?)
+        refute_predicate(SourceIndex::ObjectState, :outdated?)
       ensure
         FileUtils.remove_entry(@pathname_tmp_dir)
       end
@@ -76,18 +82,21 @@ module PlatformosCheck
           .stubs(:default_destination)
           .returns(SourceManager.send(:default_destination))
         @source_index_class.tags
+
         assert_operator(@source_index_class.tags.length, :>=, 27)
 
         SourceIndex::TagState.mark_outdated
-        assert(SourceIndex::TagState.outdated?)
+
+        assert_predicate(SourceIndex::TagState, :outdated?)
 
         # Stub documentation directory to load test fixture data
         @source_index_class.stubs(:default_destination).returns(@pathname_tmp_dir)
 
         # Confirm tags reloads
         @source_index_class.tags
+
         assert_equal(1, @source_index_class.tags.length)
-        refute(SourceIndex::TagState.outdated?)
+        refute_predicate(SourceIndex::TagState, :outdated?)
       ensure
         FileUtils.remove_entry(@pathname_tmp_dir)
       end

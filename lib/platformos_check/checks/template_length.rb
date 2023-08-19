@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class TemplateLength < LiquidCheck
     severity :suggestion
@@ -30,9 +31,9 @@ module PlatformosCheck
 
     def after_document(node)
       lines = node.theme_file.source.count("\n") - @excluded_lines
-      if lines > @max_length
-        add_offense("Template has too many lines [#{lines}/#{@max_length}]", theme_file: node.theme_file)
-      end
+      return unless lines > @max_length
+
+      add_offense("Template has too many lines [#{lines}/#{@max_length}]", theme_file: node.theme_file)
     end
 
     private

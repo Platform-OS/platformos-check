@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   # Reports errors when trying to use parser-blocking script tags
   class ParserBlockingScriptTag < LiquidCheck
@@ -8,13 +9,13 @@ module PlatformosCheck
 
     def on_variable(node)
       used_filters = node.filters.map { |name, *_rest| name }
-      if used_filters.include?("script_tag")
-        add_offense(
-          "The script_tag filter is parser-blocking. Use a script tag with the async or defer " \
-          "attribute for better performance",
-          node: node
-        )
-      end
+      return unless used_filters.include?("script_tag")
+
+      add_offense(
+        "The script_tag filter is parser-blocking. Use a script tag with the async or defer " \
+        "attribute for better performance",
+        node:
+      )
     end
   end
 end

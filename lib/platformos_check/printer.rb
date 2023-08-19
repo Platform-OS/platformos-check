@@ -19,28 +19,28 @@ module PlatformosCheck
 
     def print_offense(offense, auto_correct)
       location = if offense.location
-        blue(offense.location) + ": "
-      else
-        ""
-      end
+                   blue(offense.location) + ": "
+                 else
+                   ""
+                 end
 
       corrected = if auto_correct && offense.correctable?
-        green("[Corrected] ")
-      else
-        ""
-      end
+                    green("[Corrected] ")
+                  else
+                    ""
+                  end
 
       @out.puts location +
-        colorized_severity(offense.severity) + ": " +
-        yellow(offense.check_name) + ": " +
-        corrected +
-        offense.message + "."
-      if offense.source_excerpt
-        @out.puts "\t#{offense.source_excerpt}"
-        if offense.markup_start_in_excerpt
-          @out.puts "\t" + (" " * offense.markup_start_in_excerpt) + ("^" * offense.markup.size)
-        end
-      end
+                colorized_severity(offense.severity) + ": " +
+                yellow(offense.check_name) + ": " +
+                corrected +
+                offense.message + "."
+      return unless offense.source_excerpt
+
+      @out.puts "\t#{offense.source_excerpt}"
+      return unless offense.markup_start_in_excerpt
+
+      @out.puts "\t" + (" " * offense.markup_start_in_excerpt) + ("^" * offense.markup.size)
     end
 
     private

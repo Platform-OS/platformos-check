@@ -25,7 +25,7 @@ module PlatformosCheck
             # close open delimiters
             @markup += "'" if @markup.count("'").odd?
             @markup += '"' if @markup.count('"').odd?
-            @markup += "]" if @markup =~ UNCLOSED_SQUARE_BRACKET
+            @markup += "]" if UNCLOSED_SQUARE_BRACKET.match?(@markup)
 
             @ends_with_blank_potential_lookup = @markup =~ ENDS_WITH_BLANK_POTENTIAL_LOOKUP
             @markup = last_line if liquid_tag?
@@ -63,7 +63,7 @@ module PlatformosCheck
         private
 
         def tag?(tag_name)
-          if @markup =~ tag_regex(tag_name)
+          if @markup&.match?(tag_regex(tag_name))
             throw(:empty_lookup_markup, '') if @ends_with_blank_potential_lookup
             true
           else
@@ -91,7 +91,7 @@ module PlatformosCheck
         end
 
         def tag_end
-          @markup =~ VARIABLE_START ? ' }}' : ' %}'
+          VARIABLE_START.match?(@markup) ? ' }}' : ' %}'
         end
 
         def tag_regex(tag_name)

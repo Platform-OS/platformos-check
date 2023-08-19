@@ -45,7 +45,8 @@ module PlatformosCheck
 
         object, property = VariableLookupTraverser.lookup_object_and_property(variable_lookup)
         return property.return_type if property
-        return object.name if object
+
+        object&.name
       end
 
       def denied_filters_for(variable_lookup)
@@ -56,7 +57,7 @@ module PlatformosCheck
 
       def available_filters_for(input_type)
         filters = ShopifyLiquid::SourceIndex.filters
-          .select { |filter| input_type.nil? || filter.input_type == input_type }
+                                            .select { |filter| input_type.nil? || filter.input_type == input_type }
         return all_labels if filters.empty?
         return filters if input_type == INPUT_TYPE_VARIABLE
 
@@ -93,7 +94,7 @@ module PlatformosCheck
           label: filter.name,
           kind: CompletionItemKinds::FUNCTION,
           **format_hash(filter),
-          **doc_hash(content),
+          **doc_hash(content)
         }
       end
     end

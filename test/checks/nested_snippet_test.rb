@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class NestedSnippetTest < Minitest::Test
@@ -17,10 +18,11 @@ class NestedSnippetTest < Minitest::Test
       "snippets/three.liquid" => <<~END,
         {% include 'four' %}
       END
-      "snippets/four.liquid" => <<~END,
+      "snippets/four.liquid" => <<~END
         ok
       END
     )
+
     assert_offenses(<<~END, offenses)
       Too many nested snippets at snippets/one.liquid:1
       Too many nested snippets at templates/index.liquid:1
@@ -36,10 +38,11 @@ class NestedSnippetTest < Minitest::Test
       "snippets/one.liquid" => <<~END,
         {% include 'two' %}
       END
-      "snippets/two.liquid" => <<~END,
+      "snippets/two.liquid" => <<~END
         ok
       END
     )
+
     assert_offenses("", offenses)
   end
 end

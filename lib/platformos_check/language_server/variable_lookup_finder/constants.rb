@@ -8,7 +8,7 @@ module PlatformosCheck
         ANY_ENDING_TAG = /#{Liquid::TagEnd}|#{Liquid::VariableEnd}\s*^/om
 
         UNCLOSED_SQUARE_BRACKET = /\[[^\]]*\Z/
-        ENDS_IN_BRACKET_POSITION_THAT_CANT_BE_COMPLETED = %r{
+        ENDS_IN_BRACKET_POSITION_THAT_CANT_BE_COMPLETED = /
           (
             # quotes not preceded by a [
             (?<!\[)['"]|
@@ -17,12 +17,12 @@ module PlatformosCheck
             # opening [
             \[
           )$
-        }x
+        /x
 
         VARIABLE_START = /\s*#{Liquid::VariableStart}/
         VARIABLE_LOOKUP_CHARACTERS = /[a-z0-9_.'"\]\[]/i
         VARIABLE_LOOKUP = /#{VARIABLE_LOOKUP_CHARACTERS}+/o
-        SYMBOLS_PRECEDING_POTENTIAL_LOOKUPS = %r{
+        SYMBOLS_PRECEDING_POTENTIAL_LOOKUPS = /
           (?:
             \s(?:
               if|elsif|unless|and|or|#{Liquid::Condition.operators.keys.join("|")}
@@ -35,7 +35,7 @@ module PlatformosCheck
             |[:,=]
           )
           \s+
-        }omix
+        /omix
         ENDS_WITH_BLANK_POTENTIAL_LOOKUP = /#{SYMBOLS_PRECEDING_POTENTIAL_LOOKUPS}$/oimx
         ENDS_WITH_POTENTIAL_LOOKUP = /#{SYMBOLS_PRECEDING_POTENTIAL_LOOKUPS}#{VARIABLE_LOOKUP}$/oimx
       end

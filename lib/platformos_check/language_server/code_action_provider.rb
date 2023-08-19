@@ -18,8 +18,7 @@ module PlatformosCheck
         end
       end
 
-      attr_reader :storage
-      attr_reader :diagnostics_manager
+      attr_reader :storage, :diagnostics_manager
 
       def initialize(storage, diagnostics_manager)
         @storage = storage

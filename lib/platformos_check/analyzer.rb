@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class Analyzer
     def initialize(theme, checks = Check.all.map(&:new), auto_correct = false)
@@ -123,24 +124,22 @@ module PlatformosCheck
     end
 
     def uncorrectable_offenses
-      unless @auto_correct
-        return offenses
-      end
+      return offenses unless @auto_correct
 
       offenses.select { |offense| !offense.correctable? }
     end
 
     def correct_offenses
-      if @auto_correct
-        offenses.each(&:correct)
-      end
+      return unless @auto_correct
+
+      offenses.each(&:correct)
     end
 
     def write_corrections
-      if @auto_correct
-        @theme.liquid.each(&:write)
-        @theme.json.each(&:write)
-      end
+      return unless @auto_correct
+
+      @theme.liquid.each(&:write)
+      @theme.json.each(&:write)
     end
 
     private

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "liquid"
 
 require_relative "platformos_check/version"
@@ -56,7 +57,7 @@ module PlatformosCheck
   end
 
   def self.debug_log_file
-    ENV["PLATFORMOS_CHECK_DEBUG_LOG_FILE"]
+    ENV.fetch("PLATFORMOS_CHECK_DEBUG_LOG_FILE", nil)
   end
 
   def self.with_liquid_c_disabled
@@ -66,8 +67,6 @@ module PlatformosCheck
     end
     yield
   ensure
-    if defined?(Liquid::C) && was_enabled
-      Liquid::C.enabled = true
-    end
+    Liquid::C.enabled = true if defined?(Liquid::C) && was_enabled
   end
 end

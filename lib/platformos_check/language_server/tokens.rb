@@ -4,7 +4,7 @@ module PlatformosCheck
   Token = Struct.new(
     :content,
     :start, # inclusive
-    :end, # exclusive
+    :end # exclusive
   )
 
   TAG_START = Liquid::TagStart
@@ -26,10 +26,10 @@ module PlatformosCheck
     end
 
     def each(&block)
-      return to_enum(:each) unless block_given?
+      return to_enum(:each) unless block
 
       chunks = @buffer.split(SPLITTER)
-      chunks.shift if chunks[0]&.empty?
+      chunks.shift if chunks[0] && chunks[0].empty?
 
       prev = Token.new('', 0, 0)
       curr = Token.new('', 0, 0)
@@ -39,10 +39,10 @@ module PlatformosCheck
         curr.start = prev.end
         curr.end = curr.start + content.size
 
-        block.call(Token.new(
+        yield(Token.new(
           content,
           curr.start,
-          curr.end,
+          curr.end
         ))
 
         # recycling structs

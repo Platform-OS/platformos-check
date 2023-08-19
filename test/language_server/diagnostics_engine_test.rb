@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -14,7 +15,7 @@ module PlatformosCheck
           "snippets/a.liquid" => "{% if unclosed %}",
           "snippets/b.liquid" => "{% if unclosed %}",
           "snippets/c.liquid" => "",
-          ".theme-check.yml" => <<~YML,
+          ".theme-check.yml" => <<~YML
             extends: :nothing
             SyntaxError:
               enabled: true
@@ -56,12 +57,14 @@ module PlatformosCheck
       def test_analyze_and_send_offenses_with_only_single_file
         # Only expect single file diagnostics for the file checked
         analyze_and_send_offenses("snippets/a.liquid", only_single_file: true)
+
         assert_includes(@messenger.sent_messages, diagnostics_notification("snippets/a.liquid", [:syntax]))
         refute_includes(@messenger.sent_messages, diagnostics_notification("snippets/b.liquid", [:syntax]))
         refute_includes(@messenger.sent_messages, diagnostics_notification("snippets/c.liquid", [:unused]))
 
         # whole theme checks are ignored in this mode
         analyze_and_send_offenses("snippets/c.liquid", only_single_file: true)
+
         refute_includes(@messenger.sent_messages, diagnostics_notification("snippets/c.liquid", [:unused]))
 
         # Correct the file
@@ -88,6 +91,7 @@ module PlatformosCheck
       def test_analyze_and_send_offenses_mixed_mode
         # Run a full theme check on first run
         analyze_and_send_offenses("snippets/a.liquid")
+
         assert_includes(@messenger.sent_messages, diagnostics_notification("snippets/a.liquid", [:syntax]))
         assert_includes(@messenger.sent_messages, diagnostics_notification("snippets/b.liquid", [:syntax]))
         assert_includes(@messenger.sent_messages, diagnostics_notification("snippets/c.liquid", [:unused]))
@@ -113,6 +117,7 @@ module PlatformosCheck
 
         # Hit "save", run whole theme checks. Remove the fixed offense.
         analyze_and_send_offenses("layout/theme.liquid")
+
         assert_includes(@messenger.sent_messages, empty_diagnostics_notification("snippets/c.liquid"))
       end
 
@@ -130,6 +135,7 @@ module PlatformosCheck
           end
         end
         threads.each { |t| t.join if t.alive? }
+
         assert(@messenger.sent_messages.size < threads.size)
       end
 
@@ -137,7 +143,7 @@ module PlatformosCheck
         @engine.analyze_and_send_offenses(
           @storage.path(path),
           PlatformosCheck::Config.from_path(@storage.root),
-          only_single_file: only_single_file
+          only_single_file:
         )
       end
 
@@ -150,8 +156,8 @@ module PlatformosCheck
           method: "textDocument/publishDiagnostics",
           params: {
             uri: file_uri(@storage.path(path)),
-            diagnostics: diagnostics,
-          },
+            diagnostics:
+          }
         }
       end
 
@@ -165,19 +171,19 @@ module PlatformosCheck
           message: "This snippet is not used",
           range: {
             start: { line: 0, character: 0 },
-            end: { line: 0, character: 0 },
+            end: { line: 0, character: 0 }
           },
           severity: 2,
           source: "theme-check",
           codeDescription: {
-            href: "https://github.com/Shopify/theme-check/blob/main/docs/checks/unused_snippet.md",
+            href: "https://github.com/Shopify/theme-check/blob/main/docs/checks/unused_snippet.md"
           },
           data: {
             uri: file_uri(@storage.path(path)),
             absolute_path: @storage.path(path).to_s,
             relative_path: path.to_s,
-            version: nil,
-          },
+            version: nil
+          }
         }
       end
 
@@ -187,19 +193,19 @@ module PlatformosCheck
           message: "'if' tag was never closed",
           range: {
             start: { line: 0, character: 0 },
-            end: { line: 0, character: 16 },
+            end: { line: 0, character: 16 }
           },
           severity: 1,
           source: "theme-check",
           codeDescription: {
-            href: "https://github.com/Shopify/theme-check/blob/main/docs/checks/syntax_error.md",
+            href: "https://github.com/Shopify/theme-check/blob/main/docs/checks/syntax_error.md"
           },
           data: {
             uri: file_uri(@storage.path(path)),
             absolute_path: @storage.path(path).to_s,
             relative_path: path.to_s,
-            version: nil,
-          },
+            version: nil
+          }
         }
       end
     end

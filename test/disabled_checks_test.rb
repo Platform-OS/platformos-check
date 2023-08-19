@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -6,7 +7,7 @@ module PlatformosCheck
     # This check flags uses of the assign tag.
     class AssignCheck < Check
       def on_assign(node)
-        offenses << Offense.new(check: self, message: "assign used", node: node)
+        offenses << Offense.new(check: self, message: "assign used", node:)
       end
     end
 
@@ -25,7 +26,7 @@ module PlatformosCheck
           offenses << Offense.new(
             check: self,
             message: "Regex found #{match[0]}.",
-            node: node,
+            node:,
             markup: match[0],
             line_number: source[0...match.begin(0)].count("\n") + 1
           )
@@ -63,8 +64,8 @@ module PlatformosCheck
 
     def comment_types
       [
-        -> (text) { block_comment(text) },
-        -> (text) { inline_comment(text) },
+        ->(text) { block_comment(text) },
+        ->(text) { inline_comment(text) }
       ]
     end
 
@@ -257,7 +258,7 @@ module PlatformosCheck
         {% assign x = 'x' %}
       END
       @assign_check.ignored_patterns = [
-        liquid_file.relative_path.to_s,
+        liquid_file.relative_path.to_s
       ]
       @visitor.visit_liquid_file(liquid_file)
       @disabled_checks.remove_disabled_offenses(@checks)
@@ -272,7 +273,7 @@ module PlatformosCheck
         {% endcomment %}
       END
       @assign_check.ignored_patterns = [
-        liquid_file.relative_path.to_s,
+        liquid_file.relative_path.to_s
       ]
       @visitor.visit_liquid_file(liquid_file)
       @disabled_checks.remove_disabled_offenses(@checks)

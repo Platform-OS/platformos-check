@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class HtmlParsingError < HtmlCheck
     severity :error
@@ -6,7 +7,7 @@ module PlatformosCheck
     doc docs_url(__FILE__)
 
     def on_parse_error(exception, theme_file)
-      add_offense("HTML in this template can not be parsed: #{exception.message}", theme_file: theme_file)
+      add_offense("HTML in this template can not be parsed: #{exception.message}", theme_file:)
     end
   end
 end

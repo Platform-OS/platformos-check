@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
@@ -28,6 +29,7 @@ module PlatformosCheck
 
       def test_completions_with_tag_not_in_source_index
         tag_not_in_source_index = 'ifchanged'
+
         assert_includes(ShopifyLiquid::Tag::LABELS_NOT_IN_SOURCE_INDEX, tag_not_in_source_index)
         assert_can_complete_with(@provider, "{% ", tag_not_in_source_index)
       end

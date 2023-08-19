@@ -34,8 +34,8 @@ module PlatformosCheck
         {
           documentation: {
             kind: MarkupKinds::MARKDOWN,
-            value: content,
-          },
+            value: content
+          }
         }
       end
 
@@ -45,7 +45,7 @@ module PlatformosCheck
 
         {
           tags: [CompletionItemTag::DEPRECATED],
-          sortText: "~#{entry.name}",
+          sortText: "~#{entry.name}"
         }
       end
     end

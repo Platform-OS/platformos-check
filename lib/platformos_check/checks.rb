@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "pp"
 require "timeout"
 
@@ -6,9 +7,9 @@ module PlatformosCheck
   class Checks < Array
     CHECK_METHOD_TIMEOUT = 5 # sec
 
-    def call(method, *args)
+    def call(method, *)
       each do |check|
-        call_check_method(check, method, *args)
+        call_check_method(check, method, *)
       end
     end
 
@@ -44,7 +45,7 @@ module PlatformosCheck
       end
     rescue Liquid::Error, PlatformosCheckError
       raise
-    rescue => e
+    rescue StandardError => e
       node = args.first
       theme_file = node.respond_to?(:theme_file) ? node.theme_file.relative_path : "?"
       markup = node.respond_to?(:markup) ? node.markup : ""

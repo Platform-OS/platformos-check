@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class JsonFileTest < Minitest::Test
@@ -15,11 +16,12 @@ class JsonFileTest < Minitest::Test
   end
 
   def test_content
-    assert_equal({}, @json.content)
+    assert_empty(@json.content)
   end
 
   def test_content_with_error
     @json = make_json_file("locales/en.json", "{")
+
     assert_nil(@json.content)
   end
 
@@ -29,6 +31,7 @@ class JsonFileTest < Minitest::Test
 
   def test_parse_error_with_error
     @json = make_json_file("locales/en.json", "{")
+
     assert_instance_of(JSON::ParserError, @json.parse_error)
   end
 
@@ -38,6 +41,7 @@ class JsonFileTest < Minitest::Test
     @json = PlatformosCheck::JsonFile.new("a.json", storage)
     @json.update_contents(expected)
     @json.write
+
     assert_equal(JSON.pretty_generate(expected), storage.read("a.json"))
   end
 

@@ -57,9 +57,11 @@ module PlatformosCheck
 
       def load_config(name, pwd = Pathname.pwd)
         return load_bundled_config(name) if bundled_config?(name)
+
         path = name.is_a?(Pathname) ? name : Pathname.new(name)
         path = pwd.join(path) if path.relative?
         return {} unless path.exist?
+
         config = load_file(path)
         extends = config["extends"] || :default
         merge_configurations!(load_config(extends, path.realpath.dirname), config)
@@ -83,19 +85,19 @@ module PlatformosCheck
 
     def initialize(root: nil, configuration: nil, should_resolve_requires: true)
       @configuration = if configuration
-        validate_configuration(configuration)
-      else
-        self.class.default
-      end
+                         validate_configuration(configuration)
+                       else
+                         self.class.default
+                       end
 
       extends = @configuration["extends"] || :default
       @configuration = self.class.merge_configurations!(self.class.load_config(extends), @configuration)
 
       @root = if root && @configuration.key?("root")
-        Pathname.new(root).join(@configuration["root"])
-      elsif root
-        Pathname.new(root)
-      end
+                Pathname.new(root).join(@configuration["root"])
+              elsif root
+                Pathname.new(root)
+              end
 
       @auto_correct = false
 
@@ -128,10 +130,10 @@ module PlatformosCheck
         severity = options_for_check.delete(:severity)
         check_ignored_patterns = options_for_check.delete(:ignore) || []
         check = if options_for_check.empty?
-          check_class.new
-        else
-          check_class.new(**options_for_check)
-        end
+                  check_class.new
+                else
+                  check_class.new(**options_for_check)
+                end
         check.severity = severity.to_sym if severity
         check.ignored_patterns = check_ignored_patterns + ignored_patterns
         check.options = options_for_check

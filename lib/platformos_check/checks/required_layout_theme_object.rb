@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   # Reports missing content_for_header and content_for_layout in theme.liquid
   class RequiredLayoutThemeObject < LiquidCheck

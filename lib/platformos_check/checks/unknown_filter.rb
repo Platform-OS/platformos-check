@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   #
   # Unwanted:
@@ -19,7 +20,7 @@ module PlatformosCheck
       undefined_filters = used_filters - ShopifyLiquid::Filter.labels
 
       undefined_filters.each do |undefined_filter|
-        add_offense("Undefined filter `#{undefined_filter}`", node: node)
+        add_offense("Undefined filter `#{undefined_filter}`", node:)
       end
     end
   end

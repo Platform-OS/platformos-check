@@ -1,16 +1,17 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 module PlatformosCheck
   class AssetSizeCSSStylesheetTagTest < Minitest::Test
     def test_css_bundles_smaller_than_threshold
       offenses = analyze_theme(
-        AssetSizeCSSStylesheetTag.new(threshold_in_bytes: 10000000),
+        AssetSizeCSSStylesheetTag.new(threshold_in_bytes: 10_000_000),
         {
           "assets/theme.css" => <<~JS,
             console.log('hello world');
           JS
-          "templates/index.liquid" => <<~END,
+          "templates/index.liquid" => <<~END
             <html>
               <head>
                 {{ 'theme.css' | asset_url | stylesheet_tag }}
@@ -20,6 +21,7 @@ module PlatformosCheck
           END
         }
       )
+
       assert_offenses("", offenses)
     end
 
@@ -29,7 +31,7 @@ module PlatformosCheck
         "assets/theme.css" => <<~JS,
           console.log('hello world');
         JS
-        "templates/index.liquid" => <<~END,
+        "templates/index.liquid" => <<~END
           <html>
             <head>
               {{ 'theme.css' | asset_url | stylesheet_tag }}
@@ -38,6 +40,7 @@ module PlatformosCheck
           </html>
         END
       )
+
       assert_offenses(<<~END, offenses)
         CSS on every page load exceeding compressed size threshold (2 Bytes). at templates/index.liquid:3
         CSS on every page load exceeding compressed size threshold (2 Bytes). at templates/index.liquid:4
@@ -46,14 +49,15 @@ module PlatformosCheck
 
     def test_no_stylesheet
       offenses = analyze_theme(
-        AssetSizeCSSStylesheetTag.new(threshold_in_bytes: 100000),
-        "templates/index.liquid" => <<~END,
+        AssetSizeCSSStylesheetTag.new(threshold_in_bytes: 100_000),
+        "templates/index.liquid" => <<~END
           <html>
             <head>
             </head>
           </html>
         END
       )
+
       assert_offenses("", offenses)
     end
   end

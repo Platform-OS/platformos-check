@@ -28,6 +28,7 @@ module PlatformosCheck
         checks_from_text(text).each do |check_name|
           disabled = @disabled_checks[[node.theme_file, check_name]]
           next unless disabled
+
           disabled.end_index = node.end_index
         end
       else
@@ -52,8 +53,8 @@ module PlatformosCheck
 
     def checks_missing_end_index
       @disabled_checks.values
-        .select(&:missing_end_index?)
-        .map(&:name)
+                      .select(&:missing_end_index?)
+                      .map(&:name)
     end
 
     def remove_disabled_offenses(checks)
@@ -88,6 +89,7 @@ module PlatformosCheck
     def checks_from_text(text)
       checks = text.gsub(DISABLE_PREFIX_PATTERN, '').strip.split(',').map(&:strip)
       return [:all] if checks.empty?
+
       checks
     end
   end

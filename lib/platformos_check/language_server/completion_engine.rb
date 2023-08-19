@@ -15,11 +15,11 @@ module PlatformosCheck
         @providers
           .flat_map { |provider| provider.completions(context) }
           .uniq { |completion_item| completion_item[:label] }
-      rescue StandardError => error
-        @bridge || raise(error)
+      rescue StandardError => e
+        @bridge || raise(e)
 
-        message = error.message
-        backtrace = error.backtrace.join("\n")
+        message = e.message
+        backtrace = e.backtrace.join("\n")
 
         @bridge.log("[completion error] error: #{message}\n#{backtrace}")
       end

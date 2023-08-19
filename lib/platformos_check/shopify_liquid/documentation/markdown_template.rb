@@ -9,7 +9,7 @@ module PlatformosCheck
         def render(entry)
           [
             title(entry),
-            body(entry),
+            body(entry)
           ].reject(&:empty?).join("\n")
         end
 

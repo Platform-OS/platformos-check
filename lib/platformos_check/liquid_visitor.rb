@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class LiquidVisitor
     attr_reader :checks
@@ -10,9 +11,9 @@ module PlatformosCheck
 
     def visit_liquid_file(liquid_file)
       visit(LiquidNode.new(liquid_file.root, nil, liquid_file))
-    rescue Liquid::Error => exception
-      exception.template_name = liquid_file.name
-      call_checks(:on_error, exception)
+    rescue Liquid::Error => e
+      e.template_name = liquid_file.name
+      call_checks(:on_error, e)
     end
 
     private
@@ -31,8 +32,8 @@ module PlatformosCheck
       @disabled_checks.update(node) if node.comment? || node.inline_comment?
     end
 
-    def call_checks(method, *args)
-      checks.call(method, *args)
+    def call_checks(method, *)
+      checks.call(method, *)
     end
   end
 end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class ValidHTMLTranslationTest < Minitest::Test
@@ -10,9 +11,10 @@ class ValidHTMLTranslationTest < Minitest::Test
         image_html: "<img src='spongebob.png'>",
         line_break_html: "<br>",
         self_closing_svg_html: "<svg />",
-        foo: "bar",
-      ),
+        foo: "bar"
+      )
     )
+
     assert_offenses("", offenses)
   end
 
@@ -21,7 +23,7 @@ class ValidHTMLTranslationTest < Minitest::Test
       PlatformosCheck::ValidHTMLTranslation.new,
       "locales/en.default.json" => JSON.dump(
         hello_html: "<h1>Hello, world"
-      ),
+      )
     )
 
     # Here we're using assert_includes because nokogiri doesn't report
@@ -40,13 +42,14 @@ class ValidHTMLTranslationTest < Minitest::Test
           world: {
             today: {
               good: {
-                day_html: "<h1>Hello, world",
-              },
-            },
-          },
-        },
-      ),
+                day_html: "<h1>Hello, world"
+              }
+            }
+          }
+        }
+      )
     )
+
     assert_includes(offenses.join("\n"), <<~END)
       'hello.world.today.good.day_html' contains invalid HTML:
     END
@@ -57,8 +60,9 @@ class ValidHTMLTranslationTest < Minitest::Test
       PlatformosCheck::ValidHTMLTranslation.new,
       "locales/en.default.json" => JSON.dump(
         hello_html: { one: "<h1>Hello, world" }
-      ),
+      )
     )
+
     assert_includes(offenses.join("\n"), <<~END)
       'hello_html.one' contains invalid HTML:
     END

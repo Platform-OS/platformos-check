@@ -9,6 +9,7 @@ module PlatformosCheck
 
         return [] if content.nil?
         return [] unless cursor_on_quoted_argument?(content, cursor)
+
         partial = snippet(content) || ''
         snippets
           .select { |x| x.start_with?(partial) }
@@ -20,12 +21,14 @@ module PlatformosCheck
       def cursor_on_quoted_argument?(content, cursor)
         match = content.match(PARTIAL_RENDER)
         return false if match.nil?
+
         match.begin(:partial) <= cursor && cursor <= match.end(:partial)
       end
 
       def snippet(content)
         match = content.match(PARTIAL_RENDER)
         return if match.nil?
+
         match[:partial]
       end
 
@@ -39,7 +42,7 @@ module PlatformosCheck
         {
           label: File.basename(file, '.liquid'),
           kind: CompletionItemKinds::SNIPPET,
-          detail: file,
+          detail: file
         }
       end
     end

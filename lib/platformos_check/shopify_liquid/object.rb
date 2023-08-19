@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'yaml'
 
 module PlatformosCheck
@@ -6,9 +7,9 @@ module PlatformosCheck
     module Object
       extend self
 
-      LABELS_NOT_IN_SOURCE_INDEX = [
-        "customer_address",
-        "product_variant",
+      LABELS_NOT_IN_SOURCE_INDEX = %w[
+        customer_address
+        product_variant
       ].freeze
 
       def labels

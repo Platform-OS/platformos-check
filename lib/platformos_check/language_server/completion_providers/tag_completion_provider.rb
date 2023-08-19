@@ -9,6 +9,7 @@ module PlatformosCheck
 
         return [] if content.nil?
         return [] unless can_complete?(content, cursor)
+
         partial = first_word(content) || ''
         labels = ShopifyLiquid::Tag.labels
         labels += ShopifyLiquid::Tag.end_labels
@@ -32,7 +33,7 @@ module PlatformosCheck
         {
           label: tag,
           kind: CompletionItemKinds::KEYWORD,
-          **doc_hash(content),
+          **doc_hash(content)
         }
       end
     end

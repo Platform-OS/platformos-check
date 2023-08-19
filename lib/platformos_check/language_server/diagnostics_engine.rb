@@ -71,8 +71,8 @@ module PlatformosCheck
         end
 
         theme_files = relative_paths
-          .map { |relative_path| theme[relative_path] }
-          .reject(&:nil?)
+                      .map { |relative_path| theme[relative_path] }
+                      .reject(&:nil?)
 
         deleted_relative_paths = relative_paths - theme_files.map(&:relative_path)
         deleted_relative_paths
@@ -82,14 +82,14 @@ module PlatformosCheck
         @bridge.send_work_done_progress_begin(token, "Partial theme check")
         offenses = nil
         time = Benchmark.measure do
-          offenses = analyzer.analyze_files(theme_files, only_single_file: only_single_file) do |path, i, total|
+          offenses = analyzer.analyze_files(theme_files, only_single_file:) do |path, i, total|
             @bridge.send_work_done_progress_report(token, "#{i}/#{total} #{path}", (i.to_f / total * 100.0).to_i)
           end
         end
         end_message = "Found #{offenses.size} new offenses in #{format("%0.2f", time.real)}s"
         @bridge.send_work_done_progress_end(token, end_message)
         @bridge.log(end_message)
-        send_diagnostics(offenses, theme_files.map(&:relative_path), only_single_file: only_single_file)
+        send_diagnostics(offenses, theme_files.map(&:relative_path), only_single_file:)
       end
 
       def send_clearing_diagnostics(relative_path)
@@ -112,8 +112,8 @@ module PlatformosCheck
       def send_diagnostics(offenses, analyzed_files = nil, only_single_file: false)
         @diagnostics_manager.build_diagnostics(
           offenses,
-          analyzed_files: analyzed_files,
-          only_single_file: only_single_file
+          analyzed_files:,
+          only_single_file:
         ).each do |relative_path, diagnostics|
           send_diagnostic(relative_path, diagnostics)
         end
@@ -122,9 +122,9 @@ module PlatformosCheck
       def send_diagnostic(relative_path, diagnostics)
         # https://microsoft.github.io/language-server-protocol/specifications/specification-current/#notificationMessage
         @bridge.send_notification('textDocument/publishDiagnostics', {
-          uri: file_uri(storage.path(relative_path)),
-          diagnostics: diagnostics.map(&:to_h),
-        })
+                                    uri: file_uri(storage.path(relative_path)),
+                                    diagnostics: diagnostics.map(&:to_h)
+                                  })
       end
     end
   end

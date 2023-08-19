@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class OffenseTest < Minitest::Test
@@ -12,7 +13,7 @@ class OffenseTest < Minitest::Test
       "templates/long.liquid" => <<~END,
         <span class="form__message">{% include 'icon-error' %}{{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.</span>
       END
-      "templates/multiline.liquid" => <<~END,
+      "templates/multiline.liquid" => <<~END
         {% render 'product-card',
           product: product,
           show: true
@@ -29,9 +30,9 @@ class OffenseTest < Minitest::Test
     node = stub(
       theme_file: @theme["templates/index"],
       line_number: 2,
-      markup: "1 + 2",
+      markup: "1 + 2"
     )
-    offense = PlatformosCheck::Offense.new(check: Bogus.new, node: node)
+    offense = PlatformosCheck::Offense.new(check: Bogus.new, node:)
 
     assert_equal("{{ 1 + 2 }}", offense.source_excerpt)
     assert_equal("1 + 2", offense.markup)
@@ -42,9 +43,9 @@ class OffenseTest < Minitest::Test
     node = stub(
       theme_file: @theme["templates/long"],
       line_number: 1,
-      markup: "include 'icon-error'",
+      markup: "include 'icon-error'"
     )
-    offense = PlatformosCheck::Offense.new(check: Bogus.new, node: node)
+    offense = PlatformosCheck::Offense.new(check: Bogus.new, node:)
 
     assert_equal("<span class=\"form__message\">{% include 'icon-error' %}{{ form.errors.translated_fields['email'] | capitalize }} {{ fo...", offense.source_excerpt)
     assert_equal("include 'icon-error'", offense.markup)
@@ -57,12 +58,13 @@ class OffenseTest < Minitest::Test
       line_number: 2,
       start_index: @theme["templates/index"].source.index('1'),
       end_index: @theme["templates/index"].source.index('2 ') + 2,
-      markup: "1 + 2",
+      markup: "1 + 2"
     )
-    offense = PlatformosCheck::Offense.new(check: Bogus.new, node: node, correction: proc { |c| c.insert_after(node, "abc") })
+    offense = PlatformosCheck::Offense.new(check: Bogus.new, node:, correction: proc { |c| c.insert_after(node, "abc") })
     offense.correct
 
     node.theme_file.write
+
     assert_equal("{{ 1 + 2 abc}}", node.theme_file.source_excerpt(2))
   end
 
@@ -70,9 +72,10 @@ class OffenseTest < Minitest::Test
     node = stub(
       theme_file: @theme["templates/index"],
       line_number: 2,
-      markup: "1 + 2",
+      markup: "1 + 2"
     )
-    offense = PlatformosCheck::Offense.new(check: Bogus.new, node: node)
+    offense = PlatformosCheck::Offense.new(check: Bogus.new, node:)
+
     assert_equal(1, offense.start_row)
     assert_equal(1, offense.end_row)
     assert_equal(5, offense.start_column)
@@ -83,9 +86,10 @@ class OffenseTest < Minitest::Test
     node = stub(
       theme_file: @theme["templates/multiline"],
       line_number: 1,
-      markup: "render 'product-card',\n  product: product,\n  show: true",
+      markup: "render 'product-card',\n  product: product,\n  show: true"
     )
-    offense = PlatformosCheck::Offense.new(check: Bogus.new, node: node)
+    offense = PlatformosCheck::Offense.new(check: Bogus.new, node:)
+
     assert_equal(0, offense.start_row)
     assert_equal(3, offense.start_column)
     assert_equal(2, offense.end_row)
@@ -97,9 +101,10 @@ class OffenseTest < Minitest::Test
     node = stub(
       theme_file: make_theme("stub.liquid" => "{% #{markup}%}")["stub"],
       line_number: 1,
-      markup: markup
+      markup:
     )
-    offense = PlatformosCheck::Offense.new(check: Bogus.new, node: node)
+    offense = PlatformosCheck::Offense.new(check: Bogus.new, node:)
+
     assert_equal(0, offense.start_row)
     assert_equal(3, offense.start_column)
     assert_equal(5, offense.end_row)
@@ -111,9 +116,10 @@ class OffenseTest < Minitest::Test
     node = stub(
       theme_file: make_theme("stub.liquid" => "{% #{markup}%}")["stub"],
       line_number: 1,
-      markup: markup
+      markup:
     )
-    offense = PlatformosCheck::Offense.new(check: Bogus.new, node: node)
+    offense = PlatformosCheck::Offense.new(check: Bogus.new, node:)
+
     assert_equal(0, offense.start_row)
     assert_equal(3, offense.start_column)
     assert_equal(3, offense.end_row)
@@ -124,9 +130,10 @@ class OffenseTest < Minitest::Test
     node = stub(
       theme_file: @theme["templates/index"],
       line_number: 1,
-      markup: nil,
+      markup: nil
     )
-    offense = PlatformosCheck::Offense.new(check: Bogus.new, node: node)
+    offense = PlatformosCheck::Offense.new(check: Bogus.new, node:)
+
     assert_equal(0, offense.start_row)
     assert_equal(0, offense.end_row)
     assert_equal(0, offense.start_column)
@@ -143,12 +150,12 @@ class OffenseTest < Minitest::Test
     offense = PlatformosCheck::Offense.new(
       check: Bogus.new,
       markup: "world",
-      theme_file: theme_file,
+      theme_file:,
       line_number: 1
     )
 
     # Showing the assumption
-    assert_equal(offense.range, 5...10)
+    assert_equal(5...10, offense.range)
 
     # True when highlighting inside the error
     assert(offense.in_range?(5..5))
@@ -180,11 +187,11 @@ class OffenseTest < Minitest::Test
     theme_file = stub(source: '{ "json_file_without_line_numbers": "ok" }')
     offense = PlatformosCheck::Offense.new(
       check: Bogus.new,
-      theme_file: theme_file,
+      theme_file:
     )
 
     # Showing the assumption
-    assert_equal(offense.range, 0..0)
+    assert_equal(0..0, offense.range)
 
     # True when highlighting over the error
     assert(offense.in_range?(0..0))

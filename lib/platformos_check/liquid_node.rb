@@ -92,9 +92,9 @@ module PlatformosCheck
     end
 
     def markup=(markup)
-      if @value.instance_variable_defined?(:@markup)
-        @value.instance_variable_set(:@markup, markup)
-      end
+      return unless @value.instance_variable_defined?(:@markup)
+
+      @value.instance_variable_set(:@markup, markup)
     end
 
     # Most nodes have a line number, but it's not guaranteed.
@@ -167,7 +167,7 @@ module PlatformosCheck
     def document?
       @value.is_a?(Liquid::Document)
     end
-    alias_method :root?, :document?
+    alias root? document?
 
     # A {% tag %}...{% endtag %} node?
     def block_tag?
@@ -210,16 +210,16 @@ module PlatformosCheck
         return @value
       elsif variable_lookup?
         return {
-          type_name: type_name,
+          type_name:,
           name: value.name.to_s,
-          lookups: children.map(&:to_h),
+          lookups: children.map(&:to_h)
         }
       end
 
       {
-        type_name: type_name,
+        type_name:,
         markup: outer_markup,
-        children: children.map(&:to_h),
+        children: children.map(&:to_h)
       }
     end
 
@@ -229,12 +229,12 @@ module PlatformosCheck
 
     def block_start_start_index
       @block_start_start_index ||= if inside_liquid_tag?
-        backtrack_on_whitespace(source, start_index, /[ \t]/)
-      elsif tag?
-        backtrack_on_whitespace(source, start_index) - start_token.length
-      else
-        position.start_index - start_token.length
-      end
+                                     backtrack_on_whitespace(source, start_index, /[ \t]/)
+                                   elsif tag?
+                                     backtrack_on_whitespace(source, start_index) - start_token.length
+                                   else
+                                     position.start_index - start_token.length
+                                   end
     end
 
     def block_start_end_index
@@ -314,35 +314,35 @@ module PlatformosCheck
       # that something is {% or %-, then we can safely assume that
       # we're inside a full tag and not a liquid tag.
       @inside_liquid_tag ||= if tag? && start_index && source
-        i = 1
-        i += 1 while source[start_index - i] =~ WHITESPACE && i < start_index
-        first_two_backtracked_characters = source[(start_index - i - 1)..(start_index - i)]
-        first_two_backtracked_characters != "{%" && first_two_backtracked_characters != "%-"
-      else
-        false
-      end
+                               i = 1
+                               i += 1 while source[start_index - i] =~ WHITESPACE && i < start_index
+                               first_two_backtracked_characters = source[(start_index - i - 1)..(start_index - i)]
+                               first_two_backtracked_characters != "{%" && first_two_backtracked_characters != "%-"
+                             else
+                               false
+                             end
     end
 
     # Is this node inside a tag or variable that starts by removing whitespace. i.e. {%- or {{-
     def whitespace_trimmed_start?
       @whitespace_trimmed_start ||= if start_index && source && !inside_liquid_tag?
-        i = 1
-        i += 1 while source[start_index - i] =~ WHITESPACE && i < start_index
-        source[start_index - i] == "-"
-      else
-        false
-      end
+                                      i = 1
+                                      i += 1 while source[start_index - i] =~ WHITESPACE && i < start_index
+                                      source[start_index - i] == "-"
+                                    else
+                                      false
+                                    end
     end
 
     # Is this node inside a tag or variable ends starts by removing whitespace. i.e. -%} or -}}
     def whitespace_trimmed_end?
       @whitespace_trimmed_end ||= if end_index && source && !inside_liquid_tag?
-        i = 0
-        i += 1 while source[end_index + i] =~ WHITESPACE && i < source.size
-        source[end_index + i] == "-"
-      else
-        false
-      end
+                                    i = 0
+                                    i += 1 while source[end_index + i] =~ WHITESPACE && i < source.size
+                                    source[end_index + i] == "-"
+                                  else
+                                    false
+                                  end
     end
 
     def start_token
@@ -393,7 +393,7 @@ module PlatformosCheck
       @outer_markup_position ||= StrictPosition.new(
         outer_markup,
         source,
-        block_start_start_index,
+        block_start_start_index
       )
     end
 
@@ -401,7 +401,7 @@ module PlatformosCheck
       @inner_markup_position ||= StrictPosition.new(
         inner_markup,
         source,
-        block_start_end_index,
+        block_start_end_index
       )
     end
 
@@ -430,7 +430,7 @@ module PlatformosCheck
       start = scanner.charpos
 
       tag_name = @value.tag_name
-      tag_markup = @value.instance_variable_get('@markup')
+      tag_markup = @value.instance_variable_get(:@markup)
 
       # This is tricky, if the tag_markup is empty, then the tag could
       # either start on a previous line, or the tag could start on the
@@ -516,16 +516,16 @@ module PlatformosCheck
       return nil unless tag? && block?
 
       tag_start, tag_end = if inside_liquid_tag?
-        [
-          /^\s*#{@value.tag_name}\s*/,
-          /^\s*end#{@value.tag_name}\s*/,
-        ]
-      else
-        [
-          /#{Liquid::TagStart}-?\s*#{@value.tag_name}/mi,
-          /#{Liquid::TagStart}-?\s*end#{@value.tag_name}\s*-?#{Liquid::TagEnd}/mi,
-        ]
-      end
+                             [
+                               /^\s*#{@value.tag_name}\s*/,
+                               /^\s*end#{@value.tag_name}\s*/
+                             ]
+                           else
+                             [
+                               /#{Liquid::TagStart}-?\s*#{@value.tag_name}/mi,
+                               /#{Liquid::TagStart}-?\s*end#{@value.tag_name}\s*-?#{Liquid::TagEnd}/mi
+                             ]
+                           end
 
       # This little algorithm below find the _correct_ block delimiter
       # (endif, endcase, endcomment) for the current tag. What do I
@@ -549,9 +549,7 @@ module PlatformosCheck
 
         # We have found a tag_start and it appeared _before_ the
         # tag_end that we found, thus we push it onto the stack.
-        if tag_start_match && tag_start_match.end(0) < tag_end_match.end(0)
-          stack.push("open")
-        end
+        stack.push("open") if tag_start_match && tag_start_match.end(0) < tag_end_match.end(0)
 
         # We have found a tag_end, therefore we pop
         stack.pop

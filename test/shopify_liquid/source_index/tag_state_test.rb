@@ -8,10 +8,12 @@ module PlatformosCheck
       class TagStateTest < Minitest::Test
         def test_state_changes
           TagState.mark_up_to_date
-          refute(TagState.outdated?)
+
+          refute_predicate(TagState, :outdated?)
 
           TagState.mark_outdated
-          assert(TagState.outdated?)
+
+          assert_predicate(TagState, :outdated?)
         end
       end
     end

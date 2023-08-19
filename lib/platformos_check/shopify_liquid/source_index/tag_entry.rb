@@ -11,7 +11,7 @@ module PlatformosCheck
 
         def return_type_hash
           {
-            'type' => "tag<#{name}>",
+            'type' => "tag<#{name}>"
           }
         end
 

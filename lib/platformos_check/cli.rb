@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 require "optparse"
 
 module PlatformosCheck
   class Cli
     class Abort < StandardError; end
 
-    FORMATS = [:text, :json]
+    FORMATS = %i[text json]
 
     attr_accessor :path
 
@@ -23,6 +24,7 @@ module PlatformosCheck
 
     def option_parser(parser = OptionParser.new, help: true)
       return @option_parser if defined?(@option_parser)
+
       @option_parser = parser
       @option_parser.banner = "Usage: theme-check [options] [/path/to/your/theme]"
 
@@ -111,15 +113,15 @@ module PlatformosCheck
     end
 
     def run!
-      unless [:version, :init, :help].include?(@command)
+      unless %i[version init help].include?(@command)
         @config = if @config_path
-          PlatformosCheck::Config.new(
-            root: @path,
-            configuration: PlatformosCheck::Config.load_config(@config_path)
-          )
-        else
-          PlatformosCheck::Config.from_path(@path)
-        end
+                    PlatformosCheck::Config.new(
+                      root: @path,
+                      configuration: PlatformosCheck::Config.load_config(@config_path)
+                    )
+                  else
+                    PlatformosCheck::Config.from_path(@path)
+                  end
         @config.include_categories = @include_categories unless @include_categories.empty?
         @config.exclude_categories = @exclude_categories unless @exclude_categories.empty?
         @config.auto_correct = @auto_correct
@@ -138,7 +140,7 @@ module PlatformosCheck
         abort(e.message)
       end
     rescue PlatformosCheckError => e
-      STDERR.puts(e.message)
+      warn(e.message)
       exit(2)
     end
 
@@ -164,17 +166,15 @@ module PlatformosCheck
 
     def init
       dotfile_path = PlatformosCheck::Config.find(@path)
-      if dotfile_path.nil?
-        config_name = @config_path || "default"
-        File.write(
-          File.join(@path, PlatformosCheck::Config::DOTFILE),
-          File.read(PlatformosCheck::Config.bundled_config_path(config_name))
-        )
+      raise Abort, "#{PlatformosCheck::Config::DOTFILE} already exists at #{@path}" unless dotfile_path.nil?
 
-        puts "Writing new #{PlatformosCheck::Config::DOTFILE} to #{@path}"
-      else
-        raise Abort, "#{PlatformosCheck::Config::DOTFILE} already exists at #{@path}"
-      end
+      config_name = @config_path || "default"
+      File.write(
+        File.join(@path, PlatformosCheck::Config::DOTFILE),
+        File.read(PlatformosCheck::Config.bundled_config_path(config_name))
+      )
+
+      puts "Writing new #{PlatformosCheck::Config::DOTFILE} to #{@path}"
     end
 
     def print
@@ -182,18 +182,17 @@ module PlatformosCheck
     end
 
     def help
-      puts option_parser.to_s
+      puts option_parser
     end
 
     def check(out_stream = STDOUT)
       update_docs
 
-      STDERR.puts "Checking #{@config.root} ..."
+      warn "Checking #{@config.root} ..."
       storage = PlatformosCheck::FileSystemStorage.new(@config.root, ignored_patterns: @config.ignored_patterns)
       theme = PlatformosCheck::Theme.new(storage)
-      if theme.all.empty?
-        raise Abort, "No theme files found."
-      end
+      raise Abort, "No theme files found." if theme.all.empty?
+
       analyzer = PlatformosCheck::Analyzer.new(theme, @config.enabled_checks, @config.auto_correct)
       analyzer.analyze_theme
       analyzer.correct_offenses
@@ -209,7 +208,7 @@ module PlatformosCheck
     def update_docs
       return unless @update_docs
 
-      STDERR.puts 'Updating documentation...'
+      warn 'Updating documentation...'
 
       PlatformosCheck::ShopifyLiquid::SourceManager.download
     end
@@ -225,7 +224,7 @@ module PlatformosCheck
       printer = RubyProf::FlameGraphPrinter.new(result)
       printer.print(STDOUT, {})
     rescue LoadError
-      STDERR.puts "Profiling is only available in development"
+      warn "Profiling is only available in development"
     end
 
     def print_with_format(theme, analyzer, out_stream)

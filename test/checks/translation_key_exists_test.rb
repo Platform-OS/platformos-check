@@ -1,14 +1,16 @@
 # frozen_string_literal: true
+
 require "test_helper"
 
 class TranslationKeyExistsTest < Minitest::Test
   def test_noop_without_default_locale
     offenses = analyze_theme(
       PlatformosCheck::TranslationKeyExists.new,
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{"notfound" | t}}
       END
     )
+
     assert_offenses("", offenses)
   end
 
@@ -16,10 +18,11 @@ class TranslationKeyExistsTest < Minitest::Test
     offenses = analyze_theme(
       PlatformosCheck::TranslationKeyExists.new,
       "locales/en.default.json" => "{",
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{"notfound" | t}}
       END
     )
+
     assert_offenses("", offenses)
   end
 
@@ -30,7 +33,7 @@ class TranslationKeyExistsTest < Minitest::Test
         key: "",
         nested: { key: "" }
       ),
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{"key" | t}}
         {{"nested.key" | t}}
       END
@@ -42,7 +45,7 @@ class TranslationKeyExistsTest < Minitest::Test
   def test_ignores_key_included_in_schema
     offenses = analyze_theme(
       PlatformosCheck::TranslationKeyExists.new,
-      "sections/product.liquid" => <<~END,
+      "sections/product.liquid" => <<~END
         {{"submit" | t}}
         {% schema %}
           {
@@ -55,6 +58,7 @@ class TranslationKeyExistsTest < Minitest::Test
         {% endschema %}
       END
     )
+
     assert_offenses("", offenses)
   end
 
@@ -62,7 +66,7 @@ class TranslationKeyExistsTest < Minitest::Test
     offenses = analyze_theme(
       PlatformosCheck::TranslationKeyExists.new,
       "locales/en.default.json" => JSON.dump({}),
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{"unknownkey" | t}}
         {{"unknown.nested.key" | t}}
         {{"unknownkey" | translate}}
@@ -80,7 +84,7 @@ class TranslationKeyExistsTest < Minitest::Test
     offenses = analyze_theme(
       PlatformosCheck::TranslationKeyExists.new,
       "locales/en.default.json" => JSON.dump({}),
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{ 'shopify.sentence.words_connector' | t }}
       END
     )
@@ -91,7 +95,7 @@ class TranslationKeyExistsTest < Minitest::Test
   def test_creates_missing_keys
     theme = make_theme(
       "locales/en.default.json" => JSON.dump({}),
-      "templates/index.liquid" => <<~END,
+      "templates/index.liquid" => <<~END
         {{"unknownkey" | t}}
         {{"unknown.nested.key" | t}}
         {{"unknownkey" | translate}}
@@ -111,11 +115,11 @@ class TranslationKeyExistsTest < Minitest::Test
   def test_creates_nested_missing_keys
     theme = make_theme(
       "locales/en.default.json" => JSON.dump({
-        key: "TODO",
-        nested: { key: "TODO" },
-        samplekey: { unknownkey: { key: "TODO" } },
-      }),
-      "templates/index.liquid" => <<~END,
+                                               key: "TODO",
+                                               nested: { key: "TODO" },
+                                               samplekey: { unknownkey: { key: "TODO" } }
+                                             }),
+      "templates/index.liquid" => <<~END
         {{"unknownkey" | t}}
         {{"nested.unknownkey" | t}}
         {{"samplekey.unknownkey.sample" | translate}}
@@ -131,18 +135,18 @@ class TranslationKeyExistsTest < Minitest::Test
       "key" => "TODO",
       "nested" => {
         "key" => "TODO",
-        "unknownkey" => "TODO",
+        "unknownkey" => "TODO"
       },
       "samplekey" => {
         "unknownkey" => {
           "key" => "TODO",
-          "sample" => "TODO",
+          "sample" => "TODO"
         },
         "example" => {
-          "sample" => "TODO",
-        },
+          "sample" => "TODO"
+        }
       },
-      "unknownkey" => "TODO",
+      "unknownkey" => "TODO"
     }
     actual = theme.default_locale_json.content
 
@@ -152,9 +156,9 @@ class TranslationKeyExistsTest < Minitest::Test
   def test_handles_key_conflicts
     theme = make_theme(
       "locales/en.default.json" => JSON.dump({
-        product: { quantity: "TODO" },
-      }),
-      "templates/index.liquid" => <<~END,
+                                               product: { quantity: "TODO" }
+                                             }),
+      "templates/index.liquid" => <<~END
         {{"product.quantity.decrease" | t}}
       END
     )

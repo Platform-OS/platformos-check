@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "pathname"
 
 module PlatformosCheck
@@ -39,20 +40,21 @@ module PlatformosCheck
 
     def mkdir(relative_path)
       return if file_exists?(relative_path)
+
       reset_memoizers
       file(relative_path).mkpath
     end
 
     def files
       @file_array ||= glob("**/*")
-        .reject { |path| File.directory?(path) }
-        .map { |path| path.relative_path_from(@root).to_s }
+                      .reject { |path| File.directory?(path) }
+                      .map { |path| path.relative_path_from(@root).to_s }
     end
 
     def directories
       @directories ||= glob('*')
-        .select { |f| File.directory?(f) }
-        .map { |f| f.relative_path_from(@root).to_s }
+                       .select { |f| File.directory?(f) }
+                       .map { |f| f.relative_path_from(@root).to_s }
     end
 
     private
@@ -75,6 +77,7 @@ module PlatformosCheck
 
     def file(name)
       return @files[name] if @files[name]
+
       @files[name] = root.join(name)
     end
   end

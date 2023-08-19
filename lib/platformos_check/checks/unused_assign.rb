@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   # Checks unused {% assign x = ... %}
   class UnusedAssign < LiquidCheck
@@ -33,18 +34,18 @@ module PlatformosCheck
     end
 
     def on_include(node)
-      if node.value.template_name_expr.is_a?(String)
-        @templates[node.theme_file.name].includes << "snippets/#{node.value.template_name_expr}"
-      end
+      return unless node.value.template_name_expr.is_a?(String)
+
+      @templates[node.theme_file.name].includes << "snippets/#{node.value.template_name_expr}"
     end
 
     def on_variable_lookup(node)
       @templates[node.theme_file.name].used_assigns << case node.value.name
-      when Liquid::VariableLookup
-        node.value.name.name
-      else
-        node.value.name
-      end
+                                                       when Liquid::VariableLookup
+                                                         node.value.name.name
+                                                       else
+                                                         node.value.name
+                                                       end
     end
 
     def on_end
@@ -52,7 +53,8 @@ module PlatformosCheck
         used = info.collect_used_assigns(@templates)
         info.assign_nodes.each_pair do |name, node|
           next if used.include?(name)
-          add_offense("`#{name}` is never used", node: node) do |corrector|
+
+          add_offense("`#{name}` is never used", node:) do |corrector|
             corrector.remove(node)
           end
         end

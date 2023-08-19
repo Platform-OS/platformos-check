@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module PlatformosCheck
   class ValidSchema < LiquidCheck
     severity :error
@@ -8,7 +9,7 @@ module PlatformosCheck
     def on_schema(node)
       JSON.parse(node.inner_markup)
     rescue JSON::ParserError => e
-      add_offense(format_json_parse_error(e), node: node)
+      add_offense(format_json_parse_error(e), node:)
     end
   end
 end
