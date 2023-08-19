@@ -26,7 +26,7 @@ module PlatformosCheck
       liquid
       translation
       html
-      json
+      yaml
       performance
     ]
 
@@ -68,7 +68,7 @@ module PlatformosCheck
       end
 
       def docs_url(path)
-        "https://github.com/Shopify/platformos-check/blob/main/docs/checks/#{File.basename(path, '.rb')}.md"
+        "https://github.com/Platform-OS/platformos-lsp/blob/main/docs/checks/#{File.basename(path, '.rb')}.md"
       end
 
       def can_disable(disableable = nil)

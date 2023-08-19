@@ -176,7 +176,7 @@ module PlatformosCheck
           severity: 2,
           source: "platformos-check",
           codeDescription: {
-            href: "https://github.com/Shopify/platformos-check/blob/main/docs/checks/unused_snippet.md"
+            href: "https://github.com/Platform-OS/platformos-lsp/blob/main/docs/checks/unused_snippet.md"
           },
           data: {
             uri: file_uri(@storage.path(path)),
@@ -198,7 +198,7 @@ module PlatformosCheck
           severity: 1,
           source: "platformos-check",
           codeDescription: {
-            href: "https://github.com/Shopify/platformos-check/blob/main/docs/checks/syntax_error.md"
+            href: "https://github.com/Platform-OS/platformos-lsp/blob/main/docs/checks/syntax_error.md"
           },
           data: {
             uri: file_uri(@storage.path(path)),

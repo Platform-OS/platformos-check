@@ -65,15 +65,7 @@ UnusedSnippet:
   enabled: true
   ignore: []
 
-ValidJson:
-  enabled: true
-  ignore: []
-
-ValidSchema:
-  enabled: true
-  ignore: []
-
-MissingRequiredTemplateFiles:
+ValidYaml:
   enabled: true
   ignore: []
 

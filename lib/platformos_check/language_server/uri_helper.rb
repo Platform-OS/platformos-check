@@ -13,7 +13,7 @@ module PlatformosCheck
       # 1. VS Code still uses the outdated '%20' for spaces
       # 2. VS Code prefixes Windows paths with / (so /C:/Users/... is expected)
       #
-      # Exists because of https://github.com/Shopify/platformos-check/issues/360
+      # Exists because of https://github.com/Platform-OS/platformos-lsp/issues/360
       def file_uri(absolute_path)
         return if absolute_path.nil?
 

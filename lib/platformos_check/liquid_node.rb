@@ -473,7 +473,7 @@ module PlatformosCheck
         @tag_markup = source[tag_start...tag_end]
         return @tag_markup
 
-      # See https://github.com/Shopify/platformos-check/pull/423/files#r701936559 for a detailed explanation
+      # See https://github.com/Platform-OS/platformos-lsp/pull/423/files#r701936559 for a detailed explanation
       # of why we're doing the check below.
       #
       # TL;DR it's because line_numbers are not enough to accurately
