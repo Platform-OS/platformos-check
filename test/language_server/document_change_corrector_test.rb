@@ -191,6 +191,7 @@ module PlatformosCheck
       end
 
       def test_replace_inner_markup
+        skip "Schema was deleted, needs rewrite"
         node = find(root_node(<<~LIQUID)) { |n| n.type_name == :schema }
           {% schema %}Hello Muffin{% endschema %}
           012345678901234567890123456789
@@ -320,6 +321,7 @@ module PlatformosCheck
       end
 
       def test_replace_json_body
+        skip "Schema was deleted, needs rewrite"
         node = find(root_node(<<~LIQUID)) { |n| n.type_name == :schema }
           {% schema %}
             {}
