@@ -122,10 +122,6 @@ AssetSizeCSSStylesheetTag:
   threshold_in_bytes: 100_000
   ignore: []
 
-CdnPreconnect:
-  enabled: true
-  ignore: []
-
 ImgWidthAndHeight:
   enabled: true
   ignore: []
