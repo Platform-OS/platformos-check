@@ -12,15 +12,15 @@ module PlatformosCheck
       def setup
         @provider = FilterCompletionProvider.new
         @filter_compatible_with = {
-          array: 'compact',
+          array: 'array_sort_by',
           string: 'url_decode',
           number: 'floor',
-          form: 'currency_selector',
-          metafield: 'metafield_tag',
-          address: 'format_address',
-          paginate: 'default_pagination',
-          media: 'external_video_url',
-          font: 'font_url'
+          # form: 'currency_selector',
+          # metafield: 'metafield_tag',
+          # address: 'format_address',
+          # paginate: 'default_pagination',
+          # media: 'external_video_url',
+          # font: 'font_url'
         }
       end
 
@@ -28,16 +28,16 @@ module PlatformosCheck
         assert_can_complete(@provider, "{{ 'foo.js' | ")
         assert_can_complete(@provider, "{{ 'foo.js' | asset")
         assert_can_complete(@provider, "{{ 'foo.js' | asset_url | ")
-        assert_can_complete(@provider, "{{ 'foo.js' | asset_url | image")
+        assert_can_complete(@provider, "{{ 'foo.js' | asset_url | downcase")
 
         refute_can_complete(@provider, "{{ 'foo.js' ")
         refute_can_complete(@provider, "{% if foo")
       end
 
       def test_completions
-        assert_can_complete_with(@provider, "{{ 'foo.js' | ", "asset_url")
+        assert_can_complete_with(@provider, "{{ 'foo.js' | ", "capitalize")
         assert_can_complete_with(@provider, "{{ 'foo.js' | asset", "asset_url")
-        assert_can_complete_with(@provider, "{{ 'foo.js' | asset_url | image", "image_url")
+        assert_can_complete_with(@provider, "{{ 'foo.js' | asset_url | url", "url_decode")
 
         filter_not_in_source_index = 'installments_pricing'
 
@@ -48,7 +48,7 @@ module PlatformosCheck
       def test_completions_with_content_after_cursor
         offset = -2
 
-        assert_can_only_complete_with("{{ form | }}", 'form', offset)
+        assert_can_only_complete_with("{{ 28 | }}", 'number', offset)
         assert_can_only_complete_with("{{ 'test%40test.com' | }}", 'string', offset)
         assert_can_only_complete_with("{% assign tp = cart.total_price %}\n{{ tp | }}", 'number', offset)
       end
@@ -120,17 +120,17 @@ module PlatformosCheck
         assert_can_only_complete_with("{% assign secret_potion = 2 | ", input_type)
       end
 
-      def test_filters_compatible_with_the_form_type
-        input_type = 'form'
+      # def test_filters_compatible_with_the_form_type
+      #   input_type = 'form'
 
-        assert_can_only_complete_with("{{ form | ", input_type)
-      end
+      #   assert_can_only_complete_with("{{ form | ", input_type)
+      # end
 
-      def test_filters_compatible_with_the_font_type
-        input_type = 'font'
+      # def test_filters_compatible_with_the_font_type
+      #   input_type = 'font'
 
-        assert_can_only_complete_with("{{ font.variants.first | ", input_type)
-      end
+      #   assert_can_only_complete_with("{{ font.variants.first | ", input_type)
+      # end
 
       def test_filters_compatible_with_the_variable_type
         assert_can_complete_with(@provider, "{{ product | ", FILTER_WITH_INPUT_TYPE_VARIABLE)
@@ -146,29 +146,29 @@ module PlatformosCheck
         assert_can_complete_with(@provider, token, FILTER_WITH_INPUT_TYPE_VARIABLE)
       end
 
-      def test_filters_compatible_with_the_media_type
-        input_type = 'media'
+  #     def test_filters_compatible_with_the_media_type
+  #       input_type = 'media'
 
-        assert_can_only_complete_with("{{ product.featured_media | ", input_type)
-        assert_can_only_complete_with("{% for media in product.media %}
-  {% if media.media_type == 'external_video' %}
-    {% if media.host == 'youtube' %}
-      {{ media | ", input_type)
-      end
+  #       assert_can_only_complete_with("{{ product.featured_media | ", input_type)
+  #       assert_can_only_complete_with("{% for media in product.media %}
+  # {% if media.media_type == 'external_video' %}
+  #   {% if media.host == 'youtube' %}
+  #     {{ media | ", input_type)
+  #     end
 
-      def test_filters_compatible_with_the_metafield_type
-        skip("platformos_app-liquid-docs changes causing test to fail")
+      # def test_filters_compatible_with_the_metafield_type
+      #   skip("platformos_app-liquid-docs changes causing test to fail")
 
-        assert_can_only_complete_with("{{ shop.metafields | ", 'metafield')
-      end
+      #   assert_can_only_complete_with("{{ shop.metafields | ", 'metafield')
+      # end
 
-      def test_filters_compatible_with_the_paginate_type
-        assert_can_only_complete_with("{{- paginate | ", 'paginate')
-      end
+      # def test_filters_compatible_with_the_paginate_type
+      #   assert_can_only_complete_with("{{- paginate | ", 'paginate')
+      # end
 
-      def test_filters_compatible_with_the_address_type
-        assert_can_only_complete_with("{{ shop.address | ", 'address')
-      end
+      # def test_filters_compatible_with_the_address_type
+      #   assert_can_only_complete_with("{{ shop.address | ", 'address')
+      # end
 
       def test_suggest_all_filters_when_types_incompatible
         [
@@ -185,9 +185,9 @@ module PlatformosCheck
       end
 
       def test_complete_deprecated_filters
-        deprecated_filter = "hex_to_rgba"
+        deprecated_filter = "hash_fetch"
 
-        assert_can_complete_with(@provider, "{{ 'foo.js' | hex_to", deprecated_filter)
+        assert_can_complete_with(@provider, "{{ 'foo.js' | hash_fet", deprecated_filter)
         assert_can_complete_with(@provider, "{% assign t = product.title | ", deprecated_filter)
       end
 

@@ -15,6 +15,7 @@ group :test do
   gem 'minitest-focus'
   gem 'mocha'
   gem 'pry-byebug'
+  gem 'debug'
 end
 
 group :development do

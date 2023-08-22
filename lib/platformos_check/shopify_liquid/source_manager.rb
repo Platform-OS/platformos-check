@@ -74,6 +74,8 @@ module PlatformosCheck
         end
 
         def remote_path(file_name)
+          return "#{SourceIndex::BaseEntry::SHOPIFY_DEV_ROOT_URL}/filters.json" if file_name.to_s == 'filters'
+
           "https://raw.githubusercontent.com/Shopify/theme-liquid-docs/main/data/#{file_name}.json"
         end
 
