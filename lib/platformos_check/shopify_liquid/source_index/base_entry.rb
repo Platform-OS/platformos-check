@@ -13,6 +13,7 @@ module PlatformosCheck
         def_delegators :return_type_instance, :generic_type?, :array_type?, :array_type, :to_s, :denied_filters
 
         SHOPIFY_DEV_ROOT_URL = "https://shopify.dev/api/liquid"
+        # SHOPIFY_DEV_ROOT_URL = "https://documentation.platformos.com/api/liquid"
 
         def initialize(hash = {})
           @hash = hash || {}

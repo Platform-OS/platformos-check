@@ -8,6 +8,7 @@ require "mocha/minitest"
 require "pry-byebug"
 require "tmpdir"
 require "pp"
+require "debug"
 
 Minitest::Test.make_my_diffs_pretty!
 

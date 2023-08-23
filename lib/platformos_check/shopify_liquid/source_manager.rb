@@ -74,6 +74,9 @@ module PlatformosCheck
         end
 
         def remote_path(file_name)
+          return "https://documentation.platformos.com/api/liquid/#{file_name}.json" if %w(filters objects).include?(file_name.to_s)
+          # return "#{SourceIndex::BaseEntry::SHOPIFY_DEV_ROOT_URL}/#{file_name}.json" if %w(filters objects).include?(file_name.to_s)
+
           "https://raw.githubusercontent.com/Shopify/theme-liquid-docs/main/data/#{file_name}.json"
         end
 
