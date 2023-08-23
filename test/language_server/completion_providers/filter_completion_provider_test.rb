@@ -120,17 +120,19 @@ module PlatformosCheck
         assert_can_only_complete_with("{% assign secret_potion = 2 | ", input_type)
       end
 
-      # def test_filters_compatible_with_the_form_type
-      #   input_type = 'form'
+      def test_filters_compatible_with_the_form_type
+        skip('form type not supported')
+        input_type = 'form'
 
-      #   assert_can_only_complete_with("{{ form | ", input_type)
-      # end
+        assert_can_only_complete_with("{{ form | ", input_type)
+      end
 
-      # def test_filters_compatible_with_the_font_type
-      #   input_type = 'font'
+      def test_filters_compatible_with_the_font_type
+        skip('font type not supported')
+        input_type = 'font'
 
-      #   assert_can_only_complete_with("{{ font.variants.first | ", input_type)
-      # end
+        assert_can_only_complete_with("{{ font.variants.first | ", input_type)
+      end
 
       def test_filters_compatible_with_the_variable_type
         assert_can_complete_with(@provider, "{{ product | ", FILTER_WITH_INPUT_TYPE_VARIABLE)
@@ -146,29 +148,32 @@ module PlatformosCheck
         assert_can_complete_with(@provider, token, FILTER_WITH_INPUT_TYPE_VARIABLE)
       end
 
-  #     def test_filters_compatible_with_the_media_type
-  #       input_type = 'media'
+      def test_filters_compatible_with_the_media_type
+        skip('media type not supported')
+        input_type = 'media'
 
-  #       assert_can_only_complete_with("{{ product.featured_media | ", input_type)
-  #       assert_can_only_complete_with("{% for media in product.media %}
-  # {% if media.media_type == 'external_video' %}
-  #   {% if media.host == 'youtube' %}
-  #     {{ media | ", input_type)
-  #     end
+        assert_can_only_complete_with("{{ product.featured_media | ", input_type)
+        assert_can_only_complete_with("{% for media in product.media %}
+  {% if media.media_type == 'external_video' %}
+    {% if media.host == 'youtube' %}
+      {{ media | ", input_type)
+      end
 
-      # def test_filters_compatible_with_the_metafield_type
-      #   skip("platformos_app-liquid-docs changes causing test to fail")
+      def test_filters_compatible_with_the_metafield_type
+        skip("platformos_app-liquid-docs changes causing test to fail")
 
-      #   assert_can_only_complete_with("{{ shop.metafields | ", 'metafield')
-      # end
+        assert_can_only_complete_with("{{ shop.metafields | ", 'metafield')
+      end
 
-      # def test_filters_compatible_with_the_paginate_type
-      #   assert_can_only_complete_with("{{- paginate | ", 'paginate')
-      # end
+      def test_filters_compatible_with_the_paginate_type
+        skip('paginate type not supported')
+        assert_can_only_complete_with("{{- paginate | ", 'paginate')
+      end
 
-      # def test_filters_compatible_with_the_address_type
-      #   assert_can_only_complete_with("{{ shop.address | ", 'address')
-      # end
+      def test_filters_compatible_with_the_address_type
+        skip('address type not supported')
+        assert_can_only_complete_with("{{ shop.address | ", 'address')
+      end
 
       def test_suggest_all_filters_when_types_incompatible
         [
