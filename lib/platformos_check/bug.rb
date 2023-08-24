@@ -13,7 +13,7 @@ module PlatformosCheck
 
     ------------------------
     Whoops! It looks like you found a bug in PlatformOS Check.
-    Please report it at https://github.com/Shopify/platformos-check/issues, and include the message above.
+    Please report it at https://github.com/Platform-OS/platformos-lsp/issues, and include the message above.
     Or cross your fingers real hard, and try again.
   EOS
 

@@ -14,7 +14,7 @@ module PlatformosCheck
         @filter_compatible_with = {
           array: 'array_sort_by',
           string: 'url_decode',
-          number: 'floor',
+          number: 'floor'
           # form: 'currency_selector',
           # metafield: 'metafield_tag',
           # address: 'format_address',
@@ -167,11 +167,13 @@ module PlatformosCheck
 
       def test_filters_compatible_with_the_paginate_type
         skip('paginate type not supported')
+
         assert_can_only_complete_with("{{- paginate | ", 'paginate')
       end
 
       def test_filters_compatible_with_the_address_type
         skip('address type not supported')
+
         assert_can_only_complete_with("{{ shop.address | ", 'address')
       end
 

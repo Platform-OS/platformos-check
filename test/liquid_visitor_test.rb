@@ -180,16 +180,30 @@ class LiquidVisitorTest < Minitest::Test
                    :on_tag,
                    :on_form,
                    :on_string, "\n",
-                   :on_string, "type",
-                   :on_variable_lookup,
-                   :after_variable_lookup,
-                   :on_string, "key",
-                   :on_variable_lookup,
-                   :after_variable_lookup,
                    :after_form,
                    :after_tag,
                    :on_string, "\n",
                    :after_document
                  ], @tracer.calls)
+  end
+
+  def test_parse_json
+    platformos_app_file = parse_liquid(<<~END)
+      {% parse_json x %}
+        { "hello": "world" }
+      {% endparse_json %}
+    END
+    @visitor.visit_liquid_file(platformos_app_file)
+
+    assert_equal(
+      [:on_document,
+       :on_tag,
+       :on_parse_json,
+       :on_string, "x",
+       :after_parse_json,
+       :after_tag,
+       :on_string, "\n",
+       :after_document], @tracer.calls
+    )
   end
 end

@@ -7,7 +7,7 @@ module PlatformosCheck
       @auto_correct = auto_correct
 
       @liquid_checks = Checks.new
-      @json_checks = Checks.new
+      @yaml_checks = Checks.new
       @html_checks = Checks.new
 
       checks.each do |check|
@@ -16,8 +16,8 @@ module PlatformosCheck
         case check
         when LiquidCheck
           @liquid_checks << check
-        when JsonCheck
-          @json_checks << check
+        when YamlCheck
+          @yaml_checks << check
         when HtmlCheck
           @html_checks << check
         end
@@ -26,12 +26,12 @@ module PlatformosCheck
 
     def offenses
       @liquid_checks.flat_map(&:offenses) +
-        @json_checks.flat_map(&:offenses) +
+        @yaml_checks.flat_map(&:offenses) +
         @html_checks.flat_map(&:offenses)
     end
 
-    def json_file_count
-      @json_file_count ||= @platformos_app.json.size
+    def yaml_file_count
+      @yaml_file_count ||= @platformos_app.yaml.size
     end
 
     def liquid_file_count
@@ -39,7 +39,7 @@ module PlatformosCheck
     end
 
     def total_file_count
-      json_file_count + liquid_file_count
+      yaml_file_count + liquid_file_count
     end
 
     # Returns all offenses for all files in platformos_app
@@ -57,9 +57,9 @@ module PlatformosCheck
         end
       end
 
-      @platformos_app.json.each_with_index do |json_file, i|
-        yield(json_file.relative_path.to_s, liquid_file_count + i, total_file_count) if block_given?
-        @json_checks.call(:on_file, json_file)
+      @platformos_app.yaml.each_with_index do |yaml_file, i|
+        yield(yaml_file.relative_path.to_s, liquid_file_count + i, total_file_count) if block_given?
+        @yaml_checks.call(:on_file, yaml_file)
       end
 
       finish(false)
@@ -98,9 +98,9 @@ module PlatformosCheck
             html_visitor.visit_liquid_file(liquid_file)
           end
 
-          @platformos_app.json.each_with_index do |json_file, i|
-            yield(json_file.relative_path.to_s, liquid_file_count + i, total) if block_given?
-            @json_checks.whole_platformos_app.call(:on_file, json_file)
+          @platformos_app.yaml.each_with_index do |yaml_file, i|
+            yield(yaml_file.relative_path.to_s, liquid_file_count + i, total) if block_given?
+            @yaml_checks.whole_platformos_app.call(:on_file, yaml_file)
           end
         end
 
@@ -112,8 +112,8 @@ module PlatformosCheck
           if platformos_app_file.liquid?
             liquid_visitor.visit_liquid_file(platformos_app_file)
             html_visitor.visit_liquid_file(platformos_app_file)
-          elsif platformos_app_file.json?
-            @json_checks.single_file.call(:on_file, platformos_app_file)
+          elsif platformos_app_file.yaml?
+            @yaml_checks.single_file.call(:on_file, platformos_app_file)
           end
         end
       end
@@ -139,7 +139,7 @@ module PlatformosCheck
       return unless @auto_correct
 
       @platformos_app.liquid.each(&:write)
-      @platformos_app.json.each(&:write)
+      @platformos_app.yaml.each(&:write)
     end
 
     private
@@ -155,7 +155,7 @@ module PlatformosCheck
         check.offenses.clear
       end
 
-      @json_checks.each do |check|
+      @yaml_checks.each do |check|
         check.offenses.clear
       end
     end
@@ -164,15 +164,15 @@ module PlatformosCheck
       if only_single_file
         @liquid_checks.single_file.call(:on_end)
         @html_checks.single_file.call(:on_end)
-        @json_checks.single_file.call(:on_end)
+        @yaml_checks.single_file.call(:on_end)
       else
         @liquid_checks.call(:on_end)
         @html_checks.call(:on_end)
-        @json_checks.call(:on_end)
+        @yaml_checks.call(:on_end)
       end
 
       @disabled_checks.remove_disabled_offenses(@liquid_checks)
-      @disabled_checks.remove_disabled_offenses(@json_checks)
+      @disabled_checks.remove_disabled_offenses(@yaml_checks)
       @disabled_checks.remove_disabled_offenses(@html_checks)
     end
   end

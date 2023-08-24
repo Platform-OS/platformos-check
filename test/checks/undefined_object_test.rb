@@ -494,4 +494,55 @@ class UndefinedObjectTest < Minitest::Test
 
     assert_offenses("", offenses)
   end
+
+  def test_does_not_report_when_function_is_used
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function' %}
+        {{ b }}
+      END
+      "lib/b_function.liquid" => <<~END
+        {% return 4 %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_does_not_report_when_graphql_is_used
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
+      "app/views/partials/a.liquid" => <<~END
+        {% graphql a %}
+          query records {
+            records(per_page: 20, table: "my_table") {
+              results {
+                id
+              }
+            }
+          }
+        {% endgraphql %}
+        {{ a }}
+        {% graphql b = 'my_query' %}
+        {{ b }}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_does_not_report_when_parse_json_is_used
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
+      "app/views/partials/a.liquid" => <<~END
+        {% parse_json x %}
+          { "hello": "world" }
+        {% endparse_json %}
+        {{ x }}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
 end

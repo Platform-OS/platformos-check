@@ -10,8 +10,8 @@ module PlatformosCheck
         "assets/linux.js" => "console.log(\n  hi\n)",
         "liquid/windows.liquid" => "hello\r\nworld",
         "liquid/linux.liquid" => "hello\nworld",
-        "json/windows.json" => "{\r\n  \"a\": \"b\"\r\n}",
-        "json/linux.json" => "{\n  \"a\": \"b\"\n}"
+        "translations/en/base.yml" => "---\r\n  a: \"b\"\r\n",
+        "translations/de/base.yml" => "---\n  a: b\n"
       )
     end
 
@@ -19,8 +19,8 @@ module PlatformosCheck
       @platformos_app.liquid.each do |liquid_file|
         assert_equal("hello\nworld", liquid_file.source)
       end
-      @platformos_app.json.each do |json_file|
-        assert_equal("{\n  \"a\": \"b\"\n}", json_file.source)
+      @platformos_app.yaml.each do |yaml_file|
+        assert_equal({ "a" => "b" }, YAML.load(yaml_file.source))
       end
       @platformos_app.assets.each do |asset_file|
         assert_equal("console.log(\n  hi\n)", asset_file.source)
@@ -48,18 +48,18 @@ module PlatformosCheck
       end
     end
 
-    def test_eol_are_maintained_on_json_write
+    def test_eol_are_maintained_on_yaml_write
       [
-        ["windows", "\r\n"],
-        ["linux", "\n"]
-      ].each do |(platform, eol)|
-        json_file = @platformos_app["json/#{platform}"]
+        ["translations/en/base", "\r\n", "---\r\n  a: \"b\"\r\n"],
+        ["translations/de/base", "\n", "---\n  a: b\n"]
+      ].each do |(platform, eol, content)|
+        yaml_file = @platformos_app[platform]
 
-        assert_equal("{#{eol}  \"a\": \"b\"#{eol}}", @platformos_app.storage.read(json_file.relative_path.to_s))
-        json_file.content["a"] = "c"
-        json_file.write
+        assert_equal(content, @platformos_app.storage.read(yaml_file.relative_path.to_s))
+        yaml_file.content["a"] = "c"
+        yaml_file.write
 
-        assert_equal("{#{eol}  \"a\": \"c\"#{eol}}", @platformos_app.storage.read(json_file.relative_path.to_s))
+        assert_equal("---#{eol}a: c#{eol}\n", @platformos_app.storage.read(yaml_file.relative_path.to_s))
       end
     end
 

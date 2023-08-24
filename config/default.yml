@@ -65,15 +65,7 @@ UnusedSnippet:
   enabled: true
   ignore: []
 
-ValidJson:
-  enabled: true
-  ignore: []
-
-ValidSchema:
-  enabled: true
-  ignore: []
-
-MissingRequiredTemplateFiles:
+ValidYaml:
   enabled: true
   ignore: []
 
@@ -128,10 +120,6 @@ AssetSizeCSS:
 AssetSizeCSSStylesheetTag:
   enabled: false
   threshold_in_bytes: 100_000
-  ignore: []
-
-CdnPreconnect:
-  enabled: true
   ignore: []
 
 ImgWidthAndHeight:

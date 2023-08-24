@@ -29,6 +29,30 @@ module PlatformosCheck
             scope
           end
 
+          def on_function(node, scope)
+            # When a variable is redefined in a new scope we
+            # no longer can guarantee the type in the global scope
+            #
+            # Example:
+            # ```liquid
+            # {%- liquid
+            #   assign var1 = some_value
+            #
+            #   if condition
+            #     function var1 = 'another_value'
+            #            ^^^^ from here we no longer can guarantee
+            #                 the type of `var1` in the global scope
+            # -%}
+            # ```
+            p_scope = scope
+            while (p_scope = p_scope.parent)
+              p_scope.variables.delete(node.value.to)
+            end
+
+            scope << node
+            scope
+          end
+
           ##
           # Table row tags do not rely on blocks to define scopes,
           # so we index their value here
