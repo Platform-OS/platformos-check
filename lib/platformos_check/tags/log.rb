@@ -2,17 +2,12 @@
 
 module PlatformosCheck
   module Tags
-    class Log < Liquid::Tag
-      attr_reader :var
-
-      def initialize(tag_name, markup, options)
-        super
-        @var = Liquid::Variable.new(markup, options)
-      end
-
+    class Log < Base
       class ParseTreeVisitor < Liquid::ParseTreeVisitor
         def children
-          [@node.var]
+          [
+            @node.value_expr
+          ].compact + @node.attributes_expr.values
         end
       end
     end
