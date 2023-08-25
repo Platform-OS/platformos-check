@@ -52,7 +52,7 @@ module PlatformosCheck
       def denied_filters_for(variable_lookup)
         return [] if variable_lookup.nil?
 
-        VariableLookupTraverser.find_object(variable_lookup.name).denied_filters
+        VariableLookupTraverser.find_object(variable_lookup.name)&.denied_filters || []
       end
 
       def available_filters_for(input_type)

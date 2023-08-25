@@ -55,6 +55,7 @@ class UndefinedObjectTest < Minitest::Test
 
     assert_offenses(<<~END, offenses)
       Undefined object `email` at templates/index.liquid:1
+      Undefined object `form` at templates/index.liquid:1
     END
   end
 
@@ -62,9 +63,9 @@ class UndefinedObjectTest < Minitest::Test
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
       "templates/index.liquid" => <<~END
-        {% if form[email] %}
-          {{ form[email] }}
-          {{ form[email] }}
+        {% if context[email] %}
+          {{ context[email] }}
+          {{ context[email] }}
         {% endif %}
       END
     )
@@ -80,7 +81,7 @@ class UndefinedObjectTest < Minitest::Test
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
       "templates/index.liquid" => <<~END
-        {{ form["email"] }}
+        {{ context["current_user"] }}
       END
     )
 
@@ -91,8 +92,8 @@ class UndefinedObjectTest < Minitest::Test
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
       "templates/index.liquid" => <<~END
-        {% assign field = "email" %}
-        {{ form[field] }}
+        {% assign field = "session" %}
+        {{ context[field] }}
       END
     )
 
@@ -103,7 +104,7 @@ class UndefinedObjectTest < Minitest::Test
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
       "templates/index.liquid" => <<~END
-        {{ product.title }}
+        {{ context.current_user }}
       END
     )
 
@@ -138,7 +139,8 @@ class UndefinedObjectTest < Minitest::Test
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
       "templates/index.liquid" => <<~END
-        {% for item in collection %}
+        {% assign some_array = '[{"name": "foo"}]' | parse_json %}
+        {% for item in some_array %}
           {{ forloop.index }}: {{ item.name }}
         {% endfor %}
       END
@@ -151,6 +153,7 @@ class UndefinedObjectTest < Minitest::Test
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
       "templates/index.liquid" => <<~END,
+        {% assign all_products = '{}' | parse_json %}
         {% assign featured_product = all_products['product_handle'] %}
         {% render 'product' with featured_product as my_product %}
       END
@@ -166,7 +169,7 @@ class UndefinedObjectTest < Minitest::Test
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
       "templates/index.liquid" => <<~END,
-        {% assign variants = product.variants %}
+        {% assign variants = 'foo,bar' | split: ',' %}
         {% render 'variant' for variants as my_variant %}
       END
       "snippets/variant.liquid" => <<~END
@@ -463,6 +466,7 @@ class UndefinedObjectTest < Minitest::Test
   end
 
   def test_render_block
+    skip('block not supported')
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
       "sections/apps.liquid" => "{% render block %}"
@@ -485,6 +489,7 @@ class UndefinedObjectTest < Minitest::Test
   end
 
   def test_does_not_report_when_section_is_used
+    skip('section not supported')
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_snippets: false),
       "blocks/block_a.liquid" => <<~END

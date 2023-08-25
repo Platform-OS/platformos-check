@@ -44,16 +44,16 @@ module PlatformosCheck
 
       def test_complete_object
         engine = make_engine(filename => <<~LIQUID)
-          {{ prod }}
-          {{ all_ }}
+          {{ cont }}
+          {{ forl }}
         LIQUID
 
         assert_completions(engine.completions(filename, 0, 7), {
-                             label: "product",
+                             label: "context",
                              kind: CompletionItemKinds::VARIABLE
                            })
         assert_completions(engine.completions(filename, 1, 7), {
-                             label: "all_products",
+                             label: "forloop",
                              kind: CompletionItemKinds::VARIABLE
                            })
       end
@@ -62,7 +62,7 @@ module PlatformosCheck
         engine = make_engine(filename => "{{ }}")
 
         assert_completions(engine.completions(filename, 0, 3), {
-                             label: "all_products",
+                             label: "context",
                              kind: CompletionItemKinds::VARIABLE
                            })
 
