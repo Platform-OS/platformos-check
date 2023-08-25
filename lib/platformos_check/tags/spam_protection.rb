@@ -2,7 +2,7 @@
 
 module PlatformosCheck
   module Tags
-    class RedirectTo < Base
+    class SpamProtection < Base
       class ParseTreeVisitor < Liquid::ParseTreeVisitor
         def children
           [

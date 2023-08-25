@@ -119,7 +119,7 @@ class UnusedAssignTest < Minitest::Test
          assign g = "hello"
          print g
          assign h = "my log"
-         log h
+         log h, type: 'warning'
          assign i = "key"
          assign j = "val"
          assign hash = '{}' | parse_json
@@ -134,7 +134,15 @@ class UnusedAssignTest < Minitest::Test
          echo res
          echo hash
          assign url = '/my-page'
+         assign session_var = 'val'
+         session key = session_var
+         assign global_var = 'global'
+         export global_var, namespace: 'globals'
          redirect_to url
+         assign u_id = 25
+         sign_in user_id: u_id
+         assign strategy = 'hcaptcha'
+         spam_protection strategy
          assign f = "val"
          return f
         %}

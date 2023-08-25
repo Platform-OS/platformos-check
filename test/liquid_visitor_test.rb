@@ -71,6 +71,56 @@ class LiquidVisitorTest < Minitest::Test
                  ], @tracer.calls)
   end
 
+  def test_try_rc
+    platformos_app_file = parse_liquid(<<~END)
+      {% liquid
+        try_rc
+          function res = 'lib/commands/complex_func', object: 'Hello'
+        catch err
+          log err, type: 'complex_func error'
+        ensure
+          assign res = -1
+        endtry_rc
+      %}
+    END
+    @visitor.visit_liquid_file(platformos_app_file)
+
+    assert_equal([:on_document,
+                  :on_tag,
+                  :on_try,
+                  :on_block_body,
+                  :on_tag,
+                  :on_function,
+                  :on_string, "lib/commands/complex_func",
+                  :on_string, "res",
+                  :on_string, "Hello",
+                  :after_function,
+                  :after_tag,
+                  :after_block_body,
+                  :on_block_body,
+                  :on_tag,
+                  :on_log,
+                  :on_variable_lookup,
+                  :after_variable_lookup,
+                  :on_string, "complex_func error",
+                  :after_log,
+                  :after_tag,
+                  :after_block_body,
+                  :on_block_body,
+                  :on_tag,
+                  :on_assign,
+                  :on_variable,
+                  :on_integer, -1,
+                  :after_variable,
+                  :after_assign,
+                  :after_tag,
+                  :after_block_body,
+                  :after_try,
+                  :after_tag,
+                  :on_string, "\n",
+                  :after_document], @tracer.calls)
+  end
+
   def test_schema
     platformos_app_file = parse_liquid(<<~END)
       {% schema %}

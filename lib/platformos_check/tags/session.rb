@@ -5,6 +5,8 @@ module PlatformosCheck
     class Session < Liquid::Tag
       SYNTAX = /(#{Liquid::VariableSignature}+)\s*=\s*(.*)\s*/om
 
+      attr_reader :from
+
       def initialize(tag_name, markup, options)
         super
         raise Liquid::SyntaxError, "Syntax Error in 'session' - Valid syntax: session [var1] = [var2]" unless markup =~ SYNTAX
