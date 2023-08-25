@@ -12,16 +12,17 @@ module PlatformosCheck
       end
 
       def test_completions_when_it_completes_variable_lookups
-        assert_can_complete_with(@provider, '{{ cart.', 'total_price')
-        assert_can_complete_with(@provider, '{{- cart.', 'total_price')
-        assert_can_complete_with(@provider, '{{ cart.disc', 'discount_applications')
-        assert_can_complete_with(@provider, "{{ cart['disc", 'discount_applications')
-        assert_can_complete_with(@provider, "{{ cart['disc'", 'discount_applications', -1)
-        assert_can_complete_with(@provider, '{{ cart["disc"]', 'discount_applications', -2)
-        assert_can_complete_with(@provider, '{{ cart. }}', 'total_price', -3)
+        assert_can_complete_with(@provider, '{{ context.', 'authenticity_token')
+        assert_can_complete_with(@provider, '{{- context.', 'authenticity_token')
+        assert_can_complete_with(@provider, '{{ context.curren', 'current_user')
+        assert_can_complete_with(@provider, "{{ context['curren", 'current_user')
+        assert_can_complete_with(@provider, "{{ context['curren'", 'current_user', -1)
+        assert_can_complete_with(@provider, '{{ context["curren"]', 'current_user', -2)
+        assert_can_complete_with(@provider, '{{ context. }}', 'authenticity_token', -3)
       end
 
       def test_completions_when_it_completes_filter_arguments
+        skip('dont have array in context yet')
         assert_can_complete_with(@provider, '{{ 0 | plus: current_tags.si', 'size')
         assert_can_complete_with(@provider, "{{ 0 | plus: current_tags['", 'size', -2)
         assert_can_complete_with(@provider, "{{ 0 | plus: current_tags['']", 'size', -2)
@@ -29,23 +30,25 @@ module PlatformosCheck
       end
 
       def test_completions_when_it_completes_filter_hash_arguments
+        skip('dont have array in context yet')
         assert_can_complete_with(@provider, "{{ 0 | plus: bogus: current_tags.si", 'size')
       end
 
       def test_completions_when_it_completes_tag_arguments
-        assert_can_complete_with(@provider, "{% if form.", 'author')
-        assert_can_complete_with(@provider, "{%- if form.", 'author')
+        assert_can_complete_with(@provider, "{% if context.", 'current_user')
+        assert_can_complete_with(@provider, "{%- if context.", 'current_user')
       end
 
       def test_completions_when_it_completes_array_types
+        skip('dont have array in context yet')
         assert_can_complete_with(@provider, "{{ articles.first.", 'comments')
         assert_can_complete_with(@provider, "{{ product.images.first.", 'alt')
       end
 
       def test_completions_when_it_completes_nested_attributes
-        assert_can_complete_with(@provider, '{{ product.featured_image.', 'src')
-        assert_can_complete_with(@provider, '{{ product.featured_image.src', 'size')
-        assert_can_complete_with(@provider, '{{ product.featured_image.src.', 'size')
+        assert_can_complete_with(@provider, '{{ context.current_user.', 'first_name')
+        assert_can_complete_with(@provider, '{{ context.current_user.first_name', 'size')
+        assert_can_complete_with(@provider, '{{ context.current_user.first_name.', 'size')
       end
 
       def test_completions_when_it_should_not_complete_non_attributes

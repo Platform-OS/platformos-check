@@ -15,30 +15,30 @@ module PlatformosCheck
       def test_completions_from_different_cursor_positions
         # variables
         assert_can_complete(@provider, "{{ ")
-        assert_can_complete(@provider, "{{ all_")
+        assert_can_complete(@provider, "{{ con")
 
         # Cursor inside the token
-        assert_can_complete(@provider, "{{ all_ }}", -3)
+        assert_can_complete(@provider, "{{ con }}", -3)
 
         # filters
-        assert_can_complete(@provider, "{{ '1234' | replace: prod")
+        assert_can_complete(@provider, "{{ '1234' | replace: con")
 
         # for loops
-        assert_can_complete(@provider, "{% for p in all_")
-        assert_can_complete(@provider, "{% for p in all_ %}", -3)
+        assert_can_complete(@provider, "{% for p in con")
+        assert_can_complete(@provider, "{% for p in con %}", -3)
 
         # case statements
-        assert_can_complete(@provider, "{% case all_prod")
-        assert_can_complete(@provider, "{% when all_prod")
+        assert_can_complete(@provider, "{% case con")
+        assert_can_complete(@provider, "{% when con")
 
         # render attributes
-        assert_can_complete(@provider, "{% render 'snippet', products: all_")
+        assert_can_complete(@provider, "{% render 'snippet', products: con")
 
         # out of bounds for completions
         refute_can_complete(@provider, "{{")
-        refute_can_complete(@provider, "{{ all_prod ")
-        refute_can_complete(@provider, "{{ all_prod }")
-        refute_can_complete(@provider, "{{ all_prod }}")
+        refute_can_complete(@provider, "{{ con ")
+        refute_can_complete(@provider, "{{ con }")
+        refute_can_complete(@provider, "{{ con }}")
 
         # not an object.
         refute_can_complete(@provider, "{{ all_products.")
@@ -51,9 +51,9 @@ module PlatformosCheck
       end
 
       def test_correctly_suggests_things
-        assert_can_complete_with(@provider, "{{ ", 'all_products')
-        assert_can_complete_with(@provider, "{{  ", 'all_products')
-        assert_can_complete_with(@provider, "{{ all_", 'all_products')
+        assert_can_complete_with(@provider, "{{ ", 'context')
+        assert_can_complete_with(@provider, "{{  ", 'context')
+        assert_can_complete_with(@provider, "{{ con", 'context')
 
         object_not_in_source_index = 'customer_address'
 

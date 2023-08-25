@@ -52,7 +52,7 @@ module PlatformosCheck
           .returns(SourceManager.send(:default_destination))
         @source_index_class.objects
 
-        assert_operator(@source_index_class.objects.length, :>=, 111)
+        assert_operator(@source_index_class.objects.length, :>=, 23)
 
         SourceIndex::ObjectState.mark_outdated
 

@@ -203,7 +203,7 @@ class CliTest < Minitest::Test
   def test_auto_correct
     storage = make_file_system_storage(
       "templats/platformos_app.liquid" => <<~LIQUID
-        {{ content_for_header }}
+        {{ content_for_layout }}
       LIQUID
     )
     out, _err = capture_io do
