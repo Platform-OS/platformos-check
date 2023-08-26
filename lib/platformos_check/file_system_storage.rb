@@ -45,6 +45,15 @@ module PlatformosCheck
       file(relative_path).mkpath
     end
 
+    # TODO: Fix corrector
+    # def rename(old_path, new_path)
+    #   return unless file_exists?(old_path)
+    #
+    #   reset_memoizers
+    #
+    #   file(old_path).mv(new_path)
+    # end
+
     def files
       @file_array ||= glob("**/*")
                       .reject { |path| File.directory?(path) }
@@ -52,7 +61,7 @@ module PlatformosCheck
     end
 
     def directories
-      @directories ||= glob('*')
+      @directories ||= glob('**/')
                        .select { |f| File.directory?(f) }
                        .map { |f| f.relative_path_from(@root).to_s }
     end
