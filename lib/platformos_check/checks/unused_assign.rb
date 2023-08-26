@@ -71,7 +71,18 @@ module PlatformosCheck
           next if used.include?(name)
 
           add_offense("`#{name}` is never used", node:) do |corrector|
-            corrector.remove(node)
+            case node.type_name
+            when :function, :graphql
+              offset = node.markup.index(node.value.to)
+
+              corrector.insert_before(
+                node,
+                '_',
+                (node.start_index + offset)...(node.start_index + offset)
+              )
+            else
+              corrector.remove(node)
+            end
           end
         end
       end

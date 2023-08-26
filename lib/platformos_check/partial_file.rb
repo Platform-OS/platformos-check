@@ -8,20 +8,8 @@ module PlatformosCheck
       true
     end
 
-    def name
-      @name ||= build_name
-    end
-
-    private
-
-    def build_name
-      n = relative_path.sub(DIR_PREFIX, '').sub_ext('').to_s
-      return n if module_name.nil?
-
-      prefix = "modules#{File::SEPARATOR}#{module_name}#{File::SEPARATOR}"
-      return n if n.start_with?(prefix)
-
-      "#{prefix}#{n}"
+    def dir_prefix
+      DIR_PREFIX
     end
   end
 end

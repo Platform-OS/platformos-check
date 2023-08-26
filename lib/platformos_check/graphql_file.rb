@@ -2,6 +2,8 @@
 
 module PlatformosCheck
   class GraphqlFile < AppFile
+    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(graph_queries|graphql)s?/|modules/((\w|-)*)/(private|public)/(graph_queries|graphql)s?/)}
+
     def write
       content = rewriter.to_s
       return unless source != content
@@ -13,6 +15,10 @@ module PlatformosCheck
 
     def rewriter
       @rewriter ||= AppFileRewriter.new(@relative_path, source)
+    end
+
+    def dir_prefix
+      DIR_PREFIX
     end
 
     def source_excerpt(line)

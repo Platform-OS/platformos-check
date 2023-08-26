@@ -34,7 +34,7 @@ class AppTest < Minitest::Test
   end
 
   def test_all
-    assert_equal(22, @platformos_app.all.size)
+    assert_equal(23, @platformos_app.all.size)
   end
 
   def test_assets
@@ -43,7 +43,7 @@ class AppTest < Minitest::Test
   end
 
   def test_liquid
-    assert_equal(10, @platformos_app.liquid.size)
+    assert_equal(11, @platformos_app.liquid.size)
     assert(@platformos_app.liquid.all? { |a| a.is_a?(PlatformosCheck::LiquidFile) })
   end
 

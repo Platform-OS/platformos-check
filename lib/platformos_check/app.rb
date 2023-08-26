@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# frozen_string_lite/al: true
+
 require "pathname"
 
 module PlatformosCheck
@@ -18,6 +20,21 @@ module PlatformosCheck
     TRANSLATIONS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)translations.+.yml}
     CONFIG_REGEX = %r{(?-mix:^\\/?((marketplace_builder|app)\\/)?)config.yml}
 
+    REGEXP_MAP = {
+      API_CALLS_REGEX => ApiCallFile,
+      ASSETS_REGEX => AssetFile,
+      EMAILS_REGEX => EmailFile,
+      GRAPHQL_REGEX => GraphqlFile,
+      MIGRATIONS_REGEX => MigrationFile,
+      PAGES_REGEX => PageFile,
+      PARTIALS_REGEX => PartialFile,
+      SCHEMA_REGEX => SchemaFile,
+      SMSES_REGEX => SmsFile,
+      USER_SCHEMA_REGEX => UserSchemaFile,
+      TRANSLATIONS_REGEX => TranslationFile,
+      CONFIG_REGEX => ConfigFile
+    }
+
     attr_reader :storage
 
     def initialize(storage)
@@ -27,40 +44,16 @@ module PlatformosCheck
     def grouped_files
       @grouped_files ||= begin
         hash = {}
+        REGEXP_MAP.each_value { |v| hash[v] = {} }
         storage.files.each do |path|
-          if ASSETS_REGEX.match?(path)
-            hash['assets'] ||= []
-            hash['assets'] << AssetFile.new(path, storage)
-          elsif PARTIALS_REGEX.match?(path)
-            hash['partials'] ||= []
-            hash['partials'] << PartialFile.new(path, storage)
-          elsif PAGES_REGEX.match?(path)
-            hash['pages'] ||= []
-            hash['pages'] << PageFile.new(path, storage)
-          elsif GRAPHQL_REGEX.match?(path)
-            hash['graphql'] ||= []
-            hash['graphql'] << GraphqlFile.new(path, storage)
-          elsif SCHEMA_REGEX.match?(path)
-            hash['schema'] ||= []
-            hash['schema'] << YamlFile.new(path, storage)
-          elsif SMSES_REGEX.match?(path)
-            hash['smses'] ||= []
-            hash['smses'] << SmsFile.new(path, storage)
-          elsif EMAILS_REGEX.match?(path)
-            hash['emails'] ||= []
-            hash['emails'] << EmailFile.new(path, storage)
-          elsif API_CALLS_REGEX.match?(path)
-            hash['api_calls'] ||= []
-            hash['api_calls'] << ApiCallFile.new(path, storage)
-          elsif TRANSLATIONS_REGEX.match?(path)
-            hash['translations'] ||= []
-            hash['translations'] << YamlFile.new(path, storage)
-          elsif MIGRATIONS_REGEX.match?(path)
-            hash['migrations'] ||= []
-            hash['migrations'] << MigrationFile.new(path, storage)
+          regexp, klass = REGEXP_MAP.detect { |k, _v| k.match?(path) }
+          if regexp
+            f = klass.new(path, storage)
+            hash[klass][f.name] = f
           elsif /\.liquid$/i.match?(path)
-            hash['to_be_removed'] ||= []
-            hash['to_be_removed'] << LiquidFile.new(path, storage)
+            hash[LiquidFile] ||= {}
+            f = LiquidFile.new(path, storage)
+            hash[LiquidFile][f.name] = f
           end
         end
         hash
@@ -68,7 +61,7 @@ module PlatformosCheck
     end
 
     def assets
-      grouped_files['assets']
+      grouped_files[AssetFile]&.values
     end
 
     def liquid
@@ -80,15 +73,15 @@ module PlatformosCheck
     end
 
     def schema
-      grouped_files['schema'] || []
+      grouped_files[SchemaFile]&.values || []
     end
 
     def translations
-      grouped_files['translations'] || []
+      grouped_files[TranslationFile]&.values || []
     end
 
     def partials
-      grouped_files['partials'] || []
+      grouped_files[PartialFile]&.values || []
     end
 
     def notifications
@@ -96,23 +89,23 @@ module PlatformosCheck
     end
 
     def emails
-      grouped_files['emails'] || []
+      grouped_files[EmailFile]&.values || []
     end
 
     def smses
-      grouped_files['smes'] || []
+      grouped_files[SmsFile]&.values || []
     end
 
     def api_calls
-      grouped_files['api_calls'] || []
+      grouped_files[ApiCallFile]&.values || []
     end
 
     def pages
-      grouped_files['pages'] || []
+      grouped_files[PageFile]&.values || []
     end
 
     def legacy_liquid
-      grouped_files['to_be_removed'] || []
+      grouped_files[LiquidFile]&.values || []
     end
 
     def directories
@@ -120,7 +113,7 @@ module PlatformosCheck
     end
 
     def all
-      @all ||= grouped_files.values.flatten
+      @all ||= grouped_files.values.map(&:values).flatten
     end
 
     def [](name_or_relative_path)
