@@ -6,33 +6,33 @@ class SyntaxErrorTest < Minitest::Test
   def test_reports_parse_errors
     offenses = analyze_platformos_app(
       PlatformosCheck::SyntaxError.new,
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         {% include 'muffin'
       END
     )
 
     assert_offenses(<<~END, offenses)
-      Tag '{%' was not properly terminated with regexp: /\\%\\}/ at templates/index.liquid:1
+      Tag '{%' was not properly terminated with regexp: /\\%\\}/ at app/views/pages/index.liquid:1
     END
   end
 
   def test_reports_missing_tag
     offenses = analyze_platformos_app(
       PlatformosCheck::SyntaxError.new,
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         {% unknown %}
       END
     )
 
     assert_offenses(<<~END, offenses)
-      Unknown tag 'unknown' at templates/index.liquid:1
+      Unknown tag 'unknown' at app/views/pages/index.liquid:1
     END
   end
 
   def test_reports_lax_warnings_and_continue
     offenses = analyze_platformos_app(
       PlatformosCheck::SyntaxError.new,
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         {% if collection | size > 0 %}
         {% endif %}
         {% if collection | > 0 %}
@@ -41,19 +41,19 @@ class SyntaxErrorTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Expected end_of_string but found pipe at templates/index.liquid:1
-      Expected end_of_string but found pipe at templates/index.liquid:3
+      Expected end_of_string but found pipe at app/views/pages/index.liquid:1
+      Expected end_of_string but found pipe at app/views/pages/index.liquid:3
     END
   end
 
   def test_invalid_render_tag
     offenses = analyze_platformos_app(
       PlatformosCheck::SyntaxError.new,
-      "templates/index.liquid" => "{% render ‘foo’ %}"
+      "app/views/pages/index.liquid" => "{% render ‘foo’ %}"
     )
 
     assert_offenses(<<~END, offenses)
-      Syntax error in tag 'render' - Template name must be a quoted string at templates/index.liquid:1
+      Syntax error in tag 'render' - Template name must be a quoted string at app/views/pages/index.liquid:1
     END
   end
 end

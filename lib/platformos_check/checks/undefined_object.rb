@@ -7,15 +7,16 @@ module PlatformosCheck
     severity :error
 
     class TemplateInfo
-      def initialize
+      def initialize(app_file: nil)
         @all_variable_lookups = {}
         @all_assigns = {}
         @all_captures = {}
         @all_forloops = {}
         @all_renders = {}
+        @app_file = app_file
       end
 
-      attr_reader :all_assigns, :all_captures, :all_forloops
+      attr_reader :all_assigns, :all_captures, :all_forloops, :app_file
 
       def add_render(name:, node:)
         @all_renders[name] = node
@@ -37,7 +38,7 @@ module PlatformosCheck
         all_assigns.keys + all_captures.keys + all_forloops.keys
       end
 
-      def each_snippet
+      def each_partial
         @all_renders.each do |(name, info)|
           yield [name, info]
         end
@@ -57,16 +58,16 @@ module PlatformosCheck
       end
     end
 
-    def initialize(config_type: :default, exclude_snippets: true)
+    def initialize(config_type: :default, exclude_partials: true)
       @config_type = config_type
-      @exclude_snippets = exclude_snippets
+      @exclude_partials = exclude_partials
       @files = {}
     end
 
     def on_document(node)
       return if ignore?(node)
 
-      @files[node.platformos_app_file.name] = TemplateInfo.new
+      @files[node.platformos_app_file.name] = TemplateInfo.new(app_file: node.platformos_app_file)
     end
 
     def on_assign(node)
@@ -79,6 +80,12 @@ module PlatformosCheck
       return if ignore?(node)
 
       @files[node.platformos_app_file.name].all_captures[node.value.instance_variable_get(:@to)] = node
+    end
+
+    def on_parse_json(node)
+      return if ignore?(node)
+
+      @files[node.platformos_app_file.name].all_captures[node.value.to] = node
     end
 
     def on_for(node)
@@ -96,9 +103,9 @@ module PlatformosCheck
       return if ignore?(node)
       return unless node.value.template_name_expr.is_a?(String)
 
-      snippet_name = "snippets/#{node.value.template_name_expr}"
+      partial_name = node.value.template_name_expr
       @files[node.platformos_app_file.name].add_render(
-        name: snippet_name,
+        name: partial_name,
         node:
       )
     end
@@ -115,22 +122,10 @@ module PlatformosCheck
       @files[node.platformos_app_file.name].all_assigns[node.value.to] = node
     end
 
-    def on_parse_json(node)
-      @files[node.platformos_app_file.name].all_assigns[node.value.to] = node
-    end
-
     def on_graphql(node)
       return if ignore?(node)
 
       @files[node.platformos_app_file.name].all_assigns[node.value.to] = node
-
-      return if node.value.inline_query
-
-      name = node.value.partial_name
-      @files[node.platformos_app_file.name].add_render(
-        name:,
-        node:
-      )
     end
 
     def on_variable_lookup(node)
@@ -152,20 +147,10 @@ module PlatformosCheck
       platformos_app_app_extension_objects = PlatformosCheck::ShopifyLiquid::Object.platformos_app_app_extension_labels
       platformos_app_app_extension_objects.freeze
 
-      each_template do |(name, info)|
-        if 'templates/customers/reset_password' == name
-          # NOTE: `email` is exceptionally exposed as a platformos_app object in
-          #       the customers' reset password template
-          check_object(info, all_global_objects + ['email'])
-        elsif 'templates/robots.txt' == name
-          # NOTE: `robots` is the only object exposed object in
-          #       the robots.txt template
-          check_object(info, ['robots'])
-        elsif 'layout/checkout' == name
-          # NOTE: Shopify Plus has exceptionally exposed objects in
-          #       the checkout template
-          # https://shopify.dev/docs/platformos_apps/platformos_app-templates/checkout-liquid#optional-objects
-          check_object(info, all_global_objects + shopify_plus_objects)
+      each_template do |(_name, info)|
+        if info.app_file.notification?
+          # NOTE: `data` comes from graphql for notifications
+          check_object(info, all_global_objects + ['data'])
         elsif config_type == :platformos_app_app_extension
           check_object(info, all_global_objects + platformos_app_app_extension_objects)
         else
@@ -179,29 +164,29 @@ module PlatformosCheck
     attr_reader :config_type
 
     def ignore?(node)
-      @exclude_snippets && node.platformos_app_file.snippet?
+      @exclude_partials && node.platformos_app_file.partial?
     end
 
     def each_template
       @files.each do |(name, info)|
-        next if name.start_with?('snippets/')
+        next if info.app_file.partial?
 
         yield [name, info]
       end
     end
 
-    def check_object(info, all_global_objects, render_node = nil, visited_snippets = Set.new)
+    def check_object(info, all_global_objects, render_node = nil, visited_partials = Set.new)
       check_undefined(info, all_global_objects, render_node)
 
-      info.each_snippet do |(snippet_name, node)|
-        snippet_info = @files[snippet_name]
-        next unless snippet_info # NOTE: undefined snippet
+      info.each_partial do |(partial_name, node)|
+        partial_info = @files[partial_name]
+        next unless partial_info # NOTE: undefined partial
 
-        snippet_variables = node.value.attributes.keys +
+        partial_variables = node.value.attributes.keys +
                             [node.value.instance_variable_get(:@alias_name)]
-        unless visited_snippets.include?(snippet_name)
-          visited_snippets << snippet_name
-          check_object(snippet_info, all_global_objects + snippet_variables, node, visited_snippets)
+        unless visited_partials.include?(partial_name)
+          visited_partials << partial_name
+          check_object(partial_info, all_global_objects + partial_variables, node, visited_partials)
         end
       end
     end

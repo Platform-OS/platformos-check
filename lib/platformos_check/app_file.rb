@@ -23,7 +23,14 @@ module PlatformosCheck
     end
 
     def name
-      relative_path.sub_ext('').to_s
+      @name ||= relative_path.sub_ext('').to_s
+    end
+
+    def module_name
+      @module_name ||= begin
+        dir_names = @relative_path.split(File::SEPARATOR).reject(&:empty?)
+        dir_names.first == 'modules' ? dir_names[1] : nil
+      end
     end
 
     # For the corrector to work properly, we should have a

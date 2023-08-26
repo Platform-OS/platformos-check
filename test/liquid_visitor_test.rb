@@ -240,7 +240,7 @@ class LiquidVisitorTest < Minitest::Test
   def test_parse_json
     platformos_app_file = parse_liquid(<<~END)
       {% parse_json x %}
-        { "hello": "world" }
+        { "hello": var }
       {% endparse_json %}
     END
     @visitor.visit_liquid_file(platformos_app_file)
@@ -249,6 +249,7 @@ class LiquidVisitorTest < Minitest::Test
       [:on_document,
        :on_tag,
        :on_parse_json,
+       :on_string, "\n  { \"hello\": var }\n",
        :on_string, "x",
        :after_parse_json,
        :after_tag,

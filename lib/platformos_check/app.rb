@@ -33,10 +33,10 @@ module PlatformosCheck
             hash['assets'] << AssetFile.new(path, storage)
           elsif PARTIALS_REGEX.match?(path)
             hash['partials'] ||= []
-            hash['partials'] << LiquidFile.new(path, storage)
+            hash['partials'] << PartialFile.new(path, storage)
           elsif PAGES_REGEX.match?(path)
             hash['pages'] ||= []
-            hash['pages'] << LiquidFile.new(path, storage)
+            hash['pages'] << PageFile.new(path, storage)
           elsif GRAPHQL_REGEX.match?(path)
             hash['graphql'] ||= []
             hash['graphql'] << GraphqlFile.new(path, storage)
@@ -45,19 +45,19 @@ module PlatformosCheck
             hash['schema'] << YamlFile.new(path, storage)
           elsif SMSES_REGEX.match?(path)
             hash['smses'] ||= []
-            hash['smses'] << LiquidFile.new(path, storage)
+            hash['smses'] << SmsFile.new(path, storage)
           elsif EMAILS_REGEX.match?(path)
             hash['emails'] ||= []
-            hash['emails'] << LiquidFile.new(path, storage)
+            hash['emails'] << EmailFile.new(path, storage)
           elsif API_CALLS_REGEX.match?(path)
             hash['api_calls'] ||= []
-            hash['api_calls'] << LiquidFile.new(path, storage)
+            hash['api_calls'] << ApiCallFile.new(path, storage)
           elsif TRANSLATIONS_REGEX.match?(path)
             hash['translations'] ||= []
             hash['translations'] << YamlFile.new(path, storage)
           elsif MIGRATIONS_REGEX.match?(path)
             hash['migrations'] ||= []
-            hash['migrations'] << LiquidFile.new(path, storage)
+            hash['migrations'] << MigrationFile.new(path, storage)
           elsif /\.liquid$/i.match?(path)
             hash['to_be_removed'] ||= []
             hash['to_be_removed'] << LiquidFile.new(path, storage)
@@ -72,7 +72,7 @@ module PlatformosCheck
     end
 
     def liquid
-      partials + pages + legacy_liquid
+      partials + pages + legacy_liquid + notifications
     end
 
     def yaml
@@ -88,7 +88,23 @@ module PlatformosCheck
     end
 
     def partials
-      @partials ||= grouped_files['partials'] || []
+      grouped_files['partials'] || []
+    end
+
+    def notifications
+      emails + smses + api_calls
+    end
+
+    def emails
+      grouped_files['emails'] || []
+    end
+
+    def smses
+      grouped_files['smes'] || []
+    end
+
+    def api_calls
+      grouped_files['api_calls'] || []
     end
 
     def pages
@@ -114,10 +130,6 @@ module PlatformosCheck
       else
         all.find { |t| t.name == name_or_relative_path }
       end
-    end
-
-    def templates
-      liquid.select(&:template?)
     end
 
     def sections

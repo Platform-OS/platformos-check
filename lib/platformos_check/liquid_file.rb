@@ -16,7 +16,23 @@ module PlatformosCheck
     end
 
     def template?
-      name.start_with?('templates')
+      name.start_with?('template')
+    end
+
+    def notification?
+      false
+    end
+
+    def migration?
+      false
+    end
+
+    def page?
+      false
+    end
+
+    def partial?
+      false
     end
 
     def section?
@@ -24,7 +40,7 @@ module PlatformosCheck
     end
 
     def snippet?
-      name.start_with?('snippets')
+      name.start_with?('snippet')
     end
 
     def rewriter

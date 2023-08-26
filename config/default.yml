@@ -72,7 +72,7 @@ ValidYaml:
 UndefinedObject:
   enabled: true
   ignore: []
-  exclude_snippets: true
+  exclude_partials: true
   config_type: :default
 
 RequiredDirectories:

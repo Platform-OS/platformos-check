@@ -68,7 +68,7 @@ ValidYaml:
 UndefinedObject:
   enabled: true
   ignore: []
-  exclude_snippets: true
+  exclude_partials: true
   config_type: :theme_app_extension
 
 RequiredDirectories:
