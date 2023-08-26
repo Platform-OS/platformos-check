@@ -24,15 +24,14 @@ class CliTest < Minitest::Test
 
   def test_check_format_json
     storage = make_file_system_storage(
-      "layout/platformos_app.liquid" => <<~LIQUID,
+      "app/views/partials/platformos_app.liquid" => <<~LIQUID,
         {% assign x = 1 %}
         {% assign y = 2 %}
       LIQUID
-      "config/placeholder" => '',
-      "assets/placeholder" => '',
-      "locales/placeholder" => '',
-      "snippets/example.liquid" => '',
-      "templates/example.liquid" => <<~LIQUID,
+      "app/config.yml" => '',
+      "app/assets/placeholder.css" => 'html { }',
+      "app/translations/en/placeholder.yml" => 'en:',
+      "app/views/pages/placeholder.liquid" => <<~LIQUID,
         {% assign z = 1 %}
       LIQUID
       ".platformos-check.yml" => <<~YAML
@@ -50,68 +49,114 @@ class CliTest < Minitest::Test
     end
 
     assert_equal(
-      JSON.dump([
-                  {
-                    "path" => nil,
-                    "offenses" => [
-                      {
-                        "check" => "RequiredDirectories",
-                        "severity" => 1,
-                        "start_row" => 0,
-                        "start_column" => 0,
-                        "end_row" => 0,
-                        "end_column" => 0,
-                        "message" => "App is missing 'sections' directory"
-                      }
-                    ],
-                    "errorCount" => 0,
-                    "suggestionCount" => 1,
-                    "styleCount" => 0
+      JSON.dump([{
+                  "path" => nil,
+                  "offenses" => [{
+                    "check" => "RequiredDirectories",
+                    "severity" => 1,
+                    "start_row" => 0,
+                    "start_column" => 0,
+                    "end_row" => 0,
+                    "end_column" => 0,
+                    "message" => "App is missing 'app/lib' directory"
                   },
-                  {
-                    "path" => "layout/platformos_app.liquid",
-                    "offenses" => [
-                      {
-                        "check" => "UnusedAssign",
-                        "severity" => 1,
-                        "start_row" => 0,
-                        "start_column" => 3,
-                        "end_row" => 0,
-                        "end_column" => 16,
-                        "message" => "`x` is never used"
-                      },
-                      {
-                        "check" => "UnusedAssign",
-                        "severity" => 1,
-                        "start_row" => 1,
-                        "start_column" => 3,
-                        "end_row" => 1,
-                        "end_column" => 16,
-                        "message" => "`y` is never used"
-                      }
-                    ],
-                    "errorCount" => 0,
-                    "suggestionCount" => 2,
-                    "styleCount" => 0
-                  },
-                  {
-                    "path" => "templates/example.liquid",
-                    "offenses" => [
-                      {
-                        "check" => "UnusedAssign",
-                        "severity" => 1,
-                        "start_row" => 0,
-                        "start_column" => 3,
-                        "end_row" => 0,
-                        "end_column" => 16,
-                        "message" => "`z` is never used"
-                      }
-                    ],
-                    "errorCount" => 0,
-                    "suggestionCount" => 1,
-                    "styleCount" => 0
-                  }
-                ]),
+                                 {
+                                   "check" => "RequiredDirectories",
+                                   "severity" => 1,
+                                   "start_row" => 0,
+                                   "start_column" => 0,
+                                   "end_row" => 0,
+                                   "end_column" => 0,
+                                   "message" => "App is missing 'app/emails' directory"
+                                 },
+                                 {
+                                   "check" => "RequiredDirectories",
+                                   "severity" => 1,
+                                   "start_row" => 0,
+                                   "start_column" => 0,
+                                   "end_row" => 0,
+                                   "end_column" => 0,
+                                   "message" => "App is missing 'app/smses' directory"
+                                 },
+                                 {
+                                   "check" => "RequiredDirectories",
+                                   "severity" => 1,
+                                   "start_row" => 0,
+                                   "start_column" => 0,
+                                   "end_row" => 0,
+                                   "end_column" => 0,
+                                   "message" => "App is missing 'app/api_calls' directory"
+                                 },
+                                 {
+                                   "check" => "RequiredDirectories",
+                                   "severity" => 1,
+                                   "start_row" => 0,
+                                   "start_column" => 0,
+                                   "end_row" => 0,
+                                   "end_column" => 0,
+                                   "message" => "App is missing 'app/views/layouts' directory"
+                                 },
+                                 {
+                                   "check" => "RequiredDirectories",
+                                   "severity" => 1,
+                                   "start_row" => 0,
+                                   "start_column" => 0,
+                                   "end_row" => 0,
+                                   "end_column" => 0,
+                                   "message" => "App is missing 'app/schema' directory"
+                                 },
+                                 {
+                                   "check" => "RequiredDirectories",
+                                   "severity" => 1,
+                                   "start_row" => 0,
+                                   "start_column" => 0,
+                                   "end_row" => 0,
+                                   "end_column" => 0,
+                                   "message" => "App is missing 'app/graphql' directory"
+                                 }],
+                  "errorCount" => 0,
+                  "suggestionCount" => 7,
+                  "styleCount" => 0
+                },
+                 {
+                   "path" => "app/views/pages/placeholder.liquid",
+                   "offenses" => [{
+                     "check" => "UnusedAssign",
+                     "severity" => 1,
+                     "start_row" => 0,
+                     "start_column" => 3,
+                     "end_row" => 0,
+                     "end_column" => 16,
+                     "message" => "`z` is never used"
+                   }],
+                   "errorCount" => 0,
+                   "suggestionCount" => 1,
+                   "styleCount" => 0
+                 },
+                 {
+                   "path" => "app/views/partials/platformos_app.liquid",
+                   "offenses" => [{
+                     "check" => "UnusedAssign",
+                     "severity" => 1,
+                     "start_row" => 0,
+                     "start_column" => 3,
+                     "end_row" => 0,
+                     "end_column" => 16,
+                     "message" => "`x` is never used"
+                   },
+                                  {
+                                    "check" => "UnusedAssign",
+                                    "severity" => 1,
+                                    "start_row" => 1,
+                                    "start_column" => 3,
+                                    "end_row" => 1,
+                                    "end_column" => 16,
+                                    "message" => "`y` is never used"
+                                  }],
+                   "errorCount" => 0,
+                   "suggestionCount" => 2,
+                   "styleCount" => 0
+                 }]),
       out.chomp
     )
   end

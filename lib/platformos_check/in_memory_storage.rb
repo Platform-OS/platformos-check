@@ -34,6 +34,15 @@ module PlatformosCheck
       reset_memoizers
     end
 
+    # TODO: Fix corrector
+    # def rename(old_path, new_path)
+    #   old_path += '/' if old_path[-1] != '/'
+    #   new_path += '/' if new_path[-1] != '/'
+    #   @files.transform_keys! { |k| k.sub(/\A#{old_path}/, new_path) }
+    #
+    #   reset_memoizers
+    # end
+
     def files
       @files.keys
     end
