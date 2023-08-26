@@ -23,6 +23,7 @@ module PlatformosCheck
 
       def test_completions_when_it_completes_filter_arguments
         skip('dont have array in context yet')
+
         assert_can_complete_with(@provider, '{{ 0 | plus: current_tags.si', 'size')
         assert_can_complete_with(@provider, "{{ 0 | plus: current_tags['", 'size', -2)
         assert_can_complete_with(@provider, "{{ 0 | plus: current_tags['']", 'size', -2)
@@ -31,6 +32,7 @@ module PlatformosCheck
 
       def test_completions_when_it_completes_filter_hash_arguments
         skip('dont have array in context yet')
+
         assert_can_complete_with(@provider, "{{ 0 | plus: bogus: current_tags.si", 'size')
       end
 
@@ -41,6 +43,7 @@ module PlatformosCheck
 
       def test_completions_when_it_completes_array_types
         skip('dont have array in context yet')
+
         assert_can_complete_with(@provider, "{{ articles.first.", 'comments')
         assert_can_complete_with(@provider, "{{ product.images.first.", 'alt')
       end

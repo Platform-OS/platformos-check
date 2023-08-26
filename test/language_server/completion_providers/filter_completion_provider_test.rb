@@ -74,6 +74,7 @@ module PlatformosCheck
         assert_can_only_complete_with("{{ 'test%40test.com' | ", input_type)
         assert_can_only_complete_with("{{ '' | ", input_type)
         skip('do not know how to get array object')
+
         assert_can_only_complete_with("{% for tag in collection.all_tags %}\n{%- if current_tags contains tag -%}\n{{ tag | ", input_type)
       end
 
@@ -106,6 +107,7 @@ module PlatformosCheck
 
       def test_filters_incompatible_with_already_escaped_string
         skip('do not have object with denied_filters')
+
         refute_can_complete_with(@provider, "{{ page_description | ", "escape")
       end
 
