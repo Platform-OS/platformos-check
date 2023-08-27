@@ -14,8 +14,8 @@ module PlatformosCheck
           %}
         </p>
       END
-      @platformos_app = make_platformos_app("templates/index.liquid" => @contents)
-      @platformos_app_file = @platformos_app["templates/index"]
+      @platformos_app = make_platformos_app("app/views/pages/index.liquid" => @contents)
+      @platformos_app_file = @platformos_app["app/views/pages/index"]
     end
 
     def test_insert_after_adds_suffix
@@ -181,8 +181,8 @@ module PlatformosCheck
           }
         {% endschema %}
       END
-      platformos_app = make_platformos_app("templates/index.liquid" => contents)
-      platformos_app_file = platformos_app["templates/index"]
+      platformos_app = make_platformos_app("app/views/pages/index.liquid" => contents)
+      platformos_app_file = platformos_app["app/views/pages/index"]
       node = stub(
         platformos_app_file:,
         inner_markup_start_index: 12,

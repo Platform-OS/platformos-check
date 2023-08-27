@@ -35,6 +35,10 @@ module PlatformosCheck
       false
     end
 
+    def layout?
+      false
+    end
+
     def section?
       name.start_with?('sections')
     end

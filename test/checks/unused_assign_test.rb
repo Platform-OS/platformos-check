@@ -189,7 +189,7 @@ class UnusedAssignTest < Minitest::Test
         {% assign a = 1 %}
         {% include 'using' %}
       END
-      "snippets/using.liquid" => <<~END
+      "app/views/partials/using.liquid" => <<~END
         {{ a }}
       END
     )
@@ -204,11 +204,11 @@ class UnusedAssignTest < Minitest::Test
         {% assign a = 1 %}
         {% include 'one' %}
       END
-      "snippets/one.liquid" => <<~END,
+      "app/views/partials/one.liquid" => <<~END,
         {% include 'two' %}
         {{ a }}
       END
-      "snippets/two.liquid" => <<~END
+      "app/views/partials/two.liquid" => <<~END
         {% if some_end_condition %}
           {% include 'one' %}
         {% endif %}

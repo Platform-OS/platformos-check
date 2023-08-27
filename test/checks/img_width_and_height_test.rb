@@ -7,7 +7,7 @@ module PlatformosCheck
     def test_no_offense_for_good_behaviour
       offenses = analyze_platformos_app(
         ImgWidthAndHeight.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <img src="a.jpg" width="100" height="200">
           <img src="a.jpg" width="{{ image.width }}" height="{{ image.height }}">
           <img class="product__image lazyload"
@@ -31,7 +31,7 @@ module PlatformosCheck
     def test_doesnt_hang_on_self_closing_tag
       offenses = analyze_platformos_app(
         ImgWidthAndHeight.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <img src="a.jpg" width="100" height="200"/>
           <img src="a.jpg" width="100" height="200" />
           <img src="a.jpg" width="{{ image.width }}" height="{{ image.height }}" />
@@ -56,7 +56,7 @@ module PlatformosCheck
     def test_ignore_lazysizes
       offenses = analyze_platformos_app(
         ImgWidthAndHeight.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <img data-src="a.jpg" data-sizes="auto">
           <img data-src="a_{width}.jpg" data-sizes="auto" data-widths="[100, 200, 500]">
         END
@@ -68,7 +68,7 @@ module PlatformosCheck
     def test_missing_width_and_height
       offenses = analyze_platformos_app(
         ImgWidthAndHeight.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <img src="a.jpg">
           <img src="b.jpg" height="100">
           <img src="c.jpg" width="100">
@@ -86,27 +86,27 @@ module PlatformosCheck
       )
 
       assert_offenses(<<~END, offenses)
-        Missing width and height attributes at templates/index.liquid:1
-        Missing width attribute at templates/index.liquid:2
-        Missing height attribute at templates/index.liquid:3
-        Missing width and height attributes at templates/index.liquid:4
+        Missing width and height attributes at app/views/pages/index.liquid:1
+        Missing width attribute at app/views/pages/index.liquid:2
+        Missing height attribute at app/views/pages/index.liquid:3
+        Missing width and height attributes at app/views/pages/index.liquid:4
       END
     end
 
     def test_units_in_img_width_or_height
       offenses = analyze_platformos_app(
         ImgWidthAndHeight.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <img src="d.jpg" width="100px" height="200px">
           <img src="e.jpg" width="{{ image.width }}px" height="{{ image.height }}px">
         END
       )
 
       assert_offenses(<<~END, offenses)
-        The height attribute does not take units. Replace with "200" at templates/index.liquid:1
-        The width attribute does not take units. Replace with "100" at templates/index.liquid:1
-        The height attribute does not take units. Replace with "{{ image.height }}" at templates/index.liquid:2
-        The width attribute does not take units. Replace with "{{ image.width }}" at templates/index.liquid:2
+        The height attribute does not take units. Replace with "200" at app/views/pages/index.liquid:1
+        The width attribute does not take units. Replace with "100" at app/views/pages/index.liquid:1
+        The height attribute does not take units. Replace with "{{ image.height }}" at app/views/pages/index.liquid:2
+        The width attribute does not take units. Replace with "{{ image.width }}" at app/views/pages/index.liquid:2
       END
     end
   end

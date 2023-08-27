@@ -7,7 +7,7 @@ module PlatformosCheck
     def test_no_offense_for_good_behaviour
       offenses = analyze_platformos_app(
         RemoteAsset.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <!-- scripts -->
           <script src="{{ 'platformos_app.js' | asset_url }}" defer></script>
 
@@ -43,7 +43,7 @@ module PlatformosCheck
     def test_no_offense_for_stuff_we_dont_care_about
       offenses = analyze_platformos_app(
         RemoteAsset.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <link href="https://dont.care" rel="preconnect">
         END
       )
@@ -54,43 +54,43 @@ module PlatformosCheck
     def test_flag_use_of_scripts_to_remote_domains
       offenses = analyze_platformos_app(
         RemoteAsset.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <script src="https://example.com/jquery.js" defer></script>
         END
       )
 
       assert_offenses(<<~END, offenses)
-        Asset should be served by the Shopify CDN for better performance. at templates/index.liquid:1
+        Asset should be served by the Shopify CDN for better performance. at app/views/pages/index.liquid:1
       END
     end
 
     def test_flag_use_of_remote_stylesheet
       offenses = analyze_platformos_app(
         RemoteAsset.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <link href="https://example.com/bootstrap.css" rel="stylesheet">
           <link href="{{ "https://example.com/bootstrap.css" | replace: 'bootstrap', 'tailwind' }}" rel="stylesheet">
         END
       )
 
       assert_offenses(<<~END, offenses)
-        Asset should be served by the Shopify CDN for better performance. at templates/index.liquid:1
-        Asset should be served by the Shopify CDN for better performance. at templates/index.liquid:2
+        Asset should be served by the Shopify CDN for better performance. at app/views/pages/index.liquid:1
+        Asset should be served by the Shopify CDN for better performance. at app/views/pages/index.liquid:2
       END
     end
 
     def test_flag_use_of_image_drops_without_img_url_filter
       offenses = analyze_platformos_app(
         RemoteAsset.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <img src="{{ image }}">
           <img src="{{ image.src }}">
         END
       )
 
       assert_offenses(<<~END, offenses)
-        Asset should be served by the Shopify CDN for better performance. at templates/index.liquid:1
-        Asset should be served by the Shopify CDN for better performance. at templates/index.liquid:2
+        Asset should be served by the Shopify CDN for better performance. at app/views/pages/index.liquid:1
+        Asset should be served by the Shopify CDN for better performance. at app/views/pages/index.liquid:2
       END
     end
 
@@ -106,7 +106,7 @@ module PlatformosCheck
           ></script>
         {% endif %}
       LIQUID
-      offenses = analyze_platformos_app(RemoteAsset.new, "templates/index.liquid" => liquid)
+      offenses = analyze_platformos_app(RemoteAsset.new, "app/views/pages/index.liquid" => liquid)
 
       assert_equal(4, offenses[0].start_row)
       assert_equal(2, offenses[0].start_column)

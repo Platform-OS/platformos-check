@@ -43,7 +43,7 @@ module PlatformosCheck
           "assets/platformos_app.css" => <<~JS,
             console.log('hello world');
           JS
-          "templates/index.liquid" => <<~END
+          "app/views/pages/index.liquid" => <<~END
             <html>
               <head>
                 <link href="{{ 'platformos_app.css' | asset_url }}" rel="stylesheet">
@@ -62,7 +62,7 @@ module PlatformosCheck
         "assets/platformos_app.css" => <<~JS,
           console.log('hello world');
         JS
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <html>
             <head>
               <link href="{{ 'platformos_app.css' | asset_url }}" rel="stylesheet">
@@ -72,7 +72,7 @@ module PlatformosCheck
       )
 
       assert_offenses(<<~END, offenses)
-        CSS on every page load exceeding compressed size threshold (2 Bytes) at templates/index.liquid:3
+        CSS on every page load exceeding compressed size threshold (2 Bytes) at app/views/pages/index.liquid:3
       END
     end
   end

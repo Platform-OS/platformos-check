@@ -13,7 +13,8 @@ module PlatformosCheck
 
     MIGRATIONS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)migrations/(.+)\.liquid\z}
     PAGES_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(pages|views/pages)/(.+)}
-    PARTIALS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(views/partials|views/layouts|lib)/(.+)}
+    PARTIALS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(views/partials|lib)/(.+)}
+    LAYOUTS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(views/layouts)/(.+)}
     SCHEMA_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(custom_model_types|model_schemas|schema)/(.+)\.yml\z}
     SMSES_REGEX =  %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(notifications/sms_notifications|smses)/(.+)\.liquid\z}
     USER_SCHEMA_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/)?)user.yml}
@@ -28,6 +29,7 @@ module PlatformosCheck
       MIGRATIONS_REGEX => MigrationFile,
       PAGES_REGEX => PageFile,
       PARTIALS_REGEX => PartialFile,
+      LAYOUTS_REGEX => LayoutFile,
       SCHEMA_REGEX => SchemaFile,
       SMSES_REGEX => SmsFile,
       USER_SCHEMA_REGEX => UserSchemaFile,
@@ -65,7 +67,7 @@ module PlatformosCheck
     end
 
     def liquid
-      partials + pages + legacy_liquid + notifications
+      layouts + partials + pages + legacy_liquid + notifications
     end
 
     def yaml
@@ -82,6 +84,10 @@ module PlatformosCheck
 
     def partials
       grouped_files[PartialFile]&.values || []
+    end
+
+    def layouts
+      grouped_files[LayoutFile]&.values || []
     end
 
     def notifications
@@ -105,6 +111,8 @@ module PlatformosCheck
     end
 
     def legacy_liquid
+      return []
+
       grouped_files[LiquidFile]&.values || []
     end
 

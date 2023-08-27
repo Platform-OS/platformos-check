@@ -6,21 +6,21 @@ class ConvertIncludeToRenderTest < Minitest::Test
   def test_reports_on_include
     offenses = analyze_platformos_app(
       PlatformosCheck::ConvertIncludeToRender.new,
-      "templates/index.liquid" => <<~END
-        {% include 'templates/foo.liquid' %}
+      "app/views/pages/index.liquid" => <<~END
+        {% include 'foo' %}
       END
     )
 
     assert_offenses(<<~END, offenses)
-      `include` is deprecated - convert it to `render` at templates/index.liquid:1
+      `include` is deprecated - convert it to `render` at app/views/pages/index.liquid:1
     END
   end
 
   def test_does_not_reports_on_render
     offenses = analyze_platformos_app(
       PlatformosCheck::ConvertIncludeToRender.new,
-      "templates/index.liquid" => <<~END
-        {% render 'templates/foo.liquid' %}
+      "app/views/pages/index.liquid" => <<~END
+        {% render 'foo' %}
       END
     )
 
@@ -28,25 +28,25 @@ class ConvertIncludeToRenderTest < Minitest::Test
   end
 
   def test_corrects_include
-    skip
+    skip "To be fixed"
     sources = fix_platformos_app(
       PlatformosCheck::ConvertIncludeToRender.new,
-      "templates/index.liquid" => <<~END,
-        {% include 'foo.liquid' %}
+      "app/views/pages/index.liquid" => <<~END,
+        {% include 'foo' %}
         {% assign greeting = "hello world" %}
-        {% include 'greeting.liquid' %}
+        {% include 'greeting' %}
       END
-      "snippets/greeting.liquid" => <<~END
+      "app/views/partials/greeting.liquid" => <<~END
         {{ greeting }}
       END
     )
     expected_sources = {
-      "templates/index.liquid" => <<~END,
-        {% render 'foo.liquid' %}
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'foo' %}
         {% assign greeting = "hello world" %}
-        {% render 'greeting.liquid', greeting: greeting %}
+        {% render 'greeting', greeting: greeting %}
       END
-      "snippets/greeting.liquid" => <<~END
+      "app/views/partials/greeting" => <<~END
         {{ greeting }}
       END
     }

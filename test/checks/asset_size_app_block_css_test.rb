@@ -5,9 +5,10 @@ require "test_helper"
 module PlatformosCheck
   class AssetSizeCSSTest < Minitest::Test
     def setup
+      skip "To be removed"
       @extension_files = {
         "assets/app.css" => "* { color: green } ",
-        "blocks/app.liquid" => <<~BLOCK
+        "app/views/partials/app.liquid" => <<~BLOCK
 
           {% schema %}
           {

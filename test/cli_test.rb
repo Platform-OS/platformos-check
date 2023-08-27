@@ -260,7 +260,7 @@ class CliTest < Minitest::Test
 
   def test_fail_level_and_exit_codes
     assert_exit_code(2, "error",
-                     "templates/platformos_app.liquid" => <<~YAML,
+                     "app/views/pages/platformos_app.liquid" => <<~YAML,
                        {% unknown %}
                      YAML
                      "crash_test_check.rb" => <<~RUBY,
@@ -290,7 +290,7 @@ class CliTest < Minitest::Test
     PlatformosCheck::Check.all.delete(PlatformosCheck::MockCheck)
 
     assert_exit_code(1, "error",
-                     "templates/platformos_app.liquid" => <<~YAML,
+                     "app/views/pages/platformos_app.liquid" => <<~YAML,
                        {% unknown %}
                      YAML
                      ".platformos-check.yml" => <<~YAML
@@ -301,7 +301,7 @@ class CliTest < Minitest::Test
     )
 
     assert_exit_code(0, "error",
-                     "templates/platformos_app.liquid" => <<~YAML,
+                     "app/views/pages/platformos_app.liquid" => <<~YAML,
                        {% unknown %}
                      YAML
                      ".platformos-check.yml" => <<~YAML

@@ -7,7 +7,7 @@ module PlatformosCheck
     def test_no_offense_for_good_behaviour
       offenses = analyze_platformos_app(
         AssetUrlFilters.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <!-- scripts -->
           <script src="{{ 'platformos_app.js' | asset_url }}" defer></script>
 
@@ -39,7 +39,7 @@ module PlatformosCheck
     def test_flag_use_of_html_filter_without_asset_url_filter
       offenses = analyze_platformos_app(
         AssetUrlFilters.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           {{ url | img_tag }}
           {{ url | script_tag }}
           {{ url | stylesheet_tag }}
@@ -47,37 +47,37 @@ module PlatformosCheck
       )
 
       assert_offenses(<<~END, offenses)
-        Use one of the asset_url filters to serve assets at templates/index.liquid:1
-        Use one of the asset_url filters to serve assets at templates/index.liquid:2
-        Use one of the asset_url filters to serve assets at templates/index.liquid:3
+        Use one of the asset_url filters to serve assets at app/views/pages/index.liquid:1
+        Use one of the asset_url filters to serve assets at app/views/pages/index.liquid:2
+        Use one of the asset_url filters to serve assets at app/views/pages/index.liquid:3
       END
     end
 
     def test_flag_use_of_remote_stylesheet
       offenses = analyze_platformos_app(
         AssetUrlFilters.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           {{ "https://example.com/tailwind.css" | stylesheet_tag }}
         END
       )
 
       assert_offenses(<<~END, offenses)
-        Use one of the asset_url filters to serve assets at templates/index.liquid:1
+        Use one of the asset_url filters to serve assets at app/views/pages/index.liquid:1
       END
     end
 
     def test_flag_use_of_image_drops_without_img_url_filter
       offenses = analyze_platformos_app(
         AssetUrlFilters.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           {{ image | img_tag }}
           {{ image.src | img_tag }}
         END
       )
 
       assert_offenses(<<~END, offenses)
-        Use one of the asset_url filters to serve assets at templates/index.liquid:1
-        Use one of the asset_url filters to serve assets at templates/index.liquid:2
+        Use one of the asset_url filters to serve assets at app/views/pages/index.liquid:1
+        Use one of the asset_url filters to serve assets at app/views/pages/index.liquid:2
       END
     end
   end

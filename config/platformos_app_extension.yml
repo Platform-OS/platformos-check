@@ -25,11 +25,6 @@ MissingTemplate:
   ignore: []
   ignore_missing: []
 
-NestedSnippet:
-  enabled: true
-  ignore: []
-  max_nesting_level: 3
-
 RequiredLayoutObject:
   enabled: true
   ignore: []
@@ -57,7 +52,7 @@ UnusedAssign:
   enabled: true
   ignore: []
 
-UnusedSnippet:
+UnusedPartial:
   enabled: true
   ignore: []
 
@@ -114,10 +109,6 @@ AssetUrlFilters:
   enabled: true
   ignore: []
 
-ContentForHeaderModification:
-  enabled: true
-  ignore: []
-
 ImgLazyLoading:
   enabled: true
   ignore: []
@@ -137,10 +128,6 @@ AssetSizeAppBlockCSS:
   severity: suggestion
   ignore: []
   threshold_in_bytes: 100_000
-
-AppBlockValidTags:
-  enabled: true
-  ignore: []
 
 PaginationSize:
   enabled: true

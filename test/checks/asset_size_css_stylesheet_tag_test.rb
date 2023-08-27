@@ -11,7 +11,7 @@ module PlatformosCheck
           "assets/platformos_app.css" => <<~JS,
             console.log('hello world');
           JS
-          "templates/index.liquid" => <<~END
+          "app/views/pages/index.liquid" => <<~END
             <html>
               <head>
                 {{ 'platformos_app.css' | asset_url | stylesheet_tag }}
@@ -31,7 +31,7 @@ module PlatformosCheck
         "assets/platformos_app.css" => <<~JS,
           console.log('hello world');
         JS
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <html>
             <head>
               {{ 'platformos_app.css' | asset_url | stylesheet_tag }}
@@ -42,15 +42,15 @@ module PlatformosCheck
       )
 
       assert_offenses(<<~END, offenses)
-        CSS on every page load exceeding compressed size threshold (2 Bytes). at templates/index.liquid:3
-        CSS on every page load exceeding compressed size threshold (2 Bytes). at templates/index.liquid:4
+        CSS on every page load exceeding compressed size threshold (2 Bytes). at app/views/pages/index.liquid:3
+        CSS on every page load exceeding compressed size threshold (2 Bytes). at app/views/pages/index.liquid:4
       END
     end
 
     def test_no_stylesheet
       offenses = analyze_platformos_app(
         AssetSizeCSSStylesheetTag.new(threshold_in_bytes: 100_000),
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <html>
             <head>
             </head>

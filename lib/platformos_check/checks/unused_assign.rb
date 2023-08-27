@@ -52,7 +52,7 @@ module PlatformosCheck
     def on_include(node)
       return unless node.value.template_name_expr.is_a?(String)
 
-      @templates[node.platformos_app_file.name].includes << "snippets/#{node.value.template_name_expr}"
+      @templates[node.platformos_app_file.name].includes << node.value.template_name_expr
     end
 
     def on_variable_lookup(node)

@@ -1,42 +1,52 @@
 # frozen_string_literal: true
 
 module PlatformosCheck
-  class UnusedSnippet < LiquidCheck
+  class UnusedPartial < LiquidCheck
     severity :suggestion
     category :liquid
     doc docs_url(__FILE__)
 
     def initialize
-      @used_snippets = Set.new
+      @used_partials = Set.new
     end
 
     def on_render(node)
       if node.value.template_name_expr.is_a?(String)
-        @used_snippets << "snippets/#{node.value.template_name_expr}"
+        @used_partials << node.value.template_name_expr
 
       elsif might_have_a_block_as_variable_lookup?(node)
         # We ignore this case, because that's a "proper" use case for
         # the render tag with OS 2.0
-        # {% render block %} shouldn't turn off the UnusedSnippet check
+        # {% render block %} shouldn't turn off the UnusedPartial check
 
       else
-        # Can't reliably track unused snippets if an expression is used, ignore this check
-        @used_snippets.clear
+        # Can't reliably track unused partials if an expression is used, ignore this check
+        @used_partials.clear
         ignore!
       end
     end
     alias on_include on_render
 
+    def on_function(node)
+      if node.value.from.is_a?(String)
+        @used_partials << node.value.from
+      else
+        # Can't reliably track unused partials if an expression is used, ignore this check
+        @used_partials.clear
+        ignore!
+      end
+    end
+
     def on_end
-      missing_snippets.each do |platformos_app_file|
-        add_offense("This snippet is not used", platformos_app_file:) do |corrector|
+      missing_partials.each do |platformos_app_file|
+        add_offense("This partial is not used", platformos_app_file:) do |corrector|
           corrector.remove_file(@platformos_app.storage, platformos_app_file.relative_path.to_s)
         end
       end
     end
 
-    def missing_snippets
-      platformos_app.snippets.reject { |t| @used_snippets.include?(t.name) }
+    def missing_partials
+      platformos_app.partials.reject { |t| @used_partials.include?(t.name) }
     end
 
     private

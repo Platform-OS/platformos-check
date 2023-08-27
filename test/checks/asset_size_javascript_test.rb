@@ -44,7 +44,7 @@ module PlatformosCheck
           "assets/platformos_app.js" => <<~JS,
             console.log('hello world');
           JS
-          "templates/index.liquid" => <<~END
+          "app/views/pages/index.liquid" => <<~END
             <html>
               <head>
                 <script src="{{ 'platformos_app.js' | asset_url }}" defer></script>
@@ -63,7 +63,7 @@ module PlatformosCheck
         "assets/platformos_app.js" => <<~JS,
           console.log('hello world');
         JS
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <html>
             <head>
               <script src="{{ 'platformos_app.js' | asset_url }}" defer></script>
@@ -73,14 +73,14 @@ module PlatformosCheck
       )
 
       assert_offenses(<<~END, offenses)
-        JavaScript on every page load exceeds compressed size threshold (2 Bytes), consider using the import on interaction pattern. at templates/index.liquid:3
+        JavaScript on every page load exceeds compressed size threshold (2 Bytes), consider using the import on interaction pattern. at app/views/pages/index.liquid:3
       END
     end
 
     def test_inline_javascript
       offenses = analyze_platformos_app(
         AssetSizeJavaScript.new(threshold_in_bytes: 2),
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <html>
             <head>
               <script>

@@ -403,29 +403,6 @@ class UndefinedObjectTest < Minitest::Test
     END
   end
 
-  def test_render_block
-    skip('block not supported')
-    offenses = analyze_platformos_app(
-      PlatformosCheck::UndefinedObject.new(exclude_partials: false),
-      "sections/apps.liquid" => "{% render block %}"
-    )
-
-    assert_offenses("", offenses)
-  end
-
-  def test_report_on_app_liquid_drop_in_platformos_apps
-    offenses = analyze_platformos_app(
-      PlatformosCheck::UndefinedObject.new(exclude_partials: false),
-      "blocks/block_a.liquid" => <<~END
-        <p>{{ app.metafields.namespace.key }}</p>
-      END
-    )
-
-    assert_offenses(<<~END, offenses)
-      Undefined object `app` at blocks/block_a.liquid:1
-    END
-  end
-
   def test_does_not_report_when_function_is_used
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_partials: false),

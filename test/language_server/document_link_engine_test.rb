@@ -22,13 +22,13 @@ module PlatformosCheck
         LIQUID
 
         engine = make_engine(
-          "templates/product.liquid" => content
+          "app/views/pages/product.liquid" => content
         )
 
-        assert_links_include("1", content, engine.document_links("templates/product.liquid"), "snippets", ".liquid")
-        assert_links_include("2", content, engine.document_links("templates/product.liquid"), "snippets", ".liquid")
-        assert_links_include("3", content, engine.document_links("templates/product.liquid"), "snippets", ".liquid")
-        assert_links_include("4", content, engine.document_links("templates/product.liquid"), "snippets", ".liquid")
+        assert_links_include("1", content, engine.document_links("app/views/pages/product.liquid"), "snippets", ".liquid")
+        assert_links_include("2", content, engine.document_links("app/views/pages/product.liquid"), "snippets", ".liquid")
+        assert_links_include("3", content, engine.document_links("app/views/pages/product.liquid"), "snippets", ".liquid")
+        assert_links_include("4", content, engine.document_links("app/views/pages/product.liquid"), "snippets", ".liquid")
       end
 
       def test_makes_links_out_of_include_tags
@@ -46,13 +46,13 @@ module PlatformosCheck
         LIQUID
 
         engine = make_engine(
-          "templates/product.liquid" => content
+          "app/views/pages/product.liquid" => content
         )
 
-        assert_links_include("1", content, engine.document_links("templates/product.liquid"), "snippets", ".liquid")
-        assert_links_include("2", content, engine.document_links("templates/product.liquid"), "snippets", ".liquid")
-        assert_links_include("3", content, engine.document_links("templates/product.liquid"), "snippets", ".liquid")
-        assert_links_include("4", content, engine.document_links("templates/product.liquid"), "snippets", ".liquid")
+        assert_links_include("1", content, engine.document_links("app/views/pages/product.liquid"), "snippets", ".liquid")
+        assert_links_include("2", content, engine.document_links("app/views/pages/product.liquid"), "snippets", ".liquid")
+        assert_links_include("3", content, engine.document_links("app/views/pages/product.liquid"), "snippets", ".liquid")
+        assert_links_include("4", content, engine.document_links("app/views/pages/product.liquid"), "snippets", ".liquid")
       end
 
       def test_makes_links_out_of_section_tags
@@ -70,13 +70,13 @@ module PlatformosCheck
         LIQUID
 
         engine = make_engine(
-          "templates/product.liquid" => content
+          "app/views/pages/product.liquid" => content
         )
 
-        assert_links_include("1", content, engine.document_links("templates/product.liquid"), "sections", ".liquid")
-        assert_links_include("2", content, engine.document_links("templates/product.liquid"), "sections", ".liquid")
-        assert_links_include("3", content, engine.document_links("templates/product.liquid"), "sections", ".liquid")
-        assert_links_include("4", content, engine.document_links("templates/product.liquid"), "sections", ".liquid")
+        assert_links_include("1", content, engine.document_links("app/views/pages/product.liquid"), "sections", ".liquid")
+        assert_links_include("2", content, engine.document_links("app/views/pages/product.liquid"), "sections", ".liquid")
+        assert_links_include("3", content, engine.document_links("app/views/pages/product.liquid"), "sections", ".liquid")
+        assert_links_include("4", content, engine.document_links("app/views/pages/product.liquid"), "sections", ".liquid")
       end
 
       def test_makes_links_out_of_asset_url_filters
@@ -94,15 +94,15 @@ module PlatformosCheck
         LIQUID
 
         engine = make_engine(
-          "templates/product.liquid" => content
+          "app/views/pages/product.liquid" => content
         )
 
-        assert_links_include("1", content, engine.document_links("templates/product.liquid"), "assets", "")
-        assert_links_include("2", content, engine.document_links("templates/product.liquid"), "assets", "")
-        assert_links_include("3", content, engine.document_links("templates/product.liquid"), "assets", "")
-        assert_links_include("4", content, engine.document_links("templates/product.liquid"), "assets", "")
-        assert_links_include("5", content, engine.document_links("templates/product.liquid"), "assets", "")
-        assert_links_include("6", content, engine.document_links("templates/product.liquid"), "assets", "")
+        assert_links_include("1", content, engine.document_links("app/views/pages/product.liquid"), "assets", "")
+        assert_links_include("2", content, engine.document_links("app/views/pages/product.liquid"), "assets", "")
+        assert_links_include("3", content, engine.document_links("app/views/pages/product.liquid"), "assets", "")
+        assert_links_include("4", content, engine.document_links("app/views/pages/product.liquid"), "assets", "")
+        assert_links_include("5", content, engine.document_links("app/views/pages/product.liquid"), "assets", "")
+        assert_links_include("6", content, engine.document_links("app/views/pages/product.liquid"), "assets", "")
       end
 
       def assert_links_include(needle, content, links, directory, extension)

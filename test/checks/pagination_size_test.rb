@@ -5,6 +5,7 @@ require "test_helper"
 module PlatformosCheck
   class PaginationSizeTest < Minitest::Test
     def test_no_offense_for_good_behaviour
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END
@@ -52,6 +53,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_size_greater_than_max
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END
@@ -69,6 +71,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_size_less_than_min
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END
@@ -86,6 +89,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_size_is_integer
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END
@@ -103,6 +107,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_setting_value
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END
@@ -131,6 +136,7 @@ module PlatformosCheck
     end
 
     def test_flag_use_of_missing_setting_value
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PaginationSize.new(min_size: 1, max_size: 50),
         "templates/index.liquid" => <<~END

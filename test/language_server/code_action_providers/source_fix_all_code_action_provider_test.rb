@@ -9,11 +9,11 @@ module PlatformosCheck
         instances = diagnose_platformos_app(
           PlatformosCheck::SpaceInsideBraces.new,
           PlatformosCheck::TemplateLength.new(max_length: 0),
-          "index.liquid" => <<~LIQUID,
+          "app/views/pages/index.liquid" => <<~LIQUID,
             {{x}}
             muffin
           LIQUID
-          "other.liquid" => <<~LIQUID
+          "app/views/pages/other.liquid" => <<~LIQUID
             cookies
           LIQUID
         )
@@ -24,7 +24,7 @@ module PlatformosCheck
 
       def test_returns_code_action_that_fixes_all_diagnostics_in_file
         expected_diagnostics = @diagnostics_manager
-                               .diagnostics('index.liquid')
+                               .diagnostics('app/views/pages/index.liquid')
                                .select { |d| d.code == "SpaceInsideBraces" }
                                .map(&:to_h)
         expected = [
@@ -40,21 +40,21 @@ module PlatformosCheck
           }
         ]
 
-        assert_equal(expected, @provider.code_actions("index.liquid", nil))
+        assert_equal(expected, @provider.code_actions("app/views/pages/index.liquid", nil))
       end
 
       def test_returns_empty_list_if_current_version_in_storage_does_not_match_diagnostic
-        @storage.write("index.liquid", "got ya!", 1000)
+        @storage.write("app/views/pages/index.liquid", "got ya!", 1000)
 
-        assert_empty(@provider.code_actions("index.liquid", nil))
+        assert_empty(@provider.code_actions("app/views/pages/index.liquid", nil))
       end
 
       def test_returns_empty_list_when_nothing_is_fixable_in_file
-        assert_empty(@provider.code_actions("other.liquid", nil))
+        assert_empty(@provider.code_actions("app/views/pages/other.liquid", nil))
       end
 
       def test_returns_empty_list_when_file_does_not_exist
-        assert_empty(@provider.code_actions("oops.liquid", nil))
+        assert_empty(@provider.code_actions("app/views/pages/oops.liquid", nil))
       end
     end
   end
