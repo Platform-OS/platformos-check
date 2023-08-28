@@ -82,9 +82,6 @@ ParserBlockingJavaScript:
   enabled: true
   ignore: []
 
-ParserBlockingScriptTag:
-  enabled: true
-
 AssetSizeJavaScript:
   enabled: true
   severity: suggestion

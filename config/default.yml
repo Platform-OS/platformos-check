@@ -86,10 +86,6 @@ ParserBlockingJavaScript:
   enabled: true
   ignore: []
 
-ParserBlockingScriptTag:
-  enabled: true
-  ignore: []
-
 AssetPreload:
   enabled: true
   ignore: []
