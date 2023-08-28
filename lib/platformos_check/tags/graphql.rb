@@ -60,9 +60,7 @@ module PlatformosCheck
 
       class ParseTreeVisitor < Liquid::ParseTreeVisitor
         def children
-          [
-            @node.to
-          ].compact + @node.attributes_expr.values
+          [@node.to].compact + @node.attributes_expr.values
         end
       end
     end

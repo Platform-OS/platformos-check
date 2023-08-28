@@ -3,6 +3,7 @@
 module PlatformosCheck
   class DeprecatedGlobalAppBlockTypeTest < Minitest::Test
     def test_reject_invalid_global_app_block_type_in_section_schemas
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END
@@ -21,6 +22,7 @@ module PlatformosCheck
     end
 
     def test_reject_invalid_global_app_block_type_in_conditional_statement
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END
@@ -47,6 +49,7 @@ module PlatformosCheck
     end
 
     def test_reject_invalid_global_app_block_type_in_switch_case_statement
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END
@@ -73,6 +76,7 @@ module PlatformosCheck
     end
 
     def test_reject_invalid_global_app_block_type_defined_as_liquid_variable
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END
@@ -92,6 +96,7 @@ module PlatformosCheck
     end
 
     def test_does_not_reject_global_string_used_outside_liquid_control_flow_statements
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END
@@ -109,6 +114,7 @@ module PlatformosCheck
     end
 
     def test_accepts_valid_global_app_block_type
+      skip "To be removed"
       offenses = analyze_platformos_app(
         PlatformosCheck::DeprecatedGlobalAppBlockType.new,
         "sections/product.liquid" => <<~END

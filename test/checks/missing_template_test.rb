@@ -3,32 +3,47 @@
 require "test_helper"
 
 class MissingTemplateTest < Minitest::Test
-  def test_reports_missing_snippet
+  def test_reports_missing_partial
     offenses = analyze_platformos_app(
       PlatformosCheck::MissingTemplate.new,
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         {% include 'one' %}
         {% render 'two' %}
       END
     )
 
     assert_offenses(<<~END, offenses)
-      'snippets/one.liquid' is not found at templates/index.liquid:1
-      'snippets/two.liquid' is not found at templates/index.liquid:2
+      'one' is not found at app/views/pages/index.liquid:1
+      'two' is not found at app/views/pages/index.liquid:2
     END
   end
 
-  def test_do_not_report_if_snippet_exists
+  def test_reports_missing_module_partial
     offenses = analyze_platformos_app(
       PlatformosCheck::MissingTemplate.new,
-      "templates/index.liquid" => <<~END,
+      "app/views/pages/index.liquid" => <<~END
+        {% include 'modules/my-module/one' %}
+        {% render 'modules/my-module/two' %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      'modules/my-module/one' is not found at app/views/pages/index.liquid:1
+      'modules/my-module/two' is not found at app/views/pages/index.liquid:2
+    END
+  end
+
+  def test_do_not_report_if_partial_exists
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END,
         {% include 'one' %}
         {% render 'two' %}
       END
-      "snippets/one.liquid" => <<~END,
+      "app/views/partials/one.liquid" => <<~END,
         hey
       END
-      "snippets/two.liquid" => <<~END
+      "app/views/partials/two.liquid" => <<~END
         there
       END
     )
@@ -36,28 +51,111 @@ class MissingTemplateTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
-  def test_reports_missing_section
+  def test_do_not_report_if_module_partial_exists
     offenses = analyze_platformos_app(
       PlatformosCheck::MissingTemplate.new,
-      "templates/index.liquid" => <<~END
-        {% section 'one' %}
+      "app/views/pages/index.liquid" => <<~END,
+        {% include 'modules/my-module/one' %}
+        {% render 'modules/my-module/two' %}
+      END
+      "modules/my-module/public/views/partials/one.liquid" => <<~END,
+        hey
+      END
+      "modules/my-module/private/views/partials/two.liquid" => <<~END
+        there
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_report_if_module_partial_not_in_public_or_private
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% include 'modules/my-module/one' %}
+        {% render 'modules/my-module/two' %}
+      END
+      "modules/my-module/views/partials/one.liquid" => <<~END,
+        hey
+      END
+      "modules/my-module/lib/two.liquid" => <<~END
+        there
       END
     )
 
     assert_offenses(<<~END, offenses)
-      'sections/one.liquid' is not found at templates/index.liquid:1
+      'modules/my-module/one' is not found at app/views/pages/index.liquid:1
+      'modules/my-module/two' is not found at app/views/pages/index.liquid:2
     END
   end
 
-  def test_do_not_report_if_section_exists
+  def test_reports_missing_function
     offenses = analyze_platformos_app(
       PlatformosCheck::MissingTemplate.new,
-      "templates/index.liquid" => <<~END,
-        {% section 'one' %}
+      "app/views/pages/index.liquid" => <<~END
+        {% function res = 'one' %}
       END
-      "sections/one.liquid" => <<~END
+    )
+
+    assert_offenses(<<~END, offenses)
+      'one' is not found at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_do_not_report_if_function_exists
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% function res = 'one' %}
+      END
+      "app/lib/one.liquid" => <<~END
         hey
       END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_reports_missing_graphql
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END
+        {% graphql res = 'users/search' %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      'users/search' is not found at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_ignore_inline_graphql
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END
+        {% graphql res %}
+          query records {
+            records(per_page: 20, table: "my_table") {
+              results {
+                id
+              }
+            }
+          }
+        {% endgraphql}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_do_not_report_if_graphql_exists
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% graphql res = 'users/search' %}
+      END
+      "app/graphql/users/search.graphql" => ''
     )
 
     assert_offenses("", offenses)
@@ -66,44 +164,44 @@ class MissingTemplateTest < Minitest::Test
   def test_ignore_missing
     offenses = analyze_platformos_app(
       PlatformosCheck::MissingTemplate.new(ignore_missing: [
-                                             "snippets/icon-*",
-                                             "sections/*"
+                                             "icon-*",
+                                             "functions/*"
                                            ]),
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         {% render 'icon-nope' %}
-        {% section 'anything' %}
+        {% function res = 'functions/anything' %}
       END
     )
 
     assert_offenses("", offenses)
   end
 
-  # Slightly different config, if you top-level ignore all snippets/icon-*,
-  # then you should probably also ignore missing templates of all snippets/icon-*
+  # Slightly different config, if you top-level ignore all app/views/partials/icon-*,
+  # then you should probably also ignore missing app/views/pages of all app/views/partials/icon-*
   # See #489 or #589 for more context.
   def test_ignore_config
     check = PlatformosCheck::MissingTemplate.new
 
     # this is what config.rb would do
     check.ignored_patterns = [
-      "snippets/icon-*",
-      "sections/*"
+      "icon-*",
+      "functions/*"
     ]
 
     offenses = analyze_platformos_app(
       check,
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         {% render 'icon-nope' %}
-        {% section 'anything' %}
+        {% function res = 'functions/anything' %}
       END
     )
 
     assert_offenses("", offenses)
   end
 
-  def test_creates_missing_snippet
+  def test_creates_missing_partial
     platformos_app = make_platformos_app(
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         {% include 'one' %}
         {% render 'two' %}
       END
@@ -113,15 +211,15 @@ class MissingTemplateTest < Minitest::Test
     analyzer.analyze_platformos_app
     analyzer.correct_offenses
 
-    missing_files = ["snippets/one.liquid", "snippets/two.liquid"]
+    missing_files = ["app/views/partials/one.liquid", "app/views/partials/two.liquid"]
 
     assert(missing_files.all? { |file| platformos_app.storage.files.include?(file) })
   end
 
-  def test_creates_missing_section
+  def test_creates_missing_graphql
     platformos_app = make_platformos_app(
-      "templates/index.liquid" => <<~END
-        {% section 'one' %}
+      "app/views/pages/index.liquid" => <<~END
+        {% graphql res = 'users/search' %}
       END
     )
 
@@ -129,7 +227,55 @@ class MissingTemplateTest < Minitest::Test
     analyzer.analyze_platformos_app
     analyzer.correct_offenses
 
-    missing_files = ["sections/one.liquid"]
+    missing_files = ["app/graphql/users/search.graphql"]
+
+    assert(missing_files.all? { |file| platformos_app.storage.files.include?(file) })
+  end
+
+  def test_creates_missing_function
+    platformos_app = make_platformos_app(
+      "app/views/pages/index.liquid" => <<~END
+        {% function res = 'one' %}
+      END
+    )
+
+    analyzer = PlatformosCheck::Analyzer.new(platformos_app, [PlatformosCheck::MissingTemplate.new], true)
+    analyzer.analyze_platformos_app
+    analyzer.correct_offenses
+
+    missing_files = ["app/lib/one.liquid"]
+
+    assert(missing_files.all? { |file| platformos_app.storage.files.include?(file) })
+  end
+
+  def test_creates_missing_module_function
+    platformos_app = make_platformos_app(
+      "app/views/pages/index.liquid" => <<~END
+        {% function res = 'modules/my-module/one' %}
+      END
+    )
+
+    analyzer = PlatformosCheck::Analyzer.new(platformos_app, [PlatformosCheck::MissingTemplate.new], true)
+    analyzer.analyze_platformos_app
+    analyzer.correct_offenses
+
+    missing_files = ["modules/my-module/public/lib/one.liquid"]
+
+    assert(missing_files.all? { |file| platformos_app.storage.files.include?(file) })
+  end
+
+  def test_creates_missing_module_graphql
+    platformos_app = make_platformos_app(
+      "app/views/pages/index.liquid" => <<~END
+        {% graphql res = 'modules/my-module/users/search' %}
+      END
+    )
+
+    analyzer = PlatformosCheck::Analyzer.new(platformos_app, [PlatformosCheck::MissingTemplate.new], true)
+    analyzer.analyze_platformos_app
+    analyzer.correct_offenses
+
+    missing_files = ["modules/my-module/public/graphql/users/search.graphql"]
 
     assert(missing_files.all? { |file| platformos_app.storage.files.include?(file) })
   end

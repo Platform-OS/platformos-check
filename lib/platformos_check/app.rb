@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# frozen_string_lite/al: true
+
 require "pathname"
 
 module PlatformosCheck
@@ -11,12 +13,29 @@ module PlatformosCheck
 
     MIGRATIONS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)migrations/(.+)\.liquid\z}
     PAGES_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(pages|views/pages)/(.+)}
-    PARTIALS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(views/partials|views/layouts|lib)/(.+)}
+    PARTIALS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(views/partials|lib)/(.+)}
+    LAYOUTS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(views/layouts)/(.+)}
     SCHEMA_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(custom_model_types|model_schemas|schema)/(.+)\.yml\z}
     SMSES_REGEX =  %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(notifications/sms_notifications|smses)/(.+)\.liquid\z}
     USER_SCHEMA_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/)?)user.yml}
     TRANSLATIONS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)translations.+.yml}
     CONFIG_REGEX = %r{(?-mix:^\\/?((marketplace_builder|app)\\/)?)config.yml}
+
+    REGEXP_MAP = {
+      API_CALLS_REGEX => ApiCallFile,
+      ASSETS_REGEX => AssetFile,
+      EMAILS_REGEX => EmailFile,
+      GRAPHQL_REGEX => GraphqlFile,
+      MIGRATIONS_REGEX => MigrationFile,
+      PAGES_REGEX => PageFile,
+      PARTIALS_REGEX => PartialFile,
+      LAYOUTS_REGEX => LayoutFile,
+      SCHEMA_REGEX => SchemaFile,
+      SMSES_REGEX => SmsFile,
+      USER_SCHEMA_REGEX => UserSchemaFile,
+      TRANSLATIONS_REGEX => TranslationFile,
+      CONFIG_REGEX => ConfigFile
+    }
 
     attr_reader :storage
 
@@ -27,40 +46,16 @@ module PlatformosCheck
     def grouped_files
       @grouped_files ||= begin
         hash = {}
+        REGEXP_MAP.each_value { |v| hash[v] = {} }
         storage.files.each do |path|
-          if ASSETS_REGEX.match?(path)
-            hash['assets'] ||= []
-            hash['assets'] << AssetFile.new(path, storage)
-          elsif PARTIALS_REGEX.match?(path)
-            hash['partials'] ||= []
-            hash['partials'] << LiquidFile.new(path, storage)
-          elsif PAGES_REGEX.match?(path)
-            hash['pages'] ||= []
-            hash['pages'] << LiquidFile.new(path, storage)
-          elsif GRAPHQL_REGEX.match?(path)
-            hash['graphql'] ||= []
-            hash['graphql'] << GraphqlFile.new(path, storage)
-          elsif SCHEMA_REGEX.match?(path)
-            hash['schema'] ||= []
-            hash['schema'] << YamlFile.new(path, storage)
-          elsif SMSES_REGEX.match?(path)
-            hash['smses'] ||= []
-            hash['smses'] << LiquidFile.new(path, storage)
-          elsif EMAILS_REGEX.match?(path)
-            hash['emails'] ||= []
-            hash['emails'] << LiquidFile.new(path, storage)
-          elsif API_CALLS_REGEX.match?(path)
-            hash['api_calls'] ||= []
-            hash['api_calls'] << LiquidFile.new(path, storage)
-          elsif TRANSLATIONS_REGEX.match?(path)
-            hash['translations'] ||= []
-            hash['translations'] << YamlFile.new(path, storage)
-          elsif MIGRATIONS_REGEX.match?(path)
-            hash['migrations'] ||= []
-            hash['migrations'] << LiquidFile.new(path, storage)
+          regexp, klass = REGEXP_MAP.detect { |k, _v| k.match?(path) }
+          if regexp
+            f = klass.new(path, storage)
+            hash[klass][f.name] = f
           elsif /\.liquid$/i.match?(path)
-            hash['to_be_removed'] ||= []
-            hash['to_be_removed'] << LiquidFile.new(path, storage)
+            hash[LiquidFile] ||= {}
+            f = LiquidFile.new(path, storage)
+            hash[LiquidFile][f.name] = f
           end
         end
         hash
@@ -68,11 +63,11 @@ module PlatformosCheck
     end
 
     def assets
-      grouped_files['assets']
+      grouped_files[AssetFile]&.values
     end
 
     def liquid
-      partials + pages + legacy_liquid
+      layouts + partials + pages + notifications
     end
 
     def yaml
@@ -80,23 +75,39 @@ module PlatformosCheck
     end
 
     def schema
-      grouped_files['schema'] || []
+      grouped_files[SchemaFile]&.values || []
     end
 
     def translations
-      grouped_files['translations'] || []
+      grouped_files[TranslationFile]&.values || []
     end
 
     def partials
-      @partials ||= grouped_files['partials'] || []
+      grouped_files[PartialFile]&.values || []
+    end
+
+    def layouts
+      grouped_files[LayoutFile]&.values || []
+    end
+
+    def notifications
+      emails + smses + api_calls
+    end
+
+    def emails
+      grouped_files[EmailFile]&.values || []
+    end
+
+    def smses
+      grouped_files[SmsFile]&.values || []
+    end
+
+    def api_calls
+      grouped_files[ApiCallFile]&.values || []
     end
 
     def pages
-      grouped_files['pages'] || []
-    end
-
-    def legacy_liquid
-      grouped_files['to_be_removed'] || []
+      grouped_files[PageFile]&.values || []
     end
 
     def directories
@@ -104,7 +115,7 @@ module PlatformosCheck
     end
 
     def all
-      @all ||= grouped_files.values.flatten
+      @all ||= grouped_files.values.map(&:values).flatten
     end
 
     def [](name_or_relative_path)
@@ -114,10 +125,6 @@ module PlatformosCheck
       else
         all.find { |t| t.name == name_or_relative_path }
       end
-    end
-
-    def templates
-      liquid.select(&:template?)
     end
 
     def sections

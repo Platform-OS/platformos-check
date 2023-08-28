@@ -124,7 +124,7 @@ DeprecateLazysizes:
 - `platformosCheck.checkOnOpen` (default: `true`) makes it so theme check runs on file open.
 - `platformosCheck.checkOnChange` (default: `true`) makes it so theme check runs on file change.
 - `platformosCheck.checkOnSave` (default: `true`) makes it so theme check runs on file save.
-- `platformosCheck.onlySingleFileChecks` (default: `false`) makes it so we only check the opened files and disable "whole theme" checks (e.g. UnusedSnippet, TranslationKeyExists)
+- `platformosCheck.onlySingleFileChecks` (default: `false`) makes it so we only check the opened files and disable "whole theme" checks (e.g. UnusedPartial, TranslationKeyExists)
 
 ⚠️ **Note:** Quickfixes only work on a freshly checked file. If any of those configurations are turned off, you will need to rerun platformos-check in order to apply quickfixes.
 

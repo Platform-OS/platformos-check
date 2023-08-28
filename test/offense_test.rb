@@ -5,15 +5,15 @@ require "test_helper"
 class OffenseTest < Minitest::Test
   def setup
     @platformos_app = make_platformos_app(
-      "templates/index.liquid" => <<~END,
+      "app/views/pages/index.liquid" => <<~END,
         <p>
           {{ 1 + 2 }}
         </p>
       END
-      "templates/long.liquid" => <<~END,
+      "app/views/pages/long.liquid" => <<~END,
         <span class="form__message">{% include 'icon-error' %}{{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.</span>
       END
-      "templates/multiline.liquid" => <<~END
+      "app/views/pages/multiline.liquid" => <<~END
         {% render 'product-card',
           product: product,
           show: true
@@ -28,7 +28,7 @@ class OffenseTest < Minitest::Test
 
   def test_source_excerpt
     node = stub(
-      platformos_app_file: @platformos_app["templates/index"],
+      platformos_app_file: @platformos_app["app/views/pages/index"],
       line_number: 2,
       markup: "1 + 2"
     )
@@ -41,7 +41,7 @@ class OffenseTest < Minitest::Test
 
   def test_truncated_source_excerpt
     node = stub(
-      platformos_app_file: @platformos_app["templates/long"],
+      platformos_app_file: @platformos_app["app/views/pages/long"],
       line_number: 1,
       markup: "include 'icon-error'"
     )
@@ -54,10 +54,10 @@ class OffenseTest < Minitest::Test
 
   def test_correct
     node = stub(
-      platformos_app_file: @platformos_app["templates/index"],
+      platformos_app_file: @platformos_app["app/views/pages/index"],
       line_number: 2,
-      start_index: @platformos_app["templates/index"].source.index('1'),
-      end_index: @platformos_app["templates/index"].source.index('2 ') + 2,
+      start_index: @platformos_app["app/views/pages/index"].source.index('1'),
+      end_index: @platformos_app["app/views/pages/index"].source.index('2 ') + 2,
       markup: "1 + 2"
     )
     offense = PlatformosCheck::Offense.new(check: Bogus.new, node:, correction: proc { |c| c.insert_after(node, "abc") })
@@ -70,7 +70,7 @@ class OffenseTest < Minitest::Test
 
   def test_location
     node = stub(
-      platformos_app_file: @platformos_app["templates/index"],
+      platformos_app_file: @platformos_app["app/views/pages/index"],
       line_number: 2,
       markup: "1 + 2"
     )
@@ -84,7 +84,7 @@ class OffenseTest < Minitest::Test
 
   def test_multiline_markup_location
     node = stub(
-      platformos_app_file: @platformos_app["templates/multiline"],
+      platformos_app_file: @platformos_app["app/views/pages/multiline"],
       line_number: 1,
       markup: "render 'product-card',\n  product: product,\n  show: true"
     )
@@ -128,7 +128,7 @@ class OffenseTest < Minitest::Test
 
   def test_location_without_markup
     node = stub(
-      platformos_app_file: @platformos_app["templates/index"],
+      platformos_app_file: @platformos_app["app/views/pages/index"],
       line_number: 1,
       markup: nil
     )

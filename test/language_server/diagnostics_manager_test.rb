@@ -39,21 +39,21 @@ module PlatformosCheck
       def test_reports_all_on_first_run
         assert_diagnostics(
           offenses: [
-            WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            WholeAppOffense.new("MissingTemplate", "app/views/pages/index.liquid"),
+            SingleFileOffense.new("UnusedAssign", "app/views/pages/index.liquid"),
+            SingleFileOffense.new("UnusedAssign", "app/views/pages/collection.liquid")
           ],
           analyzed_files: [
-            "template/index.liquid",
-            "template/collection.liquid"
+            "app/views/pages/index.liquid",
+            "app/views/pages/collection.liquid"
           ],
           diagnostics: {
-            "template/index.liquid" => [
-              WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
-              SingleFileOffense.new("UnusedAssign", "template/index.liquid")
+            "app/views/pages/index.liquid" => [
+              WholeAppOffense.new("MissingTemplate", "app/views/pages/index.liquid"),
+              SingleFileOffense.new("UnusedAssign", "app/views/pages/index.liquid")
             ],
-            "template/collection.liquid" => [
-              SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            "app/views/pages/collection.liquid" => [
+              SingleFileOffense.new("UnusedAssign", "app/views/pages/collection.liquid")
             ]
           }
         )
@@ -62,34 +62,34 @@ module PlatformosCheck
       def test_reports_empty_when_offenses_are_fixed_in_subsequent_calls
         build_diagnostics(
           offenses: [
-            SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
-            SingleFileOffense.new("UnknownFilter", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            SingleFileOffense.new("UnusedAssign", "app/views/pages/index.liquid"),
+            SingleFileOffense.new("UnknownFilter", "app/views/pages/index.liquid"),
+            SingleFileOffense.new("UnusedAssign", "app/views/pages/collection.liquid")
           ]
         )
 
         assert_diagnostics(
           offenses: [
-            SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            SingleFileOffense.new("UnusedAssign", "app/views/pages/collection.liquid")
           ],
           analyzed_files: [
-            "template/index.liquid",
-            "template/collection.liquid"
+            "app/views/pages/index.liquid",
+            "app/views/pages/collection.liquid"
           ],
           diagnostics: {
-            "template/index.liquid" => [],
-            "template/collection.liquid" => [
-              SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            "app/views/pages/index.liquid" => [],
+            "app/views/pages/collection.liquid" => [
+              SingleFileOffense.new("UnusedAssign", "app/views/pages/collection.liquid")
             ]
           }
         )
         assert_diagnostics(
           offenses: [],
           analyzed_files: [
-            "template/collection.liquid"
+            "app/views/pages/collection.liquid"
           ],
           diagnostics: {
-            "template/collection.liquid" => []
+            "app/views/pages/collection.liquid" => []
           }
         )
       end
@@ -97,26 +97,26 @@ module PlatformosCheck
       def test_include_single_file_offenses_of_previous_runs
         build_diagnostics(
           offenses: [
-            WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/index.liquid")
+            WholeAppOffense.new("MissingTemplate", "app/views/pages/index.liquid"),
+            SingleFileOffense.new("UnusedAssign", "app/views/pages/index.liquid")
           ]
         )
 
         assert_diagnostics(
           offenses: [
-            WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            WholeAppOffense.new("MissingTemplate", "app/views/pages/index.liquid"),
+            SingleFileOffense.new("UnusedAssign", "app/views/pages/collection.liquid")
           ],
           analyzed_files: [
-            "template/collection.liquid"
+            "app/views/pages/collection.liquid"
           ],
           diagnostics: {
-            "template/index.liquid" => [
-              WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
-              SingleFileOffense.new("UnusedAssign", "template/index.liquid")
+            "app/views/pages/index.liquid" => [
+              WholeAppOffense.new("MissingTemplate", "app/views/pages/index.liquid"),
+              SingleFileOffense.new("UnusedAssign", "app/views/pages/index.liquid")
             ],
-            "template/collection.liquid" => [
-              SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            "app/views/pages/collection.liquid" => [
+              SingleFileOffense.new("UnusedAssign", "app/views/pages/collection.liquid")
             ]
           }
         )
@@ -125,21 +125,21 @@ module PlatformosCheck
       def test_clears_whole_platformos_app_offenses_from_previous_runs
         build_diagnostics(
           offenses: [
-            WholeAppOffense.new("MissingTemplate", "template/index.liquid")
+            WholeAppOffense.new("MissingTemplate", "app/views/pages/index.liquid")
           ]
         )
 
         assert_diagnostics(
           offenses: [
-            SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            SingleFileOffense.new("UnusedAssign", "app/views/pages/collection.liquid")
           ],
           analyzed_files: [
-            "template/collection.liquid"
+            "app/views/pages/collection.liquid"
           ],
           diagnostics: {
-            "template/index.liquid" => [],
-            "template/collection.liquid" => [
-              SingleFileOffense.new("UnusedAssign", "template/collection.liquid")
+            "app/views/pages/index.liquid" => [],
+            "app/views/pages/collection.liquid" => [
+              SingleFileOffense.new("UnusedAssign", "app/views/pages/collection.liquid")
             ]
           }
         )
@@ -148,21 +148,21 @@ module PlatformosCheck
       def test_clears_single_platformos_app_offenses_when_missing
         build_diagnostics(
           offenses: [
-            WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/index.liquid")
+            WholeAppOffense.new("MissingTemplate", "app/views/pages/index.liquid"),
+            SingleFileOffense.new("UnusedAssign", "app/views/pages/index.liquid")
           ]
         )
 
         assert_diagnostics(
           offenses: [
-            WholeAppOffense.new("MissingTemplate", "template/index.liquid")
+            WholeAppOffense.new("MissingTemplate", "app/views/pages/index.liquid")
           ],
           analyzed_files: [
-            "template/index.liquid"
+            "app/views/pages/index.liquid"
           ],
           diagnostics: {
-            "template/index.liquid" => [
-              WholeAppOffense.new("MissingTemplate", "template/index.liquid")
+            "app/views/pages/index.liquid" => [
+              WholeAppOffense.new("MissingTemplate", "app/views/pages/index.liquid")
             ]
           }
         )
@@ -171,32 +171,32 @@ module PlatformosCheck
       def test_diagnostics_returns_offenses_for_an_absolute_path
         build_diagnostics(
           offenses: [
-            WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
-            SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
-            SingleFileOffense.new("SyntaxError", "template/index.liquid"),
-            SingleFileOffense.new("SyntaxError", "template/collection.liquid")
+            WholeAppOffense.new("MissingTemplate", "app/views/pages/index.liquid"),
+            SingleFileOffense.new("UnusedAssign", "app/views/pages/index.liquid"),
+            SingleFileOffense.new("SyntaxError", "app/views/pages/index.liquid"),
+            SingleFileOffense.new("SyntaxError", "app/views/pages/collection.liquid")
           ]
         )
         expected = [
-          WholeAppOffense.new("MissingTemplate", "template/index.liquid"),
-          SingleFileOffense.new("UnusedAssign", "template/index.liquid"),
-          SingleFileOffense.new("SyntaxError", "template/index.liquid")
+          WholeAppOffense.new("MissingTemplate", "app/views/pages/index.liquid"),
+          SingleFileOffense.new("UnusedAssign", "app/views/pages/index.liquid"),
+          SingleFileOffense.new("SyntaxError", "app/views/pages/index.liquid")
         ]
 
-        assert_equal(expected, @diagnostics_manager.diagnostics(Pathname.new("template/index.liquid")).map(&:offense))
-        assert_equal(expected, @diagnostics_manager.diagnostics("template/index.liquid").map(&:offense))
+        assert_equal(expected, @diagnostics_manager.diagnostics(Pathname.new("app/views/pages/index.liquid")).map(&:offense))
+        assert_equal(expected, @diagnostics_manager.diagnostics("app/views/pages/index.liquid").map(&:offense))
       end
 
       def test_workspace_edit
         # setup, pretend we ran diagnostics on a platformos_app
         diagnostics_manager = diagnose_platformos_app(
           SpaceInsideBraces.new,
-          "index.liquid" => <<~LIQUID
+          "app/views/pages/index.liquid" => <<~LIQUID
             {{x}}
             01234
           LIQUID
         )
-        diagnostic_hashes = diagnostics_manager.diagnostics("index.liquid").map(&:to_h)
+        diagnostic_hashes = diagnostics_manager.diagnostics("app/views/pages/index.liquid").map(&:to_h)
 
         # pretend the user wants to correct all of them, what does the workspace_edit look like?
         workspace_edit = diagnostics_manager.workspace_edit(diagnostic_hashes)
@@ -224,18 +224,18 @@ module PlatformosCheck
         diagnostics_manager = diagnose_platformos_app(
           SpaceInsideBraces.new,
           TemplateLength.new(max_length: 0),
-          "index.liquid" => <<~LIQUID
+          "app/views/pages/index.liquid" => <<~LIQUID
             {{x}}
             01234
           LIQUID
         )
-        diagnostics = diagnostics_manager.diagnostics("index.liquid")
+        diagnostics = diagnostics_manager.diagnostics("app/views/pages/index.liquid")
 
         refute(diagnostics.all? { |diagnostic| diagnostic.code == "SpaceInsideBraces" })
 
         diagnostics_manager.delete_applied(diagnostics.map(&:to_h))
 
-        remaining_diagnostics = diagnostics_manager.diagnostics("index.liquid")
+        remaining_diagnostics = diagnostics_manager.diagnostics("app/views/pages/index.liquid")
 
         assert(
           remaining_diagnostics.all? { |diagnostic| diagnostic.code == "TemplateLength" },
@@ -247,17 +247,17 @@ module PlatformosCheck
         diagnostics_manager = diagnose_platformos_app(
           SpaceInsideBraces.new,
           TemplateLength.new(max_length: 0),
-          "index.liquid" => <<~LIQUID
+          "app/views/pages/index.liquid" => <<~LIQUID
             {{x}}
             01234
           LIQUID
         )
-        diagnostics = diagnostics_manager.diagnostics("index.liquid")
+        diagnostics = diagnostics_manager.diagnostics("app/views/pages/index.liquid")
         actual = diagnostics_manager.delete_applied(diagnostics.map(&:to_h))
 
         assert_equal(
           {
-            "index.liquid" => diagnostics.select { |d| d.code == "TemplateLength" }
+            "app/views/pages/index.liquid" => diagnostics.select { |d| d.code == "TemplateLength" }
           },
           actual.transform_keys(&:to_s)
         )
@@ -266,17 +266,17 @@ module PlatformosCheck
       def test_delete_applied_returns_empty_diagnostics_if_all_were_cleared
         diagnostics_manager = diagnose_platformos_app(
           SpaceInsideBraces.new,
-          "index.liquid" => <<~LIQUID
+          "app/views/pages/index.liquid" => <<~LIQUID
             {{x}}
             01234
           LIQUID
         )
-        diagnostics = diagnostics_manager.diagnostics("index.liquid")
+        diagnostics = diagnostics_manager.diagnostics("app/views/pages/index.liquid")
         actual = diagnostics_manager.delete_applied(diagnostics.map(&:to_h))
 
         assert_equal(
           {
-            "index.liquid" => []
+            "app/views/pages/index.liquid" => []
           },
           actual.transform_keys(&:to_s)
         )

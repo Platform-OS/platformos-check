@@ -6,7 +6,7 @@ class ParserBlockingJavaScriptTest < Minitest::Test
   def test_async_script_tag
     offenses = analyze_platformos_app(
       PlatformosCheck::ParserBlockingJavaScript.new,
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         <html>
         <head>
           <script src="example.com" async></script>
@@ -28,7 +28,7 @@ class ParserBlockingJavaScriptTest < Minitest::Test
   def test_defer_script_tag
     offenses = analyze_platformos_app(
       PlatformosCheck::ParserBlockingJavaScript.new,
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         <html>
         <head>
           <script src="example.com" defer></script>
@@ -48,7 +48,7 @@ class ParserBlockingJavaScriptTest < Minitest::Test
   def test_parser_blocking_script_tag
     offenses = analyze_platformos_app(
       PlatformosCheck::ParserBlockingJavaScript.new,
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         <html>
         <head>
           <script src="example.com"></script>
@@ -58,14 +58,14 @@ class ParserBlockingJavaScriptTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing async or defer attribute on script tag at templates/index.liquid:3
+      Missing async or defer attribute on script tag at app/views/pages/index.liquid:3
     END
   end
 
   def test_parser_blocking_script_over_multiple_lines
     offenses = analyze_platformos_app(
       PlatformosCheck::ParserBlockingJavaScript.new,
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         <html>
         <head>
           <script
@@ -78,14 +78,14 @@ class ParserBlockingJavaScriptTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing async or defer attribute on script tag at templates/index.liquid:3
+      Missing async or defer attribute on script tag at app/views/pages/index.liquid:3
     END
   end
 
   def test_parser_blocking_inline_script
     offenses = analyze_platformos_app(
       PlatformosCheck::ParserBlockingJavaScript.new,
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         <html>
         <head>
           <script>
@@ -106,7 +106,7 @@ class ParserBlockingJavaScriptTest < Minitest::Test
   def test_repeated_offenses_are_correctly_reported
     offenses = analyze_platformos_app(
       PlatformosCheck::ParserBlockingJavaScript.new,
-      "templates/index.liquid" => <<~END
+      "app/views/pages/index.liquid" => <<~END
         <html>
         <head>
           <script src="example.com"></script>
@@ -120,9 +120,9 @@ class ParserBlockingJavaScriptTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing async or defer attribute on script tag at templates/index.liquid:3
-      Missing async or defer attribute on script tag at templates/index.liquid:4
-      Missing async or defer attribute on script tag at templates/index.liquid:5
+      Missing async or defer attribute on script tag at app/views/pages/index.liquid:3
+      Missing async or defer attribute on script tag at app/views/pages/index.liquid:4
+      Missing async or defer attribute on script tag at app/views/pages/index.liquid:5
     END
   end
 end

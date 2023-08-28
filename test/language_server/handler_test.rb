@@ -12,9 +12,9 @@ module PlatformosCheck
         @bridge = Bridge.new(@mock_messenger)
         @handler = Handler.new(@bridge)
         @storage = make_file_system_storage(
-          "layout/platformos_app.liquid" => "<html>hello world</html>",
-          "sections/main.liquid" => "{% render 'error' %}",
-          "snippets/error.liquid" => "{% if unclosed %}",
+          "app/views/layouts/platformos_app.liquid" => "<html>hello world</html>",
+          "app/views/partials/main.liquid" => "{% render 'error' %}",
+          "app/views/partials/error.liquid" => "{% if unclosed %}",
           ".platformos-check.yml" => <<~YAML
             extends: nothing
             SyntaxError:
@@ -65,12 +65,12 @@ module PlatformosCheck
 
       def test_handle_document_did_open_does_not_crash
         initialize!(1, nil, @storage.root)
-        did_open!('layout/platformos_app.liquid')
+        did_open!('app/views/layouts/platformos_app.liquid')
       end
 
       def test_handle_document_did_open_checks_by_default
         initialize!(1, nil, @storage.root)
-        did_open!('snippets/error.liquid')
+        did_open!('app/views/partials/error.liquid')
         assert_notification_received('textDocument/publishDiagnostics') do |params|
           params[:diagnostics].find do |diagnostic|
             diagnostic[:code] == "SyntaxError"
@@ -81,7 +81,7 @@ module PlatformosCheck
       # issue 588
       def test_handle_document_did_close_deleted_file_should_not_crash_server
         initialize!(1, nil, @storage.root)
-        did_close!("snippets/does-not-exist.liquid")
+        did_close!("app/views/partials/does-not-exist.liquid")
       end
 
       # Not guaranteed to get those, but useful when they happen.
@@ -89,7 +89,7 @@ module PlatformosCheck
       def test_handle_workspace_did_create_files
         initialize!(1, nil, @storage.root)
 
-        new_file_path = 'snippets/new.liquid'
+        new_file_path = 'app/views/partials/new.liquid'
 
         # here, we write to the file system without the handler knowing
         @storage.write(new_file_path, 'hello')
@@ -113,7 +113,7 @@ module PlatformosCheck
       def test_handle_workspace_did_delete_files
         initialize!(1, nil, @storage.root)
 
-        old_file_path = 'layout/platformos_app.liquid'
+        old_file_path = 'app/views/layouts/platformos_app.liquid'
 
         # here, we delete the file from the file system without the handler knowing
         @storage.write(old_file_path, 'hello')
@@ -132,8 +132,8 @@ module PlatformosCheck
       def test_handle_workspace_will_rename_files
         initialize!(1, nil, @storage.root)
 
-        old_file_path = 'layout/platformos_app.liquid'
-        new_file_path = 'layout/platformos_app2.liquid'
+        old_file_path = 'app/views/layouts/platformos_app.liquid'
+        new_file_path = 'app/views/layouts/platformos_app2.liquid'
 
         # We send a workspace/willRenameFiles request to the server
         # and ask for potential WorkspaceEdits in response
@@ -155,8 +155,8 @@ module PlatformosCheck
 
       def test_handle_workspace_will_rename_files_diagnostics_handling
         initialize!(1, nil, @storage.root)
-        old_file_path = "snippets/error.liquid"
-        new_file_path = "snippets/error2.liquid"
+        old_file_path = "app/views/partials/error.liquid"
+        new_file_path = "app/views/partials/error2.liquid"
 
         did_open!(old_file_path)
 
@@ -183,7 +183,7 @@ module PlatformosCheck
 
       def test_handle_workspace_did_delete_files_missing_template_handling
         initialize!(1, nil, @storage.root)
-        file_path = "snippets/error.liquid"
+        file_path = "app/views/partials/error.liquid"
 
         did_open!(file_path)
 
@@ -203,7 +203,7 @@ module PlatformosCheck
 
         # expecting MissingTemplate to be diagnosed for file that uses it
         assert_notification_received("textDocument/publishDiagnostics") do |params|
-          params[:uri] == uri('sections/main.liquid') &&
+          params[:uri] == uri('app/views/partials/main.liquid') &&
             !params[:diagnostics].empty?
         end
       end
@@ -214,7 +214,7 @@ module PlatformosCheck
         PlatformosCheck::LanguageServer::Configuration.any_instance
                                                       .stubs(:only_single_file?).returns(true)
 
-        file_path = "snippets/error.liquid"
+        file_path = "app/views/partials/error.liquid"
 
         did_open!(file_path)
 
@@ -239,7 +239,7 @@ module PlatformosCheck
         PlatformosCheck::LanguageServer::Configuration.any_instance
                                                       .stubs(:only_single_file?).returns(false)
 
-        file_path = "snippets/error.liquid"
+        file_path = "app/views/partials/error.liquid"
 
         did_open!(file_path)
 

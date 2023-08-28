@@ -189,7 +189,7 @@ class UnusedAssignTest < Minitest::Test
         {% assign a = 1 %}
         {% include 'using' %}
       END
-      "snippets/using.liquid" => <<~END
+      "app/views/partials/using.liquid" => <<~END
         {{ a }}
       END
     )
@@ -204,11 +204,11 @@ class UnusedAssignTest < Minitest::Test
         {% assign a = 1 %}
         {% include 'one' %}
       END
-      "snippets/one.liquid" => <<~END,
+      "app/views/partials/one.liquid" => <<~END,
         {% include 'two' %}
         {{ a }}
       END
-      "snippets/two.liquid" => <<~END
+      "app/views/partials/two.liquid" => <<~END
         {% if some_end_condition %}
           {% include 'one' %}
         {% endif %}
@@ -291,6 +291,104 @@ class UnusedAssignTest < Minitest::Test
       PlatformosCheck::UnusedAssign.new,
       "app/views/partials/index.liquid" => <<~END
         <p>test case</p>{% assign x = 1 %}
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_rename_unused_function_assign
+    expected_sources = {
+      "app/views/partials/index.liquid" => "{% function _x = 'my_func' %}\n"
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% function x = 'my_func' %}
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_rename_unused_function_assign_liquid_block
+    expected_sources = {
+      "app/views/partials/index.liquid" => <<~END
+        {% liquid
+          function x = 'my_func'
+          function y = 'my_func2'
+          function _z = 'my_func3'
+        %}
+        {{ x }}
+        {{ y }}
+      END
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% liquid
+          function x = 'my_func'
+          function y = 'my_func2'
+          function z = 'my_func3'
+        %}
+        {{ x }}
+        {{ y }}
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_rename_unused_function_assign_middle_of_line
+    expected_sources = {
+      "app/views/partials/index.liquid" => <<~END
+        <p>test case</p>{% function _x = 'my_func' %}<p>test case</p>
+      END
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        <p>test case</p>{% function x = 'my_func' %}<p>test case</p>
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_removes_unused_function_assign_leaves_html
+    expected_sources = {
+      "app/views/partials/index.liquid" => <<~END
+        <p>test case</p>{%   function   _x   = 'my_func' %}
+      END
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        <p>test case</p>{%   function   x   = 'my_func' %}
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_rename_unused_graphql_assign
+    expected_sources = {
+      "app/views/partials/index.liquid" => "{% graphql _x = 'my-mutation' %}\n"
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% graphql _x = 'my-mutation' %}
       END
     )
 

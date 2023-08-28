@@ -19,7 +19,7 @@ class MissingEnableCommentTest < Minitest::Test
     comment_types.each do |comment|
       offenses = analyze_platformos_app(
         PlatformosCheck::MissingEnableComment.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           #{comment.call('platformos-check-disable')}
           {% assign x = 1 %}
           #{comment.call('platformos-check-enable')}
@@ -34,7 +34,7 @@ class MissingEnableCommentTest < Minitest::Test
     comment_types.each do |comment|
       offenses = analyze_platformos_app(
         PlatformosCheck::MissingEnableComment.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           #{comment.call('platformos-check-disable')}
           {% assign x = 1 %}
         END
@@ -48,7 +48,7 @@ class MissingEnableCommentTest < Minitest::Test
     comment_types.each do |comment|
       offenses = analyze_platformos_app(
         PlatformosCheck::MissingEnableComment.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <p>Hello, world</p>
           #{comment.call('platformos-check-disable')}
           {% assign x = 1 %}
@@ -56,7 +56,7 @@ class MissingEnableCommentTest < Minitest::Test
       )
 
       assert_offenses(<<~END, offenses)
-        All checks were disabled but not re-enabled with platformos-check-enable at templates/index.liquid
+        All checks were disabled but not re-enabled with platformos-check-enable at app/views/pages/index.liquid
       END
     end
   end
@@ -66,7 +66,7 @@ class MissingEnableCommentTest < Minitest::Test
       offenses = analyze_platformos_app(
         PlatformosCheck::MissingEnableComment.new,
         Minitest::Test::TracerCheck.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <p>Hello, world</p>
           #{comment.call('platformos-check-disable TracerCheck')}
           {% assign x = 1 %}
@@ -74,7 +74,7 @@ class MissingEnableCommentTest < Minitest::Test
       )
 
       assert_offenses(<<~END, offenses)
-        TracerCheck was disabled but not re-enabled with platformos-check-enable at templates/index.liquid
+        TracerCheck was disabled but not re-enabled with platformos-check-enable at app/views/pages/index.liquid
       END
     end
   end
@@ -84,7 +84,7 @@ class MissingEnableCommentTest < Minitest::Test
       offenses = analyze_platformos_app(
         PlatformosCheck::MissingEnableComment.new,
         Minitest::Test::TracerCheck.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <p>Hello, world</p>
           #{comment.call('platformos-check-disable TracerCheck, AnotherCheck')}
           {% assign x = 1 %}
@@ -92,7 +92,7 @@ class MissingEnableCommentTest < Minitest::Test
       )
 
       assert_offenses(<<~END, offenses)
-        TracerCheck, AnotherCheck were disabled but not re-enabled with platformos-check-enable at templates/index.liquid
+        TracerCheck, AnotherCheck were disabled but not re-enabled with platformos-check-enable at app/views/pages/index.liquid
       END
     end
   end
@@ -102,7 +102,7 @@ class MissingEnableCommentTest < Minitest::Test
       offenses = analyze_platformos_app(
         PlatformosCheck::MissingEnableComment.new,
         Minitest::Test::TracerCheck.new,
-        "templates/index.liquid" => <<~END
+        "app/views/pages/index.liquid" => <<~END
           <p>Hello, world</p>
           #{comment.call('platformos-check-disable TracerCheck, AnotherCheck')}
           {% assign x = 1 %}
@@ -112,7 +112,7 @@ class MissingEnableCommentTest < Minitest::Test
       )
 
       assert_offenses(<<~END, offenses)
-        All checks were disabled but not re-enabled with platformos-check-enable at templates/index.liquid
+        All checks were disabled but not re-enabled with platformos-check-enable at app/views/pages/index.liquid
       END
     end
   end

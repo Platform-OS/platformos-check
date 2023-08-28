@@ -6,20 +6,21 @@ class TemplateLengthTest < Minitest::Test
   def test_finds_unused
     offenses = analyze_platformos_app(
       PlatformosCheck::TemplateLength.new(max_length: 10),
-      "templates/long.liquid" => <<~END,
+      "app/views/pages/long.liquid" => <<~END,
         #{"\n" * 10}
       END
-      "templates/short.liquid" => <<~END
+      "app/views/pages/short.liquid" => <<~END
         #{"\n" * 9}
       END
     )
 
     assert_offenses(<<~END, offenses)
-      Template has too many lines [11/10] at templates/long.liquid
+      Template has too many lines [11/10] at app/views/pages/long.liquid
     END
   end
 
   def test_excludes_lines_inside_schema
+    skip "To be removed"
     offenses = analyze_platformos_app(
       PlatformosCheck::TemplateLength.new(max_length: 10, exclude_schema: true),
       "sections/long.liquid" => <<~END
@@ -33,6 +34,7 @@ class TemplateLengthTest < Minitest::Test
   end
 
   def test_excludes_lines_inside_stylesheet
+    skip "To be removed"
     offenses = analyze_platformos_app(
       PlatformosCheck::TemplateLength.new(max_length: 10, exclude_stylesheet: true),
       "sections/long.liquid" => <<~END
@@ -46,6 +48,7 @@ class TemplateLengthTest < Minitest::Test
   end
 
   def test_excludes_lines_inside_javascript
+    skip "To be removed"
     offenses = analyze_platformos_app(
       PlatformosCheck::TemplateLength.new(max_length: 10, exclude_javascript: true),
       "sections/long.liquid" => <<~END

@@ -34,7 +34,7 @@ module PlatformosCheck
       if node
         check.add_offense(message, node:) do |corrector|
           extra_keys.each do |k|
-            SchemaHelper.delete(schema, key_prefix + k)
+            JsonHelper.delete(schema, key_prefix + k)
           end
           corrector.replace_inner_json(node, schema)
         end
@@ -54,7 +54,7 @@ module PlatformosCheck
       if node
         check.add_offense(message, node:) do |corrector|
           missing_keys.each do |k|
-            SchemaHelper.set(schema, key_prefix + k, "TODO")
+            JsonHelper.set(schema, key_prefix + k, "TODO")
           end
           corrector.replace_inner_json(node, schema)
         end

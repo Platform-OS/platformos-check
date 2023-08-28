@@ -25,11 +25,6 @@ MissingTemplate:
   ignore: []
   ignore_missing: []
 
-NestedSnippet:
-  enabled: true
-  ignore: []
-  max_nesting_level: 3
-
 RequiredLayoutObject:
   enabled: true
   ignore: []
@@ -57,7 +52,7 @@ UnusedAssign:
   enabled: true
   ignore: []
 
-UnusedSnippet:
+UnusedPartial:
   enabled: true
   ignore: []
 
@@ -68,7 +63,7 @@ ValidYaml:
 UndefinedObject:
   enabled: true
   ignore: []
-  exclude_snippets: true
+  exclude_partials: true
   config_type: :theme_app_extension
 
 RequiredDirectories:
@@ -87,9 +82,6 @@ ParserBlockingJavaScript:
   enabled: true
   ignore: []
 
-ParserBlockingScriptTag:
-  enabled: true
-
 AssetSizeJavaScript:
   enabled: true
   severity: suggestion
@@ -106,18 +98,6 @@ ImgWidthAndHeight:
   enabled: true
   ignore: []
 
-RemoteAsset:
-  enabled: true
-  ignore: []
-
-AssetUrlFilters:
-  enabled: true
-  ignore: []
-
-ContentForHeaderModification:
-  enabled: true
-  ignore: []
-
 ImgLazyLoading:
   enabled: true
   ignore: []
@@ -125,25 +105,3 @@ ImgLazyLoading:
 HtmlParsingError:
   enabled: true
   ignore: []
-
-AssetSizeAppBlockJavaScript:
-  enabled: true
-  severity: suggestion
-  ignore: []
-  threshold_in_bytes: 10_000
-
-AssetSizeAppBlockCSS:
-  enabled: true
-  severity: suggestion
-  ignore: []
-  threshold_in_bytes: 100_000
-
-AppBlockValidTags:
-  enabled: true
-  ignore: []
-
-PaginationSize:
-  enabled: true
-  ignore: []
-  min_size: 1
-  max_size: 50

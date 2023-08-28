@@ -11,9 +11,8 @@ This check is aimed at eliminating undefined object errors.
 ```liquid
 {% assign greetings = "Hello" %}
 {% if greeting == "Hello" %}
-
-{{ articl }}
-{{ prodcut }}
+  Hello
+{% endif %}
 ```
 
 :+1: Examples of **correct** code for this check:
@@ -21,9 +20,8 @@ This check is aimed at eliminating undefined object errors.
 ```liquid
 {% assign greetings = "Hello" %}
 {% if greetings == "Hello" %}
-
-{{ article }}
-{{ product }}
+  Hello
+{% endif %}
 ```
 
 ## Check Options
@@ -33,12 +31,12 @@ The default configuration for this check is the following:
 ```yaml
 UndefinedObject:
   enabled: true
-  exclude_snippets: true
+  exclude_partials: true
 ```
 
-### `exclude_snippets`
+### `exclude_partials`
 
-The `exclude_snippets` (Default: `true`) option determines whether to check for undefined objects in snippets file (as objects _may_ be defined as arguments)
+The `exclude_partials` (Default: `true`) option determines whether to check for undefined objects in snippets file (as objects _may_ be defined as arguments)
 
 ## When Not To Use It
 

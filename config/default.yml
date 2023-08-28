@@ -25,11 +25,6 @@ MissingTemplate:
   ignore: []
   ignore_missing: []
 
-NestedSnippet:
-  enabled: true
-  ignore: []
-  max_nesting_level: 3
-
 RequiredLayoutObject:
   enabled: true
   ignore: []
@@ -61,7 +56,7 @@ UnusedAssign:
   enabled: true
   ignore: []
 
-UnusedSnippet:
+UnusedPartial:
   enabled: true
   ignore: []
 
@@ -72,7 +67,7 @@ ValidYaml:
 UndefinedObject:
   enabled: true
   ignore: []
-  exclude_snippets: true
+  exclude_partials: true
   config_type: :default
 
 RequiredDirectories:
@@ -80,14 +75,6 @@ RequiredDirectories:
   ignore: []
 
 DeprecatedFilter:
-  enabled: true
-  ignore: []
-
-DeprecateLazysizes:
-  enabled: true
-  ignore: []
-
-DeprecateBgsizes:
   enabled: true
   ignore: []
 
@@ -99,42 +86,7 @@ ParserBlockingJavaScript:
   enabled: true
   ignore: []
 
-ParserBlockingScriptTag:
-  enabled: true
-  ignore: []
-
-AssetPreload:
-  enabled: true
-  ignore: []
-
-AssetSizeJavaScript:
-  enabled: false
-  threshold_in_bytes: 10_000
-  ignore: []
-
-AssetSizeCSS:
-  enabled: false
-  threshold_in_bytes: 100_000
-  ignore: []
-
-AssetSizeCSSStylesheetTag:
-  enabled: false
-  threshold_in_bytes: 100_000
-  ignore: []
-
 ImgWidthAndHeight:
-  enabled: true
-  ignore: []
-
-RemoteAsset:
-  enabled: true
-  ignore: []
-
-AssetUrlFilters:
-  enabled: true
-  ignore: []
-
-ContentForHeaderModification:
   enabled: true
   ignore: []
 
@@ -146,30 +98,10 @@ HtmlParsingError:
   enabled: true
   ignore: []
 
-AssetSizeAppBlockJavaScript:
-  enabled: false
-  ignore: []
-  threshold_in_bytes: 10_000
-
-AssetSizeAppBlockCSS:
-  enabled: false
-  ignore: []
-  threshold_in_bytes: 100_000
-
-AppBlockValidTags:
-  enabled: false
-  ignore: []
-
-PaginationSize:
-  enabled: true
-  ignore: []
-  min_size: 1
-  max_size: 50
-
 DeprecatedGlobalAppBlockType:
   enabled: true
 
-SchemaJsonFormat:
+ParseJsonFormat:
   enabled: true
   start_level: 0
   indent: '  '

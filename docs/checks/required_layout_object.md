@@ -2,14 +2,14 @@
 
 ## Check Details
 
-This check prevents missing `{{ content_for_header }}` and `{{ content_for_layout }}` objects in `layout/theme.liquid`.
+This check prevents missing `{{ content_for_layout }}` objects in layouts.
 
 ## Check Options
 
 The default configuration for this check is the following:
 
 ```yaml
-RequiredLayoutThemeObject:
+RequiredLayoutObject:
   enabled: true
 ```
 
@@ -19,10 +19,10 @@ This check has been introduced in Theme Check 0.1.0.
 
 ## Resources
 
-- [Shopify theme.liquid requirements][themeliquid]
+- [platformOS layout requirements][layout]
 - [Rule Source][codesource]
 - [Documentation Source][docsource]
 
 [codesource]: /lib/platformos_check/checks/required_layout_object.rb
 [docsource]: /docs/checks/required_layout_object.md
-[themeliquid]: https://shopify.dev/docs/themes/theme-templates/theme-liquid
+[layout]: https://documentation.platformos.com/developer-guide/pages/layouts

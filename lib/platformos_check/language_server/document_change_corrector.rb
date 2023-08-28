@@ -144,7 +144,7 @@ module PlatformosCheck
         raise ArgumentError unless file.is_a?(JsonFile)
 
         hash = file.content
-        SchemaHelper.set(hash, path, value)
+        JsonHelper.set(hash, path, value)
         @json_file_edits[file] = hash
       end
 
@@ -152,7 +152,7 @@ module PlatformosCheck
         raise ArgumentError unless file.is_a?(JsonFile)
 
         hash = file.content
-        SchemaHelper.delete(hash, path)
+        JsonHelper.delete(hash, path)
         @json_file_edits[file] = hash
       end
 

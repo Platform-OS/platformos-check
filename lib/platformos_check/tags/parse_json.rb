@@ -16,9 +16,7 @@ module PlatformosCheck
 
       class ParseTreeVisitor < Liquid::ParseTreeVisitor
         def children
-          [
-            @node.to
-          ]
+          super + [@node.to]
         end
       end
     end
