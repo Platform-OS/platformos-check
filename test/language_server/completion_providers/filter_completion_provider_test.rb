@@ -38,11 +38,6 @@ module PlatformosCheck
         assert_can_complete_with(@provider, "{{ 'foo.js' | ", "capitalize")
         assert_can_complete_with(@provider, "{{ 'foo.js' | asset", "asset_url")
         assert_can_complete_with(@provider, "{{ 'foo.js' | asset_url | url", "url_decode")
-
-        filter_not_in_source_index = 'installments_pricing'
-
-        assert_includes(ShopifyLiquid::Filter::LABELS_NOT_IN_SOURCE_INDEX, filter_not_in_source_index)
-        refute_can_complete_with(@provider, "{{ 'foo.js' | ", filter_not_in_source_index)
       end
 
       def test_completions_with_content_after_cursor
