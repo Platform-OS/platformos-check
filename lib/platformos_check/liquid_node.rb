@@ -83,7 +83,7 @@ module PlatformosCheck
     end
 
     def inner_json
-      return nil unless schema?
+      return nil unless parse_json?
 
       @inner_json ||= JSON.parse(inner_markup)
     rescue JSON::ParserError
@@ -184,8 +184,8 @@ module PlatformosCheck
       block_tag? || block_body? || document?
     end
 
-    def schema?
-      @value.is_a?(PlatformosCheck::Tags::Schema)
+    def parse_json?
+      @value.is_a?(PlatformosCheck::Tags::ParseJson)
     end
 
     def function?

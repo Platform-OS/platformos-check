@@ -121,54 +121,6 @@ class LiquidVisitorTest < Minitest::Test
                   :after_document], @tracer.calls)
   end
 
-  def test_schema
-    platformos_app_file = parse_liquid(<<~END)
-      {% schema %}
-        { "muffin": true }
-      {% endschema %}
-    END
-    @visitor.visit_liquid_file(platformos_app_file)
-
-    assert_equal([
-                   :on_document,
-                   :on_tag,
-                   :on_schema,
-                   :on_string, "\n  { \"muffin\": true }\n",
-                   :after_schema,
-                   :after_tag,
-                   :on_string, "\n",
-                   :after_document
-                 ], @tracer.calls)
-  end
-
-  def test_paginate
-    platformos_app_file = parse_liquid(<<~END)
-      {% paginate products by x %}
-        {{ product.name }}
-      {% endpaginate %}
-    END
-    @visitor.visit_liquid_file(platformos_app_file)
-
-    assert_equal([
-                   :on_document,
-                   :on_tag,
-                   :on_paginate,
-                   :on_string, "\n  ",
-                   :on_variable,
-                   :on_variable_lookup,
-                   :on_string, "name",
-                   :after_variable_lookup,
-                   :after_variable,
-                   :on_string, "\n",
-                   :on_variable_lookup,
-                   :after_variable_lookup,
-                   :after_paginate,
-                   :after_tag,
-                   :on_string, "\n",
-                   :after_document
-                 ], @tracer.calls)
-  end
-
   def test_render
     platformos_app_file = parse_liquid(<<~END)
       {% for block in section.blocks %}

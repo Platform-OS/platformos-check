@@ -102,21 +102,6 @@ AssetPreload:
   enabled: true
   ignore: []
 
-AssetSizeJavaScript:
-  enabled: false
-  threshold_in_bytes: 10_000
-  ignore: []
-
-AssetSizeCSS:
-  enabled: false
-  threshold_in_bytes: 100_000
-  ignore: []
-
-AssetSizeCSSStylesheetTag:
-  enabled: false
-  threshold_in_bytes: 100_000
-  ignore: []
-
 ImgWidthAndHeight:
   enabled: true
   ignore: []

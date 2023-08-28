@@ -191,8 +191,8 @@ module PlatformosCheck
       end
 
       def test_replace_inner_markup
-        node = find(root_node(<<~LIQUID)) { |n| n.type_name == :schema }
-          {% schema %}Hello Muffin{% endschema %}
+        node = find(root_node(<<~LIQUID)) { |n| n.type_name == :capture }
+          {% capture "hello" %}Hello Muffin{% endcapture %}
           012345678901234567890123456789
         LIQUID
         corrector = DocumentChangeCorrector.new
@@ -205,7 +205,7 @@ module PlatformosCheck
               version: nil
             },
             edits: [{
-              range: range(0, 12, 0, 24),
+              range: range(0, 21, 0, 33),
               newText: 'Hello cookies!'
             }]
           }],
@@ -320,10 +320,10 @@ module PlatformosCheck
       end
 
       def test_replace_json_body
-        node = find(root_node(<<~LIQUID)) { |n| n.type_name == :schema }
-          {% schema %}
+        node = find(root_node(<<~LIQUID)) { |n| n.type_name == :parse_json }
+          {% parse_json my_json %}
             {}
-          {% endschema %}
+          {% endparse_json %}
         LIQUID
         corrector = DocumentChangeCorrector.new
 
@@ -342,7 +342,7 @@ module PlatformosCheck
               version: nil
             },
             edits: [{
-              range: range(0, 12, 2, 0),
+              range: range(0, 24, 2, 0),
               newText: pretty_json(json, start_level: 1)
             }]
           }],

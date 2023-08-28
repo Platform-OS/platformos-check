@@ -17,10 +17,10 @@ module PlatformosCheck
           %}
           {% comment   %}hi{% endcomment %}
           {%
-            style
+            parse_json my_var
           %}
-          {% endstyle %}
-          {% style%}{% endstyle %}
+          {% endparse_json %}
+          {% try_rc%}{% endtry_rc %}
           {% if
           true%}{% endif %}
           {{ 'x' }}
@@ -39,8 +39,8 @@ module PlatformosCheck
       assert_can_find_node_with_markup(root, "echo x")
       assert_can_find_node_with_markup(root, "render\n    'foo'\n  ")
       assert_can_find_node_with_markup(root, "comment   ")
-      assert_can_find_node_with_markup(root, "style\n  ")
-      assert_can_find_node_with_markup(root, "style")
+      assert_can_find_node_with_markup(root, "parse_json my_var\n  ")
+      assert_can_find_node_with_markup(root, "try_rc")
       assert_can_find_node_with_markup(root, "if\n  true")
       assert_can_find_node_with_markup(root, " 'x' ")
       assert_can_find_node_with_markup(root, "\n    'x'\n  ")
@@ -225,9 +225,9 @@ module PlatformosCheck
       assert_predicate(node, :whitespace_trimmed_end?)
     end
 
-    def test_block_start_and_end_schema
-      schema = root_node(<<~END)
-        {% schema %}
+    def test_block_start_and_end_parse_json
+      parse_json = root_node(<<~END)
+        {% parse_json my_json %}
           {
             "name": {
               "en": "Hello",
@@ -242,13 +242,13 @@ module PlatformosCheck
               }
             ]
           }
-        {% endschema %}
+        {% endparse_json %}
       END
 
-      node = find(schema) { |n| n.type_name == :schema }
+      node = find(parse_json) { |n| n.type_name == :parse_json }
 
-      assert_equal(12, node.inner_markup_start_index)
-      assert_equal(205, node.inner_markup_end_index)
+      assert_equal(24, node.inner_markup_start_index)
+      assert_equal(217, node.inner_markup_end_index)
     end
 
     def test_block_start_and_end_comment
