@@ -67,7 +67,7 @@ module PlatformosCheck
     end
 
     def liquid
-      layouts + partials + pages + legacy_liquid + notifications
+      layouts + partials + pages + notifications
     end
 
     def yaml
@@ -108,12 +108,6 @@ module PlatformosCheck
 
     def pages
       grouped_files[PageFile]&.values || []
-    end
-
-    def legacy_liquid
-      return []
-
-      grouped_files[LiquidFile]&.values || []
     end
 
     def directories

@@ -98,11 +98,6 @@ HtmlParsingError:
   enabled: true
   ignore: []
 
-AssetSizeAppBlockJavaScript:
-  enabled: false
-  ignore: []
-  threshold_in_bytes: 10_000
-
 DeprecatedGlobalAppBlockType:
   enabled: true
 
