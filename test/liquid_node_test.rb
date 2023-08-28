@@ -278,21 +278,6 @@ module PlatformosCheck
       assert_equal(262, node.inner_markup_end_index)
     end
 
-    def test_block_start_and_end_paginate
-      paginate = root_node(<<~END)
-        {% paginate collection.products by 5 %}
-          {% for product in collection.products %}
-            <!--show product details here -->
-          {% endfor %}
-        {% endpaginate %}
-      END
-
-      node = find(paginate) { |n| n.type_name == :paginate }
-
-      assert_equal(39, node.inner_markup_start_index)
-      assert_equal(136, node.inner_markup_end_index)
-    end
-
     def test_block_start_and_end_capture
       capture = root_node(<<~END)
         {% capture about_me %}
@@ -687,18 +672,6 @@ module PlatformosCheck
 
       assert_node_inner_markup_equals("hello world", <<~OUTER_MARKUP.rstrip)
         {% comment %}hello world{% endcomment %}
-      OUTER_MARKUP
-
-      assert_node_inner_markup_equals(<<~INNER_MARKUP, <<~OUTER_MARKUP.rstrip)
-        \n{% for product in collection.products %}
-          <!--show product details here -->
-        {% endfor %}
-      INNER_MARKUP
-        {% paginate collection.products by 5 %}
-        {% for product in collection.products %}
-          <!--show product details here -->
-        {% endfor %}
-        {% endpaginate %}
       OUTER_MARKUP
     end
 

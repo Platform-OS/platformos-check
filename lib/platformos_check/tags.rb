@@ -4,40 +4,6 @@ module PlatformosCheck
   module Tags
     # Copied tags parsing code from storefront-renderer
 
-    class Paginate < Liquid::Block
-      SYNTAX = /(?<liquid_variable_name>#{Liquid::QuotedFragment})\s*((?<by>by)\s*(?<page_size>#{Liquid::QuotedFragment}))?/
-
-      attr_reader :page_size
-
-      def initialize(tag_name, markup, options)
-        super
-        raise(Liquid::SyntaxError, "in tag 'paginate' - Valid syntax: paginate [collection] by number") unless (matches = markup.match(SYNTAX))
-
-        @liquid_variable_name = matches[:liquid_variable_name]
-        @page_size = parse_expression(matches[:page_size])
-        @window_size = nil # determines how many pagination links are shown
-
-        @liquid_variable_count_expr = parse_expression("#{@liquid_variable_name}_count")
-
-        var_parts = @liquid_variable_name.rpartition('.')
-        @source_drop_expr = parse_expression(var_parts[0].empty? ? var_parts.last : var_parts.first)
-        @method_name = var_parts.last.to_sym
-
-        markup.scan(Liquid::TagAttributes) do |key, value|
-          case key
-          when 'window_size'
-            @window_size = value.to_i
-          end
-        end
-      end
-
-      class ParseTreeVisitor < Liquid::ParseTreeVisitor
-        def children
-          super + [@node.page_size]
-        end
-      end
-    end
-
     class ContentFor < BaseBlock; end
 
     class Yield < Base; end
@@ -64,7 +30,6 @@ module PlatformosCheck
         register_tag('render', Render)
         register_tag('theme_render', ThemeRender)
         register_tag('theme_render_rc', ThemeRender)
-        register_tag('paginate', Paginate)
         register_tag('log', Log)
         register_tag('cache', Cache)
         register_tag('print', Print)
