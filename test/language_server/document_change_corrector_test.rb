@@ -329,9 +329,9 @@ module PlatformosCheck
 
         # Simulate doing multiple corrector calls on the _same_ node.
         json = node.inner_json
-        SchemaHelper.set(json, 'a.b', 1)
+        JsonHelper.set(json, 'a.b', 1)
         corrector.replace_inner_json(node, json)
-        SchemaHelper.set(json, 'a.c', 2)
+        JsonHelper.set(json, 'a.c', 2)
         corrector.replace_inner_json(node, json)
 
         # We expect only ONE change for all those replace_inner_json calls

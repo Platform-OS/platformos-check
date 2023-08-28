@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PlatformosCheck
-  class SchemaJsonFormat < LiquidCheck
+  class ParseJsonFormat < LiquidCheck
     severity :style
     category :liquid
     doc docs_url(__FILE__)
@@ -13,18 +13,18 @@ module PlatformosCheck
       }
     end
 
-    def on_schema(node)
-      schema = node.inner_json
-      return if schema.nil?
+    def on_parse_json(node)
+      parse_json = node.inner_json
+      return if parse_json.nil?
 
-      pretty_schema = pretty_json(schema, **@pretty_json_opts)
-      return unless pretty_schema != node.inner_markup
+      pretty_parse_json = pretty_json(parse_json, **@pretty_json_opts)
+      return unless pretty_parse_json != node.inner_markup
 
       add_offense(
         "JSON formatting could be improved",
         node:
       ) do |corrector|
-        corrector.replace_inner_json(node, schema, **@pretty_json_opts)
+        corrector.replace_inner_json(node, parse_json, **@pretty_json_opts)
       end
     end
   end

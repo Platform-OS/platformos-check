@@ -1,8 +1,8 @@
-# Prevent unformatted schema tags (`SchemaJsonFormat`)
+# Prevent unformatted parse_json tags (`ParseJsonFormat`)
 
 _Version 1.9.0+_
 
-This check exists to ensure the JSON in your schemas is pretty.
+This check exists to ensure the JSON in your parses is pretty.
 
 It exists as a facilitator for its auto-correction. This way you can right-click fix the problem.
 
@@ -13,7 +13,7 @@ The following examples contain code snippets that either fail or pass this check
 ### &#x2717; Fail
 
 ```liquid
-{% schema %}
+{% parse_json my_json %}
 {
   "locales": {
 "en": {
@@ -22,13 +22,13 @@ The following examples contain code snippets that either fail or pass this check
           "fr": { "title": "Bienvenue", "product": "Produit" }
   }
 }
-{% endschema %}
+{% endparse_json %}
 ```
 
 ### &#x2713; Pass
 
 ```liquid
-{% schema %}
+{% parse_json my_json %}
 {
   "locales": {
     "en": {
@@ -41,7 +41,7 @@ The following examples contain code snippets that either fail or pass this check
     }
   }
 }
-{% endschema %}
+{% endparse_json %}
 ```
 
 ## Options
@@ -49,7 +49,7 @@ The following examples contain code snippets that either fail or pass this check
 The following example contains the default configuration for this check:
 
 ```yaml
-SchemaJsonFormat:
+ParseJsonFormat:
   enabled: true
   severity: style
   start_level: 0
@@ -60,17 +60,17 @@ SchemaJsonFormat:
 | --- | --- |
 | enabled | Whether the check is enabled. |
 | severity | The [severity](https://shopify.dev/themes/tools/platformos-check/configuration#check-severity) of the check. |
-| start_level | The indentation level. If you prefer an indented schema, set this to 1. |
+| start_level | The indentation level. If you prefer an indented parse_json, set this to 1. |
 | indent | The character(s) used for indentation levels. |
 
 ## Disabling this check
 
- This check is safe to disable. You might want to disable this check if you do not care about the visual appearance of your schema tags.
+ This check is safe to disable. You might want to disable this check if you do not care about the visual appearance of your parse_json tags.
 
 ## Resources
 
 - [Rule source][codesource]
 - [Documentation source][docsource]
 
-[codesource]: /lib/platformos_check/checks/schema_json_format.rb
-[docsource]: /docs/checks/schema_json_format.md
+[codesource]: /lib/platformos_check/checks/parse_json_format.rb
+[docsource]: /docs/checks/parse_json_format.md

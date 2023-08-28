@@ -2,17 +2,17 @@
 
 require "test_helper"
 
-class SchemaJsonFormatTest < Minitest::Test
+class ParseJsonFormatTest < Minitest::Test
   def test_valid
     skip "To be removed"
     offenses = analyze_platformos_app(
-      PlatformosCheck::SchemaJsonFormat.new(start_level: 1),
+      PlatformosCheck::ParseJsonFormat.new(start_level: 1),
       "app/views/pages/index.liquid" => <<~END
-        {% schema %}
+        {% parse_json my_json %}
           {
             "hello": "world"
           }
-        {% endschema %}
+        {% end_parsejson %}
       END
     )
 
@@ -22,13 +22,13 @@ class SchemaJsonFormatTest < Minitest::Test
   def test_does_not_report_on_invalid_json
     skip "To be removed"
     offenses = analyze_platformos_app(
-      PlatformosCheck::SchemaJsonFormat.new(start_level: 1),
+      PlatformosCheck::ParseJsonFormat.new(start_level: 1),
       "app/views/pages/index.liquid" => <<~END
-        {% schema %}
+        {% parse_json my_json %}
           {
             "hello": "world",
           }
-        {% endschema %}
+        {% end_parsejson %}
       END
     )
 
@@ -38,11 +38,11 @@ class SchemaJsonFormatTest < Minitest::Test
   def test_reports_offenses
     skip "To be removed"
     offenses = analyze_platformos_app(
-      PlatformosCheck::SchemaJsonFormat.new(start_level: 1),
+      PlatformosCheck::ParseJsonFormat.new(start_level: 1),
       "app/views/pages/index.liquid" => <<~END
-        {% schema %}
+        {% parse_json my_json %}
           { "hello": "world" }
-        {% endschema %}
+        {% end_parsejson %}
       END
     )
 
@@ -54,8 +54,8 @@ class SchemaJsonFormatTest < Minitest::Test
   def test_fix_offenses
     skip "To be removed"
     expected_source = {
-      "sections/product.liquid" => <<~END
-        {% schema %}
+      "app/views/partials/product.liquid" => <<~END
+        {% parse_json my_json %}
           {
             "locales": {
               "en": {
@@ -68,14 +68,14 @@ class SchemaJsonFormatTest < Minitest::Test
               }
             }
           }
-        {% endschema %}
+        {% end_parsejson %}
       END
     }
 
     source = fix_platformos_app(
-      PlatformosCheck::SchemaJsonFormat.new(start_level: 1),
-      "sections/product.liquid" => <<~END
-        {% schema %}
+      PlatformosCheck::ParseJsonFormat.new(start_level: 1),
+      "app/views/partials/product.liquid" => <<~END
+        {% parse_json my_json %}
           {
             "locales": {
             "en": {
@@ -84,7 +84,7 @@ class SchemaJsonFormatTest < Minitest::Test
                 "fr": { "title": "Bienvenue", "missing": "TODO" }
             }
           }
-        {% endschema %}
+        {% end_parsejson %}
       END
     )
 

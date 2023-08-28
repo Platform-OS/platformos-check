@@ -106,7 +106,7 @@ AssetSizeAppBlockJavaScript:
 DeprecatedGlobalAppBlockType:
   enabled: true
 
-SchemaJsonFormat:
+ParseJsonFormat:
   enabled: true
   start_level: 0
   indent: '  '

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PlatformosCheck
-  class SchemaHelper
+  class JsonHelper
     # Deeply sets a value in a hash. Accepts both arrays and strings for path.
     def self.set(hash, path, value)
       path = path.split('.') if path.is_a?(String)
@@ -34,7 +34,7 @@ module PlatformosCheck
     #
     # e.g.
     #
-    # schema = {
+    # json = {
     #   "deep" => [
     #     { "id" => "hi" },
     #     { "id" => "oh" },
@@ -47,17 +47,17 @@ module PlatformosCheck
     #       { "id" => "oh" },
     #     ],
     #   },
-    #   SchemaHelper.schema_corrector(schema, "deep.hi.ho", "ho")
+    #   JsonHelper.json_corrector(json, "deep.hi.ho", "ho")
     # )
-    def self.schema_corrector(schema, path, value)
-      return schema unless schema.is_a?(Hash)
+    def self.json_corrector(json, path, value)
+      return json unless json.is_a?(Hash)
 
       path = path.split('.') if path.is_a?(String)
-      path.each_with_index.reduce(schema) do |pointer, (token, index)|
+      path.each_with_index.reduce(json) do |pointer, (token, index)|
         case pointer
         when Array
           pointer.each do |item|
-            schema_corrector(item, path.drop(1), value)
+            json_corrector(item, path.drop(1), value)
           end
 
         when Hash
@@ -67,7 +67,7 @@ module PlatformosCheck
           pointer[token].nil? && pointer["id"] == token ? pointer : pointer[token]
         end
       end
-      schema
+      json
     end
   end
 end
