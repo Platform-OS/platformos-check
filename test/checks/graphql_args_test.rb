@@ -3,28 +3,48 @@
 require "test_helper"
 
 class GraphqlArgsTest < Minitest::Test
-  def test_report_unknown_argument
-    offenses = render_graphql_markup('{% graphql res = "records/search", id: 10, page: 2, invalid: "Hey", key: "hello" %}')
+  def test_query_unknown_argument
+    offenses = render_query_graphql('{% graphql res = "records/search", id: 10, page: 2, invalid: "Hey", key: "hello" %}')
 
     assert_offenses(<<~END, offenses)
       Undefined argument `invalid` provided to `app/graphql/records/search.graphql` at app/views/pages/index.liquid:1
     END
   end
 
-  def test_does_not_report_valid_arguments
-    offenses = render_graphql_markup('{% graphql res = "records/search", id: 10, page: 2, key: "hello" %}')
+  def test_mutation_unknown_argument
+    offenses = render_mutation_graphql('{% graphql res = "dummy/create", name: "John", creator_id: 1, coment: "Whopse, typo" %}')
+
+    assert_offenses(<<~END, offenses)
+      Undefined argument `coment` provided to `app/graphql/dummy/create.graphql` at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_query_does_not_report_valid_arguments
+    offenses = render_query_graphql('{% graphql res = "records/search", id: 10, page: 2, key: "hello" %}')
 
     assert_offenses("", offenses)
   end
 
-  def test_does_not_report_when_using_args
-    offenses = render_graphql_markup('{% graphql res = "records/search", args: id: 10, page: 2, key: "hello" %}')
+  def test_mutation_does_not_report_valid_arguments
+    offenses = render_mutation_graphql('{% graphql res = "dummy/create", name: "John", creator_id: 1, comment: "Hello" %}')
 
     assert_offenses("", offenses)
   end
 
-  def test_report_not_providing_required_argument
-    offenses = render_graphql_markup('{% graphql res = "records/search", page: 10 %}')
+  def test_query_does_not_report_when_using_args
+    offenses = render_query_graphql('{% graphql res = "records/search", args: id: 10, page: 2, key: "hello" %}')
+
+    assert_offenses("", offenses)
+  end
+
+  def test_mutation_does_not_report_when_using_args
+    offenses = render_mutation_graphql('{% graphql res = "dummy/create", args: name: "John", creator_id: 1, comment: "Hello" %}')
+
+    assert_offenses("", offenses)
+  end
+
+  def test_query_not_providing_required_argument
+    offenses = render_query_graphql('{% graphql res = "records/search", page: 10 %}')
 
     assert_offenses(<<~END, offenses)
       Required argument `id` not provided to `app/graphql/records/search.graphql` at app/views/pages/index.liquid:1
@@ -32,7 +52,16 @@ class GraphqlArgsTest < Minitest::Test
     END
   end
 
-  def test_report_parsing_error
+  def test_mutation_not_providing_required_argument
+    offenses = render_mutation_graphql('{% graphql res = "dummy/create" %}')
+
+    assert_offenses(<<~END, offenses)
+      Required argument `creator_id` not provided to `app/graphql/dummy/create.graphql` at app/views/pages/index.liquid:1
+      Required argument `name` not provided to `app/graphql/dummy/create.graphql` at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_query_parsing_error
     offenses = analyze_platformos_app(
       PlatformosCheck::GraphqlArgs.new,
       "app/views/pages/index.liquid" => '{% graphql res = "records/search", key: "hello" %}',
@@ -71,9 +100,59 @@ class GraphqlArgsTest < Minitest::Test
     END
   end
 
+  def test_query_does_not_crash_when_fragments_used
+    offenses = analyze_platformos_app(
+      PlatformosCheck::GraphqlArgs.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {%- graphql approval = 'modules/admin/api/records/get',
+          id: context.params.id,
+          with_dependants: with_dependants
+          | dig: 'records', 'results'
+          | first
+        -%}
+      END
+      "modules/admin/public/graphql/api/records/get.graphql" => <<~END
+        fragment UserFields on User {
+          id
+          email
+          first_name: property(name: "first_name")
+          last_name: property(name: "last_name")
+          slug: property(name: "slug")
+        }
+
+        query get($id: ID, $user_id: String, $with_dependants: Boolean = false) {
+          records(
+            per_page: 1
+            filter: {
+              id: { value: $id }
+              table: { value: "approval" }
+              properties: [{ name: "user_id", value: $user_id }]
+            }
+          ) {
+            results {
+              id
+              background_checked_by: related_user(
+                join_on_property: "background_checked_by"
+              ) {
+                ...UserFields
+              }
+              final_background_checked_by: related_user(
+                join_on_property: "final_background_checked_by"
+              ) {
+                ...UserFields
+              }
+            }
+          }
+        }
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
   private
 
-  def render_graphql_markup(graphql_tag)
+  def render_query_graphql(graphql_tag)
     analyze_platformos_app(
       PlatformosCheck::GraphqlArgs.new,
       "app/views/pages/index.liquid" => graphql_tag,
@@ -106,6 +185,40 @@ class GraphqlArgsTest < Minitest::Test
           }
         }
 
+      END
+    )
+  end
+
+  def render_mutation_graphql(graphql_tag)
+    analyze_platformos_app(
+      PlatformosCheck::GraphqlArgs.new,
+      "app/views/pages/index.liquid" => graphql_tag,
+      "app/graphql/dummy/create.graphql" => <<~END
+        mutation dummy_create(
+          $name: String!
+          $creator_id: String!
+          $comment: String
+        ) {
+          record: record_create(
+            record: {
+              table: "dummy"
+              properties: [
+                { name: "name" value: $name }
+                { name: "creator_id" value: $creator_id }
+                { name: "comment" value: $comment }
+              ]
+            }
+          ){
+            id
+            created_at
+            deleted_at
+            type: table
+
+            name: property(name: "name")
+            comment: property(name: "comment")
+            creator_id: property(name: "creator_id")
+          }
+        }
       END
     )
   end
