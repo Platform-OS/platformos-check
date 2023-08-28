@@ -123,12 +123,6 @@ AssetSizeAppBlockJavaScript:
   ignore: []
   threshold_in_bytes: 10_000
 
-AssetSizeAppBlockCSS:
-  enabled: true
-  severity: suggestion
-  ignore: []
-  threshold_in_bytes: 100_000
-
 PaginationSize:
   enabled: true
   ignore: []
