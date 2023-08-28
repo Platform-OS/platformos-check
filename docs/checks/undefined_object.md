@@ -24,6 +24,20 @@ This check is aimed at eliminating undefined object errors.
 {% endif %}
 ```
 
+```liquid
+{% function res = 'my_function' %}
+```
+
+```liquid
+{% liquid
+  # my_function body
+  assign my_arg = my_arg: default nil
+  return my_arg
+%}
+```
+
+
+
 ## Check Options
 
 The default configuration for this check is the following:

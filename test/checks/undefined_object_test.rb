@@ -450,6 +450,22 @@ class UndefinedObjectTest < Minitest::Test
     END
   end
 
+  def test_does_not_report_on_default_function_argument
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new(exclude_partials: false),
+      "app/views/pages/a.liquid" => <<~END,
+        {% function b = 'b_function' %}
+        {{ b }}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% assign my_arg = my_arg | default: nil %}
+        {% return my_arg %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
   def test_does_not_report_when_graphql_is_used
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_partials: false),
