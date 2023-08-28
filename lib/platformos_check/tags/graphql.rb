@@ -7,7 +7,7 @@ module PlatformosCheck
       INLINE_SYNTAX = /(#{Liquid::QuotedFragment}+)(\s*(#{Liquid::QuotedFragment}+))?/o
       CLOSE_TAG_SYNTAX = /\A(.*)(?-mix:\{%-?)\s*(\w+)\s*(.*)?(?-mix:%\})\z/m # based on Liquid::Raw::FullTokenPossiblyInvalid
 
-      attr_reader :to, :from, :inline_query, :value_expr, :partial_name
+      attr_reader :to, :from, :inline_query, :value_expr, :partial_name, :attributes_expr
 
       def initialize(tag_name, markup, options)
         if markup =~ QUERY_NAME_SYNTAX

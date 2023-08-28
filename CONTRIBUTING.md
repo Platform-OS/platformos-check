@@ -38,6 +38,7 @@ Before configuring your IDE, run the following commands in a terminal:
       export PLATFORMOS_CHECK_DEBUG_LOG_FILE="/tmp/platformos-check-debug.log"
       touch "$PLATFORMOS_CHECK_DEBUG_LOG_FILE"
       gem env &>/dev/null
+      bundle install &>/dev/null
       bin/platformos-check-language-server
       EOF
       ```
@@ -55,20 +56,26 @@ TODO
 If you use `coc.nvim` as your completion engine, add this to your CocConfig:
 
 ```json
-"languageserver": {
-  "platformos-check": {
-    "command": "/Users/<YOUR_USERNAME>/bin/platformos-check-language-server",
-    "trace.server": "verbose",
-    "filetypes": ["liquid"],
-    "rootPatterns": [".platformos-check.yml, .pos"],
-    "settings": {
-      "platformosCheck": {
-        "checkOnSave": true,
-        "checkOnEnter": true,
-        "checkOnChange": false
+{
+  "languageserver": {
+    "platformos-check": {
+      "command": "/Users/<YOUR_USERNAME>/bin/platformos-check-language-server",
+      "trace.server": "verbose",
+      "filetypes": ["liquid", "graphql", "yaml", "yml"],
+      "rootPatterns": [".platformos-check.yml", ".pos"],
+      "settings": {
+        "platformosCheck": {
+          "checkOnSave": true,
+          "checkEnter": true,
+          "onlySingleFileChecks": false,
+          "checkOnChange": true,
+          "checkOnOpen": true
+        }
       }
     }
   }
+}
+
 ```
 
 ### Confirm Setup

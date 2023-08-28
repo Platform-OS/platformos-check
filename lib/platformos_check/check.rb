@@ -28,6 +28,7 @@ module PlatformosCheck
       html
       yaml
       performance
+      graphql
     ]
 
     class << self
