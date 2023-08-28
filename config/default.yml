@@ -111,12 +111,6 @@ AssetSizeAppBlockJavaScript:
   ignore: []
   threshold_in_bytes: 10_000
 
-PaginationSize:
-  enabled: true
-  ignore: []
-  min_size: 1
-  max_size: 50
-
 DeprecatedGlobalAppBlockType:
   enabled: true
 
