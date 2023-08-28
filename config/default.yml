@@ -41,12 +41,6 @@ TemplateLength:
   enabled: true
   ignore: []
   max_length: 600
-  # Exclude content of {% schema %} in line count
-  exclude_schema: true
-  # Exclude content of {% stylesheet %} in line count
-  exclude_stylesheet: true
-  # Exclude content of {% javascript %} in line count
-  exclude_javascript: true
 
 UnknownFilter:
   enabled: true
@@ -97,9 +91,6 @@ ImgLazyLoading:
 HtmlParsingError:
   enabled: true
   ignore: []
-
-DeprecatedGlobalAppBlockType:
-  enabled: true
 
 ParseJsonFormat:
   enabled: true

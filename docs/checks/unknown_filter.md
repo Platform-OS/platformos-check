@@ -33,11 +33,12 @@ It is not safe to disable this rule.
 
 ## Version
 
-This check has been introduced in Theme Check 0.1.0.
+This check has been introduced in PlatformOS Check 0.0.1.
 
 ## Resources
 
-- [Shopify Filter Reference](https://shopify.dev/docs/themes/liquid/reference/filters)
+- [Liquid Filter Reference](https://documentation.platformos.com/api-reference/liquid/filters)
+- [platformOS Filter Reference](https://documentation.platformos.com/api-reference/liquid/platformos-filters)
 - [Rule Source][codesource]
 - [Documentation Source][docsource]
 

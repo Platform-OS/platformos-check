@@ -39,7 +39,7 @@ This check aims at eliminating missing `platformos-check-enable` comments.
 
 ## Version
 
-This check has been introduced in Theme Check 0.3.0.
+This check has been introduced in PlatformOS Check 0.3.0.
 
 ## Resources
 

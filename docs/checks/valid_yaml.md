@@ -37,7 +37,7 @@ It is not safe to disable this rule.
 
 ## Version
 
-This check has been introduced in Theme Check 0.0.0.
+This check has been introduced in PlatformOS Check 0.0.1.
 
 ## Resources
 

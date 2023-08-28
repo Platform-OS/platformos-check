@@ -50,7 +50,7 @@ There should be no cases where disabling this rule is needed. When it comes to r
 
 ## Version
 
-This check has been introduced in Theme Check 0.10.0.
+This check has been introduced in PlatformOS Check 0.10.0.
 
 ## Resources
 

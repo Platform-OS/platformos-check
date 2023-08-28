@@ -52,7 +52,7 @@ It's safe to disable this rule.
 
 ## Version
 
-This check has been introduced in Theme Check 0.1.0.
+This check has been introduced in PlatformOS Check 0.0.1.
 
 ## Resources
 
@@ -60,6 +60,6 @@ This check has been introduced in Theme Check 0.1.0.
 - [Rule Source][codesource]
 - [Documentation Source][docsource]
 
-[liquid]: https://shopify.dev/docs/themes/liquid/reference/tags/theme-tags#liquid
+[liquid]: https://documentation.platformos.com/api-reference/liquid/platformos-tags
 [codesource]: /lib/platformos_check/checks/liquid_tag.rb
 [docsource]: /docs/checks/liquid_tag.md

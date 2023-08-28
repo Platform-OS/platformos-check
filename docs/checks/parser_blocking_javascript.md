@@ -2,13 +2,13 @@
 
 The `defer` or `async` attributes are extremely important on script tags. When neither of those attributes are used, a script tag will block the construction and rendering of the DOM until the script is _loaded_, _parsed_ and _executed_. It also creates congestion on the Network, messes with the resource priorities and significantly delays the rendering of the page.
 
-Considering that JavaScript on Shopify themes should always be used to progressively _enhance_ the experience of the site, themes should never make use of parser-blocking script tags.
+Considering that JavaScript on platformOS apps should always be used to progressively _enhance_ the experience of the site, app should never make use of parser-blocking script tags.
 
 As a general rule, use `defer` if the order of execution matters, `async` otherwise. When in doubt, choose either one and get 80/20 of the benefits.
 
 ## Check Details
 
-This check is aimed at eliminating parser-blocking JavaScript on themes.
+This check is aimed at eliminating parser-blocking JavaScript on app.
 
 :-1: Examples of **incorrect** code for this check:
 
@@ -84,7 +84,7 @@ It is discouraged to turn this rule off.
 
 ## Version
 
-This check has been introduced in Theme Check 0.3.0.
+This check has been introduced in PlatformOS Check 0.0.1.
 
 ## Resources
 

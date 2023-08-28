@@ -15,11 +15,11 @@ This check is aimed at eliminating ugly Liquid:
 {{x }}
 
 <!-- After commas and semicolons -->
-{% form 'type',  object, key:value %}
-{% endform %}
+{% background source_name: 'type',  object, key:value %}
+{% endbackground %}
 
 <!-- Arround filter pipelines -->
-{{ url  | asset_url | img_tag }}
+{{ url  | asset_url | strip }}
 {% assign my_upcase_string = "Hello world"| upcase %}
 
 <!-- Arround symbol operators -->
@@ -32,8 +32,8 @@ This check is aimed at eliminating ugly Liquid:
 ```liquid
 {% assign x = 1 %}
 {{ x }}
-{% form 'type', object, key: value, key2: value %}
-{% endform %}
+{% background source_name: 'type', object, key: value, key2: value %}
+{% endbackground %}
 {{ "ignore:stuff,  indeed" }}
 {% render 'product-card',
   product_card_product: product_recommendation,
@@ -41,7 +41,7 @@ This check is aimed at eliminating ugly Liquid:
   media_size: section.settings.product_recommendations_image_ratio,
   center_align_text: section.settings.center_align_text
 %}
-{{ url | asset_url | img_tag }}
+{{ url | asset_url | strip }}
 {% assign my_upcase_string = "Hello world" | upcase %}
 {%- if target == product and product.price_varies -%}
 {%- if product.featured_media.width >= 165 -%}
@@ -78,14 +78,12 @@ If you don't care about the look of your code.
 
 ## Version
 
-This check has been introduced in Theme Check 0.1.0.
+This check has been introduced in PlatformOS Check 0.0.1.
 
 ## Resources
 
-- [Liquid Style Guide][styleguide]
 - [Rule Source][codesource]
 - [Documentation Source][docsource]
 
-[styleguide]: https://github.com/Shopify/liquid-style-guide
 [codesource]: /lib/platformos_check/checks/space_inside_braces.rb
 [docsource]: /docs/checks/space_inside_braces.md

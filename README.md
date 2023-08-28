@@ -6,7 +6,7 @@ PlaformOS Check is a tool that helps you follow platformOS recommendations & bes
 
 ## Supported Checks
 
-Theme Check currently checks for the following:
+PlatformOS Check currently checks for the following:
 
 ✅ Liquid syntax errors
 ✅ JSON syntax errors

@@ -1,6 +1,6 @@
 # Prevent missing directories (`RequiredDirectories`)
 
-This check exists to warn theme developers about missing required directories in their structure.
+This check exists to warn platformOS developers about missing directories in their structure.
 
 ## Check Options
 
@@ -13,11 +13,11 @@ RequiredDirectories:
 
 ## Version
 
-This check has been introduced in Theme Check 0.1.0.
+This check has been introduced in PlatformOS Check 0.0.1.
 
 ## Resources
 
-- [Shopify Theme File Structure](https://shopify.dev/tutorials/develop-theme-files)
+- [platformOS Directory Structure](https://documentation.platformos.com/developer-guide/platformos-workflow/codebase#required-directory-structure)
 - [Rule Source][codesource]
 - [Documentation Source][docsource]
 

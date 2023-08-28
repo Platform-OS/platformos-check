@@ -1,6 +1,6 @@
 # Remove unused partials in app (`UnusedPartial`)
 
-This check warns the user about partials that are not used (Could not find a `render` tag that uses that partial)
+This check warns the user about partials that are not used (Could not find a `render` or `function` tag that uses that partial)
 
 ## Check Details
 
@@ -21,7 +21,7 @@ It's safe to disable this rule.
 
 ## Version
 
-This check has been introduced in Theme Check 0.1.0.
+This check has been introduced in PlatformOS Check 0.0.1.
 
 ## Resources
 

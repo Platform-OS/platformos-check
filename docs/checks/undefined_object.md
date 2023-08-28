@@ -48,7 +48,8 @@ This check has been introduced in Theme Check 0.1.0.
 
 ## Resources
 
-- [Shopify Object Reference](https://shopify.dev/docs/themes/liquid/reference/objects)
+- [platformOS Context](https://documentation.platformos.com/developer-guide/variables/context-variable#displaying-the-context-object)
+- [platformOS Object Reference](https://documentation.platformos.com/api-reference/liquid/objects)
 - [Rule Source][codesource]
 - [Documentation Source][docsource]
 

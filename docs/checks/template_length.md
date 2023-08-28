@@ -1,6 +1,6 @@
 # Discourage the use of large template files (`TemplateLength`)
 
-This check exists to discourage the use of large template files. Use snippets to componentize your theme.
+This check exists to discourage the use of large template files. Use partials and functions to componentize your app.
 
 ## Check Details
 
@@ -22,26 +22,11 @@ The default configuration for this check is the following:
 TemplateLength:
   enabled: true
   max_length: 600
-  exclude_schema: true
-  exclude_stylesheet: true
-  exclude_javascript: true
 ```
 
 ### `max_length`
 
 The `max_length` (Default: `200`) option determines the maximum number of lines allowed inside a liquid file.
-
-### `exclude_schema`
-
-The `exclude_schema` (Default: `true`) option determines if the lines inside `{% schema %}` blocks from a template should be excluded from the line count.
-
-### `exclude_stylesheet`
-
-The `exclude_stylesheet` (Default: `true`) option determines if the lines inside `{% stylesheet %}` blocks from a template should be excluded from the line count.
-
-### `exclude_javascript`
-
-The `exclude_javascript` (Default: `true`) option determines if the lines inside `{% javascript %}` blocks from a template should be excluded from the line count.
 
 ## When Not To Use It
 
@@ -49,7 +34,7 @@ If you don't care about template lengths, then it's safe to disable this rule.
 
 ## Version
 
-This check has been introduced in Theme Check 0.1.0.
+This check has been introduced in PlatformOS Check 0.0.1.
 
 ## Resources
 

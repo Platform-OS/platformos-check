@@ -1,4 +1,4 @@
-# Prevent missing required objects in theme.liquid (`RequiredLayoutThemeObject`)
+# Prevent missing required objects in layouts (`RequiredLayoutThemeObject`)
 
 ## Check Details
 
@@ -15,7 +15,7 @@ RequiredLayoutObject:
 
 ## Version
 
-This check has been introduced in Theme Check 0.1.0.
+This check has been introduced in PlatformOS Check 0.0.1.
 
 ## Resources
 

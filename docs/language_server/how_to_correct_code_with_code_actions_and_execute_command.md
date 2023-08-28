@@ -1,6 +1,6 @@
 # How to correct code with Code Actions, Commands and Workspace Edits
 
-The [Language Server Protocol (LSP)][lsp] empowers Language Server developers to offer refactorings, quick fixes and the execution of commands to their users. In Theme Check, we take advantage of this to offer quick fixes and autocorrection to users.
+The [Language Server Protocol (LSP)][lsp] empowers Language Server developers to offer refactorings, quick fixes and the execution of commands to their users. In PlatformOS Check, we take advantage of this to offer quick fixes and autocorrection to users.
 
 This document exists to give you an overview of how that works.
 
@@ -184,7 +184,7 @@ Think edit file, create file, delete file but as data.
 
 A [Diagnostic][lspdiagnostic] is the Language Server Protocol construct for errors, warnings and information bubbles.
 
-In our case, diagnostics are Theme Check offenses.
+In our case, diagnostics are PlatformOS Check offenses.
 
 They appear in the Problems tab and in the gutter of the editor.
 

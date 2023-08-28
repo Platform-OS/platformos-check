@@ -1,6 +1,6 @@
 # Report HTML parsing errors (`HtmlParsingError`)
 
-Report errors preventing the HTML from being parsed and analyzed by Theme Check.
+Report errors preventing the HTML from being parsed and analyzed by PlatformOS Check.
 
 ## Check Details
 
@@ -39,7 +39,7 @@ If you don't care about HTML offenses.
 
 ## Version
 
-This check has been introduced in Theme Check 0.10.2.
+This check has been introduced in PlatformOS Check 0.0.1.
 
 ## Resources
 

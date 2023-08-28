@@ -1,6 +1,6 @@
 # Prevent missing templates (`MissingTemplate`)
 
-This check exists to prevent rendering resources with the `render` tag, `section` tag (and the deprecated `include` tag) that do not exist.
+This check exists to prevent rendering resources with the `render` tag, `function` tag (and the deprecated `include` tag) that do not exist.
 
 ## Check Details
 
@@ -9,13 +9,13 @@ This check is aimed at preventing liquid rendering errors.
 :-1: Example of **incorrect** code for this check:
 
 ```liquid
-{% render 'snippet-that-does-not-exist' %}
+{% render 'partial-that-does-not-exist' %}
 ```
 
 :+1: Example of **correct** code for this check:
 
 ```liquid
-{% render 'article-card' %}
+{% render 'partial-that-exists' %}
 ```
 
 ## Check Options
@@ -39,22 +39,22 @@ For example:
 ```yaml
 MissingTemplate:
   ignore_missing:
-  - snippets/icon-*
+  - icon-*
 ```
 
-Would ignore offenses on `{% render 'icon-missing' %}` across all theme files.
+Would ignore offenses on `{% render 'icon-missing' %}` across app files.
 
 ```yaml
 MissingTemplate:
   ignore:
-  - templates/index.liquid
+  - modules/private-module/index.liquid
 ```
 
-Would ignore all `MissingTemplate` in `templates/index.liquid`, no mater the file being rendered.
+Would ignore all `MissingTemplate` in `modules/private-module/index.liquid`, no mater the file being rendered.
 
 ## Version
 
-This check has been introduced in Theme Check 0.1.0.
+This check has been introduced in PlatformOS Check 0.0.1.
 
 ## Resources
 
