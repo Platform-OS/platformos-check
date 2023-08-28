@@ -86,10 +86,6 @@ ParserBlockingJavaScript:
   enabled: true
   ignore: []
 
-AssetPreload:
-  enabled: true
-  ignore: []
-
 ImgWidthAndHeight:
   enabled: true
   ignore: []

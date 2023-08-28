@@ -14,7 +14,8 @@ module PlatformosCheck
     DEPRECATION_MAP = {
       'app/schema' => %w[app/model_schemas],
       'app/smses' => %w[app/notifications/sms_notifications],
-      'app/emails' => %w[app/notifications/email_notifications]
+      'app/emails' => %w[app/notifications/email_notifications],
+      'app/api_calls' => %w[app/notifications/api_call_notifications]
     }
 
     def on_end
