@@ -33,6 +33,10 @@ SpaceInsideBraces:
   enabled: true
   ignore: []
 
+GraphqlArgs:
+  enabled: true
+  ignore: []
+
 SyntaxError:
   enabled: true
   ignore: []
