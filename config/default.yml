@@ -106,14 +106,6 @@ ImgWidthAndHeight:
   enabled: true
   ignore: []
 
-RemoteAsset:
-  enabled: true
-  ignore: []
-
-AssetUrlFilters:
-  enabled: true
-  ignore: []
-
 ImgLazyLoading:
   enabled: true
   ignore: []
