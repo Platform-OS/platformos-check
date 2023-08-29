@@ -74,7 +74,7 @@ module PlatformosCheck
         end
 
         def remote_path(file_name)
-          return "https://documentation.platformos.com/api/liquid/#{file_name}.json" if %w[filters objects].include?(file_name.to_s)
+          return "https://documentation.platformos.com/api/liquid/#{file_name}.json" if %w[filters objects tags].include?(file_name.to_s)
 
           # return "#{SourceIndex::BaseEntry::SHOPIFY_DEV_ROOT_URL}/#{file_name}.json" if %w(filters objects).include?(file_name.to_s)
 

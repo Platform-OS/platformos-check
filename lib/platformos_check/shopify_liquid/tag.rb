@@ -7,7 +7,7 @@ module PlatformosCheck
     module Tag
       extend self
 
-      LABELS_NOT_IN_SOURCE_INDEX = ["elsif", "ifchanged", { "schema" => "endschema" }, "when"]
+      LABELS_NOT_IN_SOURCE_INDEX = %w[elsif ifchanged catch ensure when]
 
       def labels
         @labels ||= tags_file_contents
