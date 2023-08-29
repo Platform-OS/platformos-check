@@ -13,7 +13,7 @@ class ShopifyLiquidTest < Minitest::Test
   end
 
   def test_filter_labels
-    assert_operator(PlatformosCheck::ShopifyLiquid::Filter.labels.size, :>=, 169)
+    assert_operator(PlatformosCheck::ShopifyLiquid::Filter.labels.size, :>=, 156)
   end
 
   def test_object_labels

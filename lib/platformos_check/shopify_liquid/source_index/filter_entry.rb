@@ -9,6 +9,10 @@ module PlatformosCheck
             .map { |hash| ParameterEntry.new(hash) }
         end
 
+        def aliases
+          hash['aliases'] || []
+        end
+
         def input_type
           @input_type ||= hash['syntax'].split(' | ')[0]
         end
