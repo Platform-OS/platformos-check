@@ -28,7 +28,11 @@ module PlatformosCheck
       end
 
       def variables
-        @variables ||= ast.definitions.first&.variables || []
+        @variables ||= definition&.variables || []
+      end
+
+      def definition
+        @definition ||= ast.definitions.detect { |d| d.is_a?(GraphQL::Language::Nodes::OperationDefinition) }
       end
     end
     severity :error
@@ -44,7 +48,7 @@ module PlatformosCheck
       graqphql_file = platformos_app.grouped_files[GraphqlFile][graphql_partial]
       return unless graqphql_file
 
-      provided_arguments = node.value.attributes_expr.keys
+      provided_arguments = node.value.attributes
 
       return if provided_arguments.include?('args')
 

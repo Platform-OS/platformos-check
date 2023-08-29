@@ -97,6 +97,6 @@ HtmlParsingError:
   ignore: []
 
 ParseJsonFormat:
-  enabled: true
+  enabled: false
   start_level: 0
   indent: '  '

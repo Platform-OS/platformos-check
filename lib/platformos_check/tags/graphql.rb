@@ -7,7 +7,7 @@ module PlatformosCheck
       INLINE_SYNTAX = /(#{Liquid::QuotedFragment}+)(\s*(#{Liquid::QuotedFragment}+))?/o
       CLOSE_TAG_SYNTAX = /\A(.*)(?-mix:\{%-?)\s*(\w+)\s*(.*)?(?-mix:%\})\z/m # based on Liquid::Raw::FullTokenPossiblyInvalid
 
-      attr_reader :to, :from, :inline_query, :value_expr, :partial_name, :attributes_expr
+      attr_reader :to, :from, :inline_query, :value_expr, :partial_name, :attributes_expr, :attributes
 
       def initialize(tag_name, markup, options)
         if markup =~ QUERY_NAME_SYNTAX
@@ -22,12 +22,15 @@ module PlatformosCheck
           # res | dig: 'my_query'
           after_assign_markup = Regexp.last_match(2).split('|')
           parse_markup(tag_name, after_assign_markup.shift)
+          @attributes = attributes_expr.keys
+
           after_assign_markup.unshift(@to)
           @partial_name = value_expr
           @from = Liquid::Variable.new(after_assign_markup.join('|'), options)
         elsif INLINE_SYNTAX.match?(markup)
           @inline_query = true
           parse_markup(tag_name, markup)
+          @attributes = attributes_expr.keys
           @to = @value_expr.name
         else
           raise Liquid::SyntaxError, 'Invalid syntax for graphql tag'
