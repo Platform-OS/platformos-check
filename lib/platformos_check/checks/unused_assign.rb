@@ -80,6 +80,8 @@ module PlatformosCheck
                 '_',
                 (node.start_index + offset)...(node.start_index + offset)
               )
+            when :parse_json
+              # noop
             else
               corrector.remove(node)
             end

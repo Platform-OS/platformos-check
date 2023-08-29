@@ -388,7 +388,59 @@ class UnusedAssignTest < Minitest::Test
     sources = fix_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "app/views/partials/index.liquid" => <<~END
-        {% graphql _x = 'my-mutation' %}
+        {% graphql x = 'my-mutation' %}
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_removes_unused_graphql_assign_leaves_html
+    expected_sources = {
+      "app/views/partials/index.liquid" => <<~END
+        <p>test case</p>{% graphql _x = 'my-mutation' %}
+      END
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        <p>test case</p>{% graphql x = 'my-mutation' %}
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_removes_unused_graphql_and_function_inside_liquid
+    expected_sources = {
+      "app/views/partials/index.liquid" => <<~END
+        {% liquid
+          print "Hello"
+          graphql _mylongvar = 'my-mutation', arg: 10 | dig: 'results'
+
+          function _another_result = 'my_partial', arg2: "World", name: "John"
+
+          echo "World"
+        %}
+          <p>test case</p>
+      END
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% liquid
+          print "Hello"
+          graphql mylongvar = 'my-mutation', arg: 10 | dig: 'results'
+
+          function another_result = 'my_partial', arg2: "World", name: "John"
+
+          echo "World"
+        %}
+          <p>test case</p>
       END
     )
 
