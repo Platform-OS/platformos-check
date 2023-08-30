@@ -41,19 +41,19 @@ module PlatformosCheck
       end
 
       def objects_uri
-        @objects_uri ||= "https://raw.githubusercontent.com/Shopify/platformos_app-liquid-docs/main/data/objects.json"
+        @objects_uri ||= "https://documentation.platformos.com/api/liquid/objects.json"
       end
 
       def filters_uri
-        @filters_uri ||= "https://raw.githubusercontent.com/Shopify/platformos_app-liquid-docs/main/data/filters.json"
+        @filters_uri ||= "https://documentation.platformos.com/api/liquid/filters.json"
       end
 
       def tags_uri
-        @tags_uri ||= "https://raw.githubusercontent.com/Shopify/platformos_app-liquid-docs/main/data/tags.json"
+        @tags_uri ||= "https://documentation.platformos.com/api/liquid/tags.json"
       end
 
       def revision_uri
-        @revision_uri ||= "https://raw.githubusercontent.com/Shopify/platformos_app-liquid-docs/main/data/latest.json"
+        @revision_uri ||= "https://documentation.platformos.com/api/liquid/latest.json"
       end
 
       def objects_content
