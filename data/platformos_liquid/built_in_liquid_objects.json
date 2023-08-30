@@ -29,13 +29,9 @@
   },
   {
     "properties": [
-      {
-        "name": "size",
-        "description": "Returns the number of items in an array."
-      }
     ],
     "name": "hash",
-    "description": "Hash stores key value pairs"
+    "description": "Hashes hold key value pairs."
   },
   {
     "properties": [

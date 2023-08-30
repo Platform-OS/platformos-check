@@ -210,7 +210,7 @@ module PlatformosCheck
 
       warn 'Updating documentation...'
 
-      PlatformosCheck::ShopifyLiquid::SourceManager.download
+      PlatformosCheck::PlatformosLiquid::SourceManager.download
     end
 
     def profile

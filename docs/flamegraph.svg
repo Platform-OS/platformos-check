@@ -1773,7 +1773,7 @@ g >
 text  x="242.13" y="463.5" ></text>
 /g>
 g >
-title>PlatformosCheck::ShopifyLiquid::DeprecatedFilter#alternatives (422) (1 ms, 0.03%)</title><rect x="1536.9" y="757" width="0.6" height="15.0" fill="rgb(243,43,43)" rx="2" ry="2" />
+title>PlatformosCheck::PlatformosLiquid::DeprecatedFilter#alternatives (422) (1 ms, 0.03%)</title><rect x="1536.9" y="757" width="0.6" height="15.0" fill="rgb(243,43,43)" rx="2" ry="2" />
 text  x="1539.90" y="767.5" ></text>
 /g>
 g >
@@ -2545,7 +2545,7 @@ g >
 text  x="457.35" y="383.5" ></text>
 /g>
 g >
-title>PlatformosCheck::ShopifyLiquid::DeprecatedFilter#all (422) (1 ms, 0.03%)</title><rect x="1537.1" y="741" width="0.4" height="15.0" fill="rgb(218,73,20)" rx="2" ry="2" />
+title>PlatformosCheck::PlatformosLiquid::DeprecatedFilter#all (422) (1 ms, 0.03%)</title><rect x="1537.1" y="741" width="0.4" height="15.0" fill="rgb(218,73,20)" rx="2" ry="2" />
 text  x="1540.07" y="751.5" ></text>
 /g>
 g >
@@ -4697,7 +4697,7 @@ g >
 text  x="152.15" y="607.5" ></text>
 /g>
 g >
-title>PlatformosCheck::ShopifyLiquid::Object#plus_labels (1) (2 ms, 0.05%)</title><rect x="1716.9" y="869" width="0.7" height="15.0" fill="rgb(210,40,33)" rx="2" ry="2" />
+title>PlatformosCheck::PlatformosLiquid::Object#plus_labels (1) (2 ms, 0.05%)</title><rect x="1716.9" y="869" width="0.7" height="15.0" fill="rgb(210,40,33)" rx="2" ry="2" />
 text  x="1719.88" y="879.5" ></text>
 /g>
 g >
@@ -11209,7 +11209,7 @@ g >
 <text  x="647.31" y="607.5" >ThemeChec..</text>
 </g>
 <g >
-<title>PlatformosCheck::ShopifyLiquid::Filter#labels (313) (6 ms, 0.16%)</title><rect x="1291.0" y="677" width="2.6" height="15.0" fill="rgb(249,110,53)" rx="2" ry="2" />
+<title>PlatformosCheck::PlatformosLiquid::Filter#labels (313) (6 ms, 0.16%)</title><rect x="1291.0" y="677" width="2.6" height="15.0" fill="rgb(249,110,53)" rx="2" ry="2" />
 <text  x="1293.96" y="687.5" ></text>
 </g>
 <g >
@@ -14941,7 +14941,7 @@ g >
 <text  x="275.89" y="655.5" ></text>
 </g>
 <g >
-<title>PlatformosCheck::ShopifyLiquid::DeprecatedFilter#alternatives (254) (0 ms, 0.00%)</title><rect x="1233.6" y="661" width="0.1" height="15.0" fill="rgb(244,86,44)" rx="2" ry="2" />
+<title>PlatformosCheck::PlatformosLiquid::DeprecatedFilter#alternatives (254) (0 ms, 0.00%)</title><rect x="1233.6" y="661" width="0.1" height="15.0" fill="rgb(244,86,44)" rx="2" ry="2" />
 <text  x="1236.55" y="671.5" ></text>
 </g>
 <g >
@@ -17773,7 +17773,7 @@ g >
 <text  x="498.54" y="495.5" >Them..</text>
 </g>
 <g >
-<title>PlatformosCheck::ShopifyLiquid::Object#labels (1) (2 ms, 0.05%)</title><rect x="1716.1" y="869" width="0.8" height="15.0" fill="rgb(246,226,24)" rx="2" ry="2" />
+<title>PlatformosCheck::PlatformosLiquid::Object#labels (1) (2 ms, 0.05%)</title><rect x="1716.1" y="869" width="0.8" height="15.0" fill="rgb(246,226,24)" rx="2" ry="2" />
 <text  x="1719.10" y="879.5" ></text>
 </g>
 <g >

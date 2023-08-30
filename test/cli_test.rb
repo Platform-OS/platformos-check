@@ -227,7 +227,7 @@ class CliTest < Minitest::Test
   end
 
   def test_update_docs
-    PlatformosCheck::ShopifyLiquid::SourceManager.expects(:download)
+    PlatformosCheck::PlatformosLiquid::SourceManager.expects(:download)
 
     storage = make_file_system_storage(
       'layout/platformos_app.liquid' => '',

@@ -26,7 +26,7 @@ module PlatformosCheck
     def on_variable(node)
       used_filters = node.filters.map { |name, *_rest| name }
       used_filters.each do |filter|
-        alternatives = ShopifyLiquid::DeprecatedFilter.alternatives(filter)
+        alternatives = PlatformosLiquid::DeprecatedFilter.alternatives(filter)
         next unless alternatives
 
         case filter

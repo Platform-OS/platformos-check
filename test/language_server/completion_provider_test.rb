@@ -57,7 +57,7 @@ module PlatformosCheck
       private
 
       def make_entry(hash = {})
-        ShopifyLiquid::SourceIndex::BaseEntry.new(hash)
+        PlatformosLiquid::SourceIndex::BaseEntry.new(hash)
       end
 
       def make_provider

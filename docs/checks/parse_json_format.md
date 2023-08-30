@@ -59,7 +59,7 @@ ParseJsonFormat:
 | Parameter | Description |
 | --- | --- |
 | enabled | Whether the check is enabled. |
-| severity | The [severity](https://shopify.dev/themes/tools/platformos-check/configuration#check-severity) of the check. |
+| severity | The [severity](https://documentation.platformos.com/developer-guide/platformos-check/platformos-check#check-severity) of the check. |
 | start_level | The indentation level. If you prefer an indented parse_json, set this to 1. |
 | indent | The character(s) used for indentation levels. |
 

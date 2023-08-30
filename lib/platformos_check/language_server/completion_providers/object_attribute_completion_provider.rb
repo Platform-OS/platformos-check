@@ -34,7 +34,7 @@ module PlatformosCheck
       end
 
       def property_to_completion(prop)
-        content = ShopifyLiquid::Documentation.render_doc(prop)
+        content = PlatformosLiquid::Documentation.render_doc(prop)
 
         {
           label: prop.name,

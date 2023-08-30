@@ -101,9 +101,9 @@ module PlatformosCheck
     end
 
     def system_translations(path)
-      return ShopifyLiquid::SystemTranslations.translations_hash if path.empty?
+      return PlatformosLiquid::SystemTranslations.translations_hash if path.empty?
 
-      ShopifyLiquid::SystemTranslations.translations_hash.dig(*path) || {}
+      PlatformosLiquid::SystemTranslations.translations_hash.dig(*path) || {}
     end
   end
 end

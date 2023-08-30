@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+require_relative 'platformos_liquid/deprecated_filter'
+require_relative 'platformos_liquid/documentation'
+require_relative 'platformos_liquid/filter'
+require_relative 'platformos_liquid/object'
+require_relative 'platformos_liquid/source_manager'
+require_relative 'platformos_liquid/source_index'
+require_relative 'platformos_liquid/system_translations'
+require_relative 'platformos_liquid/tag'
+
+require_relative 'platformos_liquid/source_index/base_entry'
+require_relative 'platformos_liquid/source_index/filter_entry'
+require_relative 'platformos_liquid/source_index/object_entry'
+require_relative 'platformos_liquid/source_index/parameter_entry'
+require_relative 'platformos_liquid/source_index/property_entry'
+require_relative 'platformos_liquid/source_index/return_type_entry'
+require_relative 'platformos_liquid/source_index/tag_entry'
+require_relative 'platformos_liquid/source_index/base_state'
+require_relative 'platformos_liquid/source_index/filter_state'
+require_relative 'platformos_liquid/source_index/object_state'
+require_relative 'platformos_liquid/source_index/tag_state'

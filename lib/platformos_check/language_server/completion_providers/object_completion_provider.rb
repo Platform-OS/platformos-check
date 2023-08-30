@@ -11,7 +11,7 @@ module PlatformosCheck
         return [] unless variable_lookup.lookups.empty?
         return [] if content[context.cursor - 1] == "."
 
-        ShopifyLiquid::SourceIndex
+        PlatformosLiquid::SourceIndex
           .objects
           .select { |object| object.name.start_with?(partial(variable_lookup)) }
           .map { |object| object_to_completion(object) }
@@ -24,7 +24,7 @@ module PlatformosCheck
       private
 
       def object_to_completion(object)
-        content = ShopifyLiquid::Documentation.render_doc(object)
+        content = PlatformosLiquid::Documentation.render_doc(object)
 
         {
           label: object.name,
