@@ -61,7 +61,7 @@ module PlatformosCheck
       end
 
       def find_object(object_name)
-        ShopifyLiquid::SourceIndex
+        PlatformosLiquid::SourceIndex
           .objects
           .find { |entry| entry.name == object_name }
       end

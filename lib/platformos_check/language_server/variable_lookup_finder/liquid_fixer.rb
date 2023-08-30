@@ -95,7 +95,7 @@ module PlatformosCheck
         end
 
         def tag_regex(tag_name)
-          ShopifyLiquid::Tag.tag_regex(tag_name)
+          PlatformosLiquid::Tag.tag_regex(tag_name)
         end
       end
     end

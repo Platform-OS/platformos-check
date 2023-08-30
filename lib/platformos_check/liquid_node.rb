@@ -477,10 +477,7 @@ module PlatformosCheck
         @tag_markup = source[tag_start...tag_end]
         return @tag_markup
 
-      # See https://github.com/Platform-OS/platformos-lsp/pull/423/files#r701936559 for a detailed explanation
-      # of why we're doing the check below.
-      #
-      # TL;DR it's because line_numbers are not enough to accurately
+      # because line_numbers are not enough to accurately
       # determine the position of the raw markup and because that
       # markup could be present on the same line outside of a Tag. e.g.
       #

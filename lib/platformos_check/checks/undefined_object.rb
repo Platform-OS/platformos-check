@@ -96,7 +96,6 @@ module PlatformosCheck
 
     def on_include(_node)
       # NOOP: we purposely do nothing on `include` since it is deprecated
-      #   https://shopify.dev/docs/platformos_apps/liquid/reference/tags/deprecated-tags#include
     end
 
     def on_render(node)
@@ -138,21 +137,13 @@ module PlatformosCheck
     end
 
     def on_end
-      all_global_objects = PlatformosCheck::ShopifyLiquid::Object.labels
+      all_global_objects = PlatformosCheck::PlatformosLiquid::Object.labels
       all_global_objects.freeze
-
-      shopify_plus_objects = PlatformosCheck::ShopifyLiquid::Object.plus_labels
-      shopify_plus_objects.freeze
-
-      platformos_app_app_extension_objects = PlatformosCheck::ShopifyLiquid::Object.platformos_app_app_extension_labels
-      platformos_app_app_extension_objects.freeze
 
       each_template do |(_name, info)|
         if info.app_file.notification?
           # NOTE: `data` comes from graphql for notifications
           check_object(info, all_global_objects + ['data'])
-        elsif config_type == :platformos_app_app_extension
-          check_object(info, all_global_objects + platformos_app_app_extension_objects)
         else
           check_object(info, all_global_objects)
         end

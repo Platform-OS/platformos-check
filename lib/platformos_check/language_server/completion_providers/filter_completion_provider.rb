@@ -56,8 +56,8 @@ module PlatformosCheck
       end
 
       def available_filters_for(input_type)
-        filters = ShopifyLiquid::SourceIndex.filters
-                                            .select { |filter| input_type.nil? || filter.input_type == input_type }
+        filters = PlatformosLiquid::SourceIndex.filters
+                                               .select { |filter| input_type.nil? || filter.input_type == input_type }
         return all_labels if filters.empty?
         return filters if input_type == INPUT_TYPE_VARIABLE
 
@@ -88,7 +88,7 @@ module PlatformosCheck
       end
 
       def filter_to_completion(filter)
-        content = ShopifyLiquid::Documentation.render_doc(filter)
+        content = PlatformosLiquid::Documentation.render_doc(filter)
 
         {
           label: filter.name,

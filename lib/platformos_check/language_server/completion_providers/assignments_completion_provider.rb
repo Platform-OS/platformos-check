@@ -22,7 +22,7 @@ module PlatformosCheck
       private
 
       def object_to_completion(label, object)
-        content = ShopifyLiquid::Documentation.object_doc(object)
+        content = PlatformosLiquid::Documentation.object_doc(object)
 
         {
           label:,

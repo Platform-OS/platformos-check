@@ -46,9 +46,9 @@ end
 
 desc("Download theme-liquid-docs")
 task :download_theme_liquid_docs do
-  require 'platformos_check/shopify_liquid/source_manager'
+  require 'platformos_check/platformos_liquid/source_manager'
 
-  PlatformosCheck::ShopifyLiquid::SourceManager.download
+  PlatformosCheck::PlatformosLiquid::SourceManager.download
 end
 
 desc "Create a new check"

@@ -21,10 +21,10 @@ module PlatformosCheck
       end
 
       def test_suggests_assigned_variables
-        ShopifyLiquid::Documentation.stubs(:object_doc).with("cart")
-        ShopifyLiquid::Documentation.stubs(:object_doc).with("boolean")
-        ShopifyLiquid::Documentation.stubs(:object_doc).with("product")
-        ShopifyLiquid::Documentation.stubs(:object_doc).with(nil)
+        PlatformosLiquid::Documentation.stubs(:object_doc).with("cart")
+        PlatformosLiquid::Documentation.stubs(:object_doc).with("boolean")
+        PlatformosLiquid::Documentation.stubs(:object_doc).with("product")
+        PlatformosLiquid::Documentation.stubs(:object_doc).with(nil)
 
         assert_can_complete_with(@provider, @token, 'target')
         assert_can_complete_with(@provider, @token, 'product_2')

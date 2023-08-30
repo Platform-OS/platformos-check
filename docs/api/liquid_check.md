@@ -108,6 +108,8 @@ end
 
 ## Resources
 
+- [platformOS Liquid][posliquid]
 - [Liquid source][liquidsource]
 
+[posliquid]: https://documentation.platformos.com/api-reference/liquid/introduction
 [liquidsource]: https://github.com/Shopify/liquid/tree/master/lib/liquid

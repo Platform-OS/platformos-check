@@ -11,8 +11,8 @@ module PlatformosCheck
         return [] unless can_complete?(content, cursor)
 
         partial = first_word(content) || ''
-        labels = ShopifyLiquid::Tag.labels
-        labels += ShopifyLiquid::Tag.end_labels
+        labels = PlatformosLiquid::Tag.labels
+        labels += PlatformosLiquid::Tag.end_labels
         labels
           .select { |w| w.start_with?(partial) }
           .map { |tag| tag_to_completion(tag) }
@@ -28,7 +28,7 @@ module PlatformosCheck
       private
 
       def tag_to_completion(tag)
-        content = ShopifyLiquid::Documentation.tag_doc(tag)
+        content = PlatformosLiquid::Documentation.tag_doc(tag)
 
         {
           label: tag,

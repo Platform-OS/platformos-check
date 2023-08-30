@@ -30,7 +30,7 @@ GraphqlArgs:
 | Parameter | Description |
 | --- | --- |
 | enabled | Whether the check is enabled. |
-| severity | The [severity](https://shopify.dev/themes/tools/platformos-check/configuration#check-severity) of the check. |
+| severity | The [severity](https://documentation.platformos.com/developer-guide/platformos-check/platformos-check#check-severity) of the check. |
 
 ## When Not To Use It
 
