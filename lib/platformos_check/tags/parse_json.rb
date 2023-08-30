@@ -9,7 +9,7 @@ module PlatformosCheck
 
       def initialize(tag_name, markup, options)
         super
-        raise SyntaxError, options[:locale].t('errors.syntax.parse_json', default: "Syntax Error in 'capture' - Valid syntax: parse_json [var]") unless markup =~ SYNTAX
+        raise Liquid::SyntaxError, "Syntax Error in 'parse_json' - Valid syntax: parse_json [var]" unless markup =~ SYNTAX
 
         @to = Regexp.last_match(1)
       end
