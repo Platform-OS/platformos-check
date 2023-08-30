@@ -6,7 +6,6 @@ require_relative 'platformos_liquid/filter'
 require_relative 'platformos_liquid/object'
 require_relative 'platformos_liquid/source_manager'
 require_relative 'platformos_liquid/source_index'
-require_relative 'platformos_liquid/system_translations'
 require_relative 'platformos_liquid/tag'
 
 require_relative 'platformos_liquid/source_index/base_entry'
