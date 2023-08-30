@@ -56,4 +56,15 @@ class SyntaxErrorTest < Minitest::Test
       Syntax error in tag 'render' - Template name must be a quoted string at app/views/pages/index.liquid:1
     END
   end
+
+  def test_invalid_parse_json_tag
+    offenses = analyze_platformos_app(
+      PlatformosCheck::SyntaxError.new,
+      "app/views/pages/index.liquid" => "{% parse_json %}{% endparse_json %}"
+    )
+
+    assert_offenses(<<~END, offenses)
+      Syntax Error in 'parse_json' - Valid syntax: parse_json [var] at app/views/pages/index.liquid:1
+    END
+  end
 end
