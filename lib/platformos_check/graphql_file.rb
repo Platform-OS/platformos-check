@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'graphql'
+
 module PlatformosCheck
   class GraphqlFile < AppFile
     DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(graph_queries|graphql)s?/|modules/((\w|-)*)/(private|public)/(graph_queries|graphql)s?/)}
@@ -42,7 +44,7 @@ module PlatformosCheck
     end
 
     def parse
-      @ast ||= self.class.parse(source)
+      @parse ||= GraphQL.parse(source)
     end
 
     def warnings

@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-require 'graphql'
-
 module PlatformosCheck
   class GraphqlArgs < LiquidCheck
     class ParsedGraphQL
-      def initialize(graphql_source)
-        @graphql_source = graphql_source
+      def initialize(ast)
+        @ast = ast
       end
 
       def required_arguments
@@ -21,11 +19,7 @@ module PlatformosCheck
 
       private
 
-      attr_reader :graphql_source
-
-      def ast
-        @ast ||= GraphQL.parse(graphql_source)
-      end
+      attr_reader :ast
 
       def variables
         @variables ||= definition&.variables || []
@@ -52,9 +46,7 @@ module PlatformosCheck
 
       return if provided_arguments.include?('args')
 
-      graphql_source = graqphql_file.source
-
-      parsed_graphql = ParsedGraphQL.new(graphql_source)
+      parsed_graphql = ParsedGraphQL.new(graqphql_file.parse)
 
       required_arguments = parsed_graphql.required_arguments
       defined_arguments = parsed_graphql.defined_arguments
