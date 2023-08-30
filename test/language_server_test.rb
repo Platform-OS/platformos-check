@@ -20,7 +20,7 @@ class LanguageServerTest < Minitest::Test
     :code_name,
     :severity,
     :message,
-    :platformos_app_file,
+    :app_file,
     :start_column,
     :end_column,
     :start_row,

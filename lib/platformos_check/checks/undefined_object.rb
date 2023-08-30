@@ -67,31 +67,31 @@ module PlatformosCheck
     def on_document(node)
       return if ignore?(node)
 
-      @files[node.platformos_app_file.name] = TemplateInfo.new(app_file: node.platformos_app_file)
+      @files[node.app_file.name] = TemplateInfo.new(app_file: node.app_file)
     end
 
     def on_assign(node)
       return if ignore?(node)
 
-      @files[node.platformos_app_file.name].all_assigns[node.value.to] = node
+      @files[node.app_file.name].all_assigns[node.value.to] = node
     end
 
     def on_capture(node)
       return if ignore?(node)
 
-      @files[node.platformos_app_file.name].all_captures[node.value.instance_variable_get(:@to)] = node
+      @files[node.app_file.name].all_captures[node.value.instance_variable_get(:@to)] = node
     end
 
     def on_parse_json(node)
       return if ignore?(node)
 
-      @files[node.platformos_app_file.name].all_captures[node.value.to] = node
+      @files[node.app_file.name].all_captures[node.value.to] = node
     end
 
     def on_for(node)
       return if ignore?(node)
 
-      @files[node.platformos_app_file.name].all_forloops[node.value.variable_name] = node
+      @files[node.app_file.name].all_forloops[node.value.variable_name] = node
     end
 
     def on_include(_node)
@@ -104,7 +104,7 @@ module PlatformosCheck
       return unless node.value.template_name_expr.is_a?(String)
 
       partial_name = node.value.template_name_expr
-      @files[node.platformos_app_file.name].add_render(
+      @files[node.app_file.name].add_render(
         name: partial_name,
         node:
       )
@@ -114,24 +114,24 @@ module PlatformosCheck
       return if ignore?(node)
 
       name = node.value.from.is_a?(String) ? node.value.from : node.value.from.name
-      @files[node.platformos_app_file.name].add_render(
+      @files[node.app_file.name].add_render(
         name:,
         node:
       )
 
-      @files[node.platformos_app_file.name].all_assigns[node.value.to] = node
+      @files[node.app_file.name].all_assigns[node.value.to] = node
     end
 
     def on_graphql(node)
       return if ignore?(node)
 
-      @files[node.platformos_app_file.name].all_assigns[node.value.to] = node
+      @files[node.app_file.name].all_assigns[node.value.to] = node
     end
 
     def on_variable_lookup(node)
       return if ignore?(node)
 
-      @files[node.platformos_app_file.name].add_variable_lookup(
+      @files[node.app_file.name].add_variable_lookup(
         name: node.value.name,
         node:
       )
@@ -164,7 +164,7 @@ module PlatformosCheck
     attr_reader :config_type
 
     def ignore?(node)
-      @exclude_partials && node.platformos_app_file.partial?
+      @exclude_partials && node.app_file.partial?
     end
 
     def each_template

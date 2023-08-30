@@ -4,11 +4,11 @@
 # We'll use the node position to figure out if the test is disabled or not.
 module PlatformosCheck
   class DisabledCheck
-    attr_reader :name, :platformos_app_file, :ranges
+    attr_reader :name, :app_file, :ranges
     attr_accessor :first_line
 
-    def initialize(platformos_app_file, name)
-      @platformos_app_file = platformos_app_file
+    def initialize(app_file, name)
+      @app_file = app_file
       @name = name
       @ranges = []
       @first_line = false

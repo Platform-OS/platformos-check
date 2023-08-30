@@ -47,7 +47,7 @@ module PlatformosCheck
       raise
     rescue StandardError => e
       node = args.first
-      platformos_app_file = node.respond_to?(:platformos_app_file) ? node.platformos_app_file.relative_path : "?"
+      app_file = node.respond_to?(:app_file) ? node.app_file.relative_path : "?"
       markup = node.respond_to?(:markup) ? node.markup : ""
       node_class = node.respond_to?(:value) ? node.value.class : "?"
       line_number = node.respond_to?(:line_number) ? node.line_number : "?"
@@ -59,7 +59,7 @@ module PlatformosCheck
           #{e.backtrace.join("\n  ")}
         ```
 
-        Platformos App File: `#{platformos_app_file}`
+        Platformos App File: `#{app_file}`
         Node: `#{node_class}`
         Markup:
         ```

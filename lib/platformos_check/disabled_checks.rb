@@ -11,8 +11,8 @@ module PlatformosCheck
 
     def initialize
       @disabled_checks = Hash.new do |hash, key|
-        platformos_app_file, check_name = key
-        hash[key] = DisabledCheck.new(platformos_app_file, check_name)
+        app_file, check_name = key
+        hash[key] = DisabledCheck.new(app_file, check_name)
       end
     end
 
@@ -20,13 +20,13 @@ module PlatformosCheck
       text = comment_text(node)
       if start_disabling?(text)
         checks_from_text(text).each do |check_name|
-          disabled = @disabled_checks[[node.platformos_app_file, check_name]]
+          disabled = @disabled_checks[[node.app_file, check_name]]
           disabled.start_index = node.start_index
           disabled.first_line = true if node.line_number == 1
         end
       elsif stop_disabling?(text)
         checks_from_text(text).each do |check_name|
-          disabled = @disabled_checks[[node.platformos_app_file, check_name]]
+          disabled = @disabled_checks[[node.app_file, check_name]]
           next unless disabled
 
           disabled.end_index = node.end_index
@@ -34,7 +34,7 @@ module PlatformosCheck
       else
         # We want to disable checks inside comments
         # (e.g. html checks inside {% comment %})
-        disabled = @disabled_checks[[node.platformos_app_file, :all]]
+        disabled = @disabled_checks[[node.app_file, :all]]
         unless disabled.first_line
           disabled.start_index = node.inner_markup_start_index
           disabled.end_index = node.inner_markup_end_index
@@ -42,13 +42,13 @@ module PlatformosCheck
       end
     end
 
-    def disabled?(check, platformos_app_file, check_name, index)
+    def disabled?(check, app_file, check_name, index)
       return true if check.ignored_patterns&.any? do |pattern|
-        platformos_app_file&.relative_path&.fnmatch?(pattern)
+        app_file&.relative_path&.fnmatch?(pattern)
       end
 
-      @disabled_checks[[platformos_app_file, :all]]&.disabled?(index) ||
-        @disabled_checks[[platformos_app_file, check_name]]&.disabled?(index)
+      @disabled_checks[[app_file, :all]]&.disabled?(index) ||
+        @disabled_checks[[app_file, check_name]]&.disabled?(index)
     end
 
     def checks_missing_end_index
@@ -60,7 +60,7 @@ module PlatformosCheck
     def remove_disabled_offenses(checks)
       checks.disableable.each do |check|
         check.offenses.reject! do |offense|
-          disabled?(check, offense.platformos_app_file, offense.code_name, offense.start_index)
+          disabled?(check, offense.app_file, offense.code_name, offense.start_index)
         end
       end
     end

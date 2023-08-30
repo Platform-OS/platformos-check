@@ -107,13 +107,13 @@ module PlatformosCheck
         # Call checks that run on a single files, only on specified file
         liquid_visitor = LiquidVisitor.new(@liquid_checks.single_file, @disabled_checks)
         html_visitor = HtmlVisitor.new(@html_checks.single_file)
-        files.each_with_index do |platformos_app_file, i|
-          yield(platformos_app_file.relative_path.to_s, offset + i, total) if block_given?
-          if platformos_app_file.liquid?
-            liquid_visitor.visit_liquid_file(platformos_app_file)
-            html_visitor.visit_liquid_file(platformos_app_file)
-          elsif platformos_app_file.yaml?
-            @yaml_checks.single_file.call(:on_file, platformos_app_file)
+        files.each_with_index do |app_file, i|
+          yield(app_file.relative_path.to_s, offset + i, total) if block_given?
+          if app_file.liquid?
+            liquid_visitor.visit_liquid_file(app_file)
+            html_visitor.visit_liquid_file(app_file)
+          elsif app_file.yaml?
+            @yaml_checks.single_file.call(:on_file, app_file)
           end
         end
       end

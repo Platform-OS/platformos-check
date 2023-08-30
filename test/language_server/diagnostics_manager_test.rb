@@ -7,7 +7,7 @@ module PlatformosCheck
     class DiagnosticsManagerTest < Minitest::Test
       Offense = Struct.new(
         :code_name,
-        :platformos_app_file,
+        :app_file,
         :whole_platformos_app?
       ) do
         def single_file?
@@ -15,7 +15,7 @@ module PlatformosCheck
         end
 
         def inspect
-          "#<#{code_name} platformos_app_file=\"#{platformos_app_file.path}\" #{whole_platformos_app? ? 'whole_platformos_app' : 'single_file'}>"
+          "#<#{code_name} app_file=\"#{app_file.path}\" #{whole_platformos_app? ? 'whole_platformos_app' : 'single_file'}>"
         end
       end
       LiquidFile = Struct.new(:relative_path, :absolute_path)

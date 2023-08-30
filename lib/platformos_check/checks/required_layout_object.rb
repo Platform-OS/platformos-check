@@ -12,7 +12,7 @@ module PlatformosCheck
     end
 
     def on_document(node)
-      @layout_platformos_app_node = node if node.platformos_app_file.layout?
+      @layout_platformos_app_node = node if node.app_file.layout?
     end
 
     def on_variable(node)
@@ -22,7 +22,7 @@ module PlatformosCheck
     end
 
     def after_document(node)
-      return unless node.platformos_app_file.layout?
+      return unless node.app_file.layout?
 
       add_missing_object_offense("content_for_layout", "</body>") unless @content_for_layout_found
     end

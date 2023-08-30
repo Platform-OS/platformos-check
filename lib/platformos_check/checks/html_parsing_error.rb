@@ -6,8 +6,8 @@ module PlatformosCheck
     category :html
     doc docs_url(__FILE__)
 
-    def on_parse_error(exception, platformos_app_file)
-      add_offense("HTML in this template can not be parsed: #{exception.message}", platformos_app_file:)
+    def on_parse_error(exception, app_file)
+      add_offense("HTML in this template can not be parsed: #{exception.message}", app_file:)
     end
   end
 end

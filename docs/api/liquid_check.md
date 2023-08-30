@@ -18,7 +18,7 @@ module PlatformosCheck
     def on_document(node)
       # Called with the root node of all liquid_file
       node.value      # is the original Liquid object for this node. See Liquid source code for details.
-      node.platformos_app_file # is the liquid_file being analyzed, See lib/platformos_check/liquid_file.rb.
+      node.app_file # is the liquid_file being analyzed, See lib/platformos_check/liquid_file.rb.
       node.parent     # is the parent node.
       node.children   # are the children nodes.
       # See lib/platformos_check/node.rb for more helper methods
@@ -35,11 +35,11 @@ module PlatformosCheck
 
     def after_tag(node)
       # Called after the tag children have been visited
-      
+
       # If you find an issue, add an offense:
       add_offense("Describe the problem...", node: node)
       # Or, if the offense is related to the whole theme file:
-      add_offense("Describe the problem...", platformos_app_file: node.platformos_app_file)
+      add_offense("Describe the problem...", app_file: node.app_file)
     end
 
     def on_assign(node)
@@ -68,26 +68,40 @@ module PlatformosCheck
 
     # Each type of node has a corresponding `on_node_class_name` & `after_node_class_name`
     # A few common examples:
+    # on_background(node)
+    # on_cache(node)
     # on_capture(node)
     # on_case(node)
     # on_comment(node)
-    # on_if(node)
     # on_condition(node)
+    # on_content_for(node)
     # on_else_condition(node)
+    # on_export(node)
     # on_for(node)
     # on_form(node)
+    # on_function(node)
+    # on_graphql(node)
+    # on_if(node)
     # on_include(node)
     # on_integer(node)
-    # on_layout(node)
+    # on_log(node)
     # on_method_literal(node)
-    # on_paginate(node)
+    # on_parse_json(node)
+    # on_print(node)
     # on_range(node)
+    # on_redirect_to(node)
     # on_render(node)
-    # on_schema(node)
-    # on_section(node)
-    # on_style(node)
+    # on_response_headers(node)
+    # on_response_status(node)
+    # on_return(node)
+    # on_session(node)
+    # on_sign_in(node)
+    # on_spam_protection(node)
+    # on_theme_render(node)
+    # on_try(node)
     # on_unless(node)
     # on_variable_lookup(node)
+    # on_yield(node)
   end
 end
 ```

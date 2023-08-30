@@ -15,21 +15,21 @@ module PlatformosCheck
       visit_object(@default, @other, [])
     end
 
-    def add_as_offenses(check, key_prefix: [], node: nil, platformos_app_file: nil, schema: {})
+    def add_as_offenses(check, key_prefix: [], node: nil, app_file: nil, schema: {})
       if extra_keys.any?
         remove_extra_keys_offense(check, "Extra translation keys", extra_keys,
-                                  key_prefix:, node:, platformos_app_file:, schema:)
+                                  key_prefix:, node:, app_file:, schema:)
       end
 
       return unless missing_keys.any?
 
       add_missing_keys_offense(check, "Missing translation keys", missing_keys,
-                               key_prefix:, node:, platformos_app_file:, schema:)
+                               key_prefix:, node:, app_file:, schema:)
     end
 
     private
 
-    def remove_extra_keys_offense(check, cause, extra_keys, key_prefix:, node: nil, platformos_app_file: nil, schema: {})
+    def remove_extra_keys_offense(check, cause, extra_keys, key_prefix:, node: nil, app_file: nil, schema: {})
       message = "#{cause}: #{format_keys(key_prefix, extra_keys)}"
       if node
         check.add_offense(message, node:) do |corrector|
@@ -38,18 +38,18 @@ module PlatformosCheck
           end
           corrector.replace_inner_json(node, schema)
         end
-      elsif platformos_app_file.is_a?(JsonFile)
-        check.add_offense(message, platformos_app_file:) do |corrector|
+      elsif app_file.is_a?(JsonFile)
+        check.add_offense(message, app_file:) do |corrector|
           extra_keys.each do |k|
-            corrector.remove_translation(platformos_app_file, key_prefix + k)
+            corrector.remove_translation(app_file, key_prefix + k)
           end
         end
       else
-        check.add_offense(message, platformos_app_file:)
+        check.add_offense(message, app_file:)
       end
     end
 
-    def add_missing_keys_offense(check, cause, missing_keys, key_prefix:, node: nil, platformos_app_file: nil, schema: {})
+    def add_missing_keys_offense(check, cause, missing_keys, key_prefix:, node: nil, app_file: nil, schema: {})
       message = "#{cause}: #{format_keys(key_prefix, missing_keys)}"
       if node
         check.add_offense(message, node:) do |corrector|
@@ -58,14 +58,14 @@ module PlatformosCheck
           end
           corrector.replace_inner_json(node, schema)
         end
-      elsif platformos_app_file.is_a?(JsonFile)
-        check.add_offense(message, platformos_app_file:) do |corrector|
+      elsif app_file.is_a?(JsonFile)
+        check.add_offense(message, app_file:) do |corrector|
           missing_keys.each do |k|
-            corrector.add_translation(platformos_app_file, key_prefix + k, "TODO")
+            corrector.add_translation(app_file, key_prefix + k, "TODO")
           end
         end
       else
-        check.add_offense(message, platformos_app_file:)
+        check.add_offense(message, app_file:)
       end
     end
 

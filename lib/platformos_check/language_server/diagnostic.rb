@@ -101,11 +101,11 @@ module PlatformosCheck
       end
 
       def absolute_path
-        @absolute_path ||= offense&.platformos_app_file&.path
+        @absolute_path ||= offense&.app_file&.path
       end
 
       def relative_path
-        @relative_path ||= offense&.platformos_app_file&.relative_path
+        @relative_path ||= offense&.app_file&.relative_path
       end
 
       def uri

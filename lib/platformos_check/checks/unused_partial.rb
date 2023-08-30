@@ -38,9 +38,9 @@ module PlatformosCheck
     end
 
     def on_end
-      missing_partials.each do |platformos_app_file|
-        add_offense("This partial is not used", platformos_app_file:) do |corrector|
-          corrector.remove_file(@platformos_app.storage, platformos_app_file.relative_path.to_s)
+      missing_partials.each do |app_file|
+        add_offense("This partial is not used", app_file:) do |corrector|
+          corrector.remove_file(@platformos_app.storage, app_file.relative_path.to_s)
         end
       end
     end

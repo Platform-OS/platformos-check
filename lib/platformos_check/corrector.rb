@@ -4,29 +4,29 @@ module PlatformosCheck
   class Corrector
     include JsonHelpers
 
-    def initialize(platformos_app_file:)
-      @platformos_app_file = platformos_app_file
+    def initialize(app_file:)
+      @app_file = app_file
     end
 
     def insert_after(node, content, character_range = nil)
-      @platformos_app_file.rewriter.insert_after(node, content, character_range)
+      @app_file.rewriter.insert_after(node, content, character_range)
     end
 
     def insert_before(node, content, character_range = nil)
-      @platformos_app_file.rewriter.insert_before(node, content, character_range)
+      @app_file.rewriter.insert_before(node, content, character_range)
     end
 
     def remove(node)
-      @platformos_app_file.rewriter.remove(node)
+      @app_file.rewriter.remove(node)
     end
 
     def replace(node, content, character_range = nil)
-      @platformos_app_file.rewriter.replace(node, content, character_range)
+      @app_file.rewriter.replace(node, content, character_range)
       node.markup = content
     end
 
     def replace_inner_markup(node, content)
-      @platformos_app_file.rewriter.replace_inner_markup(node, content)
+      @app_file.rewriter.replace_inner_markup(node, content)
     end
 
     def replace_inner_json(node, json, **)
@@ -34,7 +34,7 @@ module PlatformosCheck
     end
 
     def wrap(node, insert_before, insert_after)
-      @platformos_app_file.rewriter.wrap(node, insert_before, insert_after)
+      @app_file.rewriter.wrap(node, insert_before, insert_after)
     end
 
     def create_file(storage, relative_path, content)

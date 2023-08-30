@@ -70,11 +70,11 @@ module PlatformosCheck
           Pathname.new(storage.relative_path(absolute_path))
         end
 
-        platformos_app_files = relative_paths
-                               .map { |relative_path| platformos_app[relative_path] }
-                               .reject(&:nil?)
+        app_files = relative_paths
+                    .map { |relative_path| platformos_app[relative_path] }
+                    .reject(&:nil?)
 
-        deleted_relative_paths = relative_paths - platformos_app_files.map(&:relative_path)
+        deleted_relative_paths = relative_paths - app_files.map(&:relative_path)
         deleted_relative_paths
           .each { |p| send_clearing_diagnostics(p) }
 
@@ -82,14 +82,14 @@ module PlatformosCheck
         @bridge.send_work_done_progress_begin(token, "Partial platformos_app check")
         offenses = nil
         time = Benchmark.measure do
-          offenses = analyzer.analyze_files(platformos_app_files, only_single_file:) do |path, i, total|
+          offenses = analyzer.analyze_files(app_files, only_single_file:) do |path, i, total|
             @bridge.send_work_done_progress_report(token, "#{i}/#{total} #{path}", (i.to_f / total * 100.0).to_i)
           end
         end
         end_message = "Found #{offenses.size} new offenses in #{format("%0.2f", time.real)}s"
         @bridge.send_work_done_progress_end(token, end_message)
         @bridge.log(end_message)
-        send_diagnostics(offenses, platformos_app_files.map(&:relative_path), only_single_file:)
+        send_diagnostics(offenses, app_files.map(&:relative_path), only_single_file:)
       end
 
       def send_clearing_diagnostics(relative_path)

@@ -10,7 +10,7 @@ module PlatformosCheck
       return unless file.parse_error
 
       message = file.parse_error
-      add_offense(message, platformos_app_file: file)
+      add_offense(message, app_file: file)
     end
   end
 end

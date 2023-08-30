@@ -87,8 +87,8 @@ module PlatformosCheck
       @offenses ||= []
     end
 
-    def add_offense(message, node: nil, platformos_app_file: node&.platformos_app_file, markup: nil, line_number: nil, node_markup_offset: 0, &block)
-      offenses << Offense.new(check: self, message:, platformos_app_file:, node:, markup:, line_number:, node_markup_offset:, correction: block)
+    def add_offense(message, node: nil, app_file: node&.app_file, markup: nil, line_number: nil, node_markup_offset: 0, &block)
+      offenses << Offense.new(check: self, message:, app_file:, node:, markup:, line_number:, node_markup_offset:, correction: block)
     end
 
     def severity

@@ -11,10 +11,10 @@ module PlatformosCheck
     end
 
     def after_document(node)
-      lines = node.platformos_app_file.source.count("\n")
+      lines = node.app_file.source.count("\n")
       return unless lines > @max_length
 
-      add_offense("Template has too many lines [#{lines}/#{@max_length}]", platformos_app_file: node.platformos_app_file)
+      add_offense("Template has too many lines [#{lines}/#{@max_length}]", app_file: node.app_file)
     end
   end
 end

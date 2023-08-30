@@ -15,7 +15,7 @@ module PlatformosCheck
 
       def test_could_pass_for_a_corrector
         document_change_corrector_methods = DocumentChangeCorrector.new.methods
-        corrector_methods = Corrector.new(platformos_app_file: nil).methods
+        corrector_methods = Corrector.new(app_file: nil).methods
         difference = corrector_methods - document_change_corrector_methods
 
         assert_empty(difference, <<~EXPECTED)
@@ -51,7 +51,7 @@ module PlatformosCheck
           [
             {
               textDocument: {
-                uri: file_uri(@node.platformos_app_file.path),
+                uri: file_uri(@node.app_file.path),
                 version: nil
               },
               edits: [{
@@ -72,7 +72,7 @@ module PlatformosCheck
           [
             {
               textDocument: {
-                uri: file_uri(@node.platformos_app_file.path),
+                uri: file_uri(@node.app_file.path),
                 version: nil
               },
               edits: [{
@@ -93,7 +93,7 @@ module PlatformosCheck
           [
             {
               textDocument: {
-                uri: file_uri(@node.platformos_app_file.path),
+                uri: file_uri(@node.app_file.path),
                 version: nil
               },
               edits: [{
@@ -114,7 +114,7 @@ module PlatformosCheck
           [
             {
               textDocument: {
-                uri: file_uri(@node.platformos_app_file.path),
+                uri: file_uri(@node.app_file.path),
                 version: nil
               },
               edits: [{
@@ -135,7 +135,7 @@ module PlatformosCheck
           [
             {
               textDocument: {
-                uri: file_uri(@node.platformos_app_file.path),
+                uri: file_uri(@node.app_file.path),
                 version: nil
               },
               edits: [{
@@ -156,7 +156,7 @@ module PlatformosCheck
           [
             {
               textDocument: {
-                uri: file_uri(@node.platformos_app_file.path),
+                uri: file_uri(@node.app_file.path),
                 version: nil
               },
               edits: [{
@@ -177,7 +177,7 @@ module PlatformosCheck
           [
             {
               textDocument: {
-                uri: file_uri(@node.platformos_app_file.path),
+                uri: file_uri(@node.app_file.path),
                 version: nil
               },
               edits: [{
@@ -201,7 +201,7 @@ module PlatformosCheck
         assert_equal(
           [{
             textDocument: {
-              uri: file_uri(node.platformos_app_file.path),
+              uri: file_uri(node.app_file.path),
               version: nil
             },
             edits: [{
@@ -221,7 +221,7 @@ module PlatformosCheck
           [
             {
               textDocument: {
-                uri: file_uri(@node.platformos_app_file.path),
+                uri: file_uri(@node.app_file.path),
                 version: nil
               },
               edits: [{
@@ -235,17 +235,17 @@ module PlatformosCheck
       end
 
       def test_create_file
-        @corrector.create_file(@node.platformos_app_file.storage, 'test.liquid', 'hello world')
+        @corrector.create_file(@node.app_file.storage, 'test.liquid', 'hello world')
 
         assert_equal(
           [
             {
               kind: 'create',
-              uri: file_uri(@node.platformos_app_file.storage.path('test.liquid'))
+              uri: file_uri(@node.app_file.storage.path('test.liquid'))
             },
             {
               textDocument: {
-                uri: file_uri(@node.platformos_app_file.storage.path('test.liquid')),
+                uri: file_uri(@node.app_file.storage.path('test.liquid')),
                 version: nil
               },
               edits: [
@@ -261,13 +261,13 @@ module PlatformosCheck
       end
 
       def test_remove_file
-        @corrector.remove_file(@node.platformos_app_file.storage, 'test.liquid')
+        @corrector.remove_file(@node.app_file.storage, 'test.liquid')
 
         assert_equal(
           [
             {
               kind: 'delete',
-              uri: file_uri(@node.platformos_app_file.storage.path('test.liquid'))
+              uri: file_uri(@node.app_file.storage.path('test.liquid'))
             }
           ],
           @corrector.document_changes
@@ -275,17 +275,17 @@ module PlatformosCheck
       end
 
       def test_mkdir
-        @corrector.mkdir(@node.platformos_app_file.storage, 'test.liquid')
+        @corrector.mkdir(@node.app_file.storage, 'test.liquid')
 
         assert_equal(
           [
             {
               kind: 'create',
-              uri: file_uri(@node.platformos_app_file.storage.path('test.liquid').join('tmp'))
+              uri: file_uri(@node.app_file.storage.path('test.liquid').join('tmp'))
             },
             {
               kind: 'delete',
-              uri: file_uri(@node.platformos_app_file.storage.path('test.liquid').join('tmp'))
+              uri: file_uri(@node.app_file.storage.path('test.liquid').join('tmp'))
             }
           ],
           @corrector.document_changes
@@ -338,7 +338,7 @@ module PlatformosCheck
         assert_equal(
           [{
             textDocument: {
-              uri: file_uri(node.platformos_app_file.path),
+              uri: file_uri(node.app_file.path),
               version: nil
             },
             edits: [{
@@ -353,8 +353,8 @@ module PlatformosCheck
       private
 
       def root_node(code)
-        platformos_app_file = parse_liquid(code)
-        LiquidNode.new(platformos_app_file.root, nil, platformos_app_file)
+        app_file = parse_liquid(code)
+        LiquidNode.new(app_file.root, nil, app_file)
       end
 
       def find(node, &)

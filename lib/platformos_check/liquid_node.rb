@@ -3,14 +3,14 @@
 module PlatformosCheck
   # A node from the Liquid AST, the result of parsing a liquid file.
   class LiquidNode < Node
-    attr_reader :value, :parent, :platformos_app_file
+    attr_reader :value, :parent, :app_file
 
-    def initialize(value, parent, platformos_app_file)
+    def initialize(value, parent, app_file)
       raise ArgumentError, "Expected a Liquid AST Node" if value.is_a?(LiquidNode)
 
       @value = value
       @parent = parent
-      @platformos_app_file = platformos_app_file
+      @app_file = app_file
       @tag_markup = nil
       @line_number_offset = 0
     end
@@ -40,7 +40,7 @@ module PlatformosCheck
         end
         nodes
           .reject(&:nil?) # We don't want nil nodes, and they can happen
-          .map { |node| LiquidNode.new(node, self, @platformos_app_file) }
+          .map { |node| LiquidNode.new(node, self, @app_file) }
       end
     end
 
@@ -205,7 +205,7 @@ module PlatformosCheck
     end
 
     def source
-      platformos_app_file&.source
+      app_file&.source
     end
 
     # For debugging purposes, this might be easier for the eyes.
@@ -388,7 +388,7 @@ module PlatformosCheck
     def position
       @position ||= Position.new(
         markup,
-        platformos_app_file&.source,
+        app_file&.source,
         line_number_1_indexed: line_number
       )
     end
@@ -424,7 +424,7 @@ module PlatformosCheck
     # And the line number is the one of 'foo'\n%}. Yay!
     #
     # This breaks any kind of position logic we have since that string
-    # does not exist in the platformos_app_file.
+    # does not exist in the app_file.
     def tag_markup
       return @tag_markup if @tag_markup
 

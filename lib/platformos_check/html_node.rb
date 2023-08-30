@@ -7,7 +7,7 @@ module PlatformosCheck
     extend Forwardable
     include RegexHelpers
     include PositionHelper
-    attr_reader :platformos_app_file, :parent
+    attr_reader :app_file, :parent
 
     class << self
       include RegexHelpers
@@ -71,9 +71,9 @@ module PlatformosCheck
       end
     end
 
-    def initialize(value, platformos_app_file, placeholder_values, parseable_source, parent = nil)
+    def initialize(value, app_file, placeholder_values, parseable_source, parent = nil)
       @value = value
-      @platformos_app_file = platformos_app_file
+      @app_file = app_file
       @placeholder_values = placeholder_values
       @parseable_source = parseable_source
       @parent = parent
@@ -92,7 +92,7 @@ module PlatformosCheck
     def children
       @children ||= @value
                     .children
-                    .map { |child| HtmlNode.new(child, platformos_app_file, @placeholder_values, @parseable_source, self) }
+                    .map { |child| HtmlNode.new(child, app_file, @placeholder_values, @parseable_source, self) }
     end
 
     def markup
@@ -160,14 +160,14 @@ module PlatformosCheck
           #{@value.name.inspect}
 
         File:
-          #{@platformos_app_file.relative_path}
+          #{@app_file.relative_path}
 
         Line number:
           #{line_number}
 
         Excerpt:
           ```
-          #{@platformos_app_file.source.lines[line_number - 1...line_number + 5].join("")}
+          #{@app_file.source.lines[line_number - 1...line_number + 5].join("")}
           ```
 
         Parseable Excerpt:
@@ -194,7 +194,7 @@ module PlatformosCheck
     def position
       @position ||= Position.new(
         markup,
-        platformos_app_file.source,
+        app_file.source,
         line_number_1_indexed: line_number
       )
     end

@@ -21,7 +21,7 @@ module PlatformosCheck
       end
 
       def on_document(node)
-        source = node.platformos_app_file.source
+        source = node.app_file.source
         matches(source, @regex).each do |match|
           offenses << Offense.new(
             check: self,
@@ -37,11 +37,11 @@ module PlatformosCheck
     # A check that uses the on_end callback
     class OnEndCheck < Check
       def on_document(node)
-        @platformos_app_file = node.platformos_app_file
+        @app_file = node.app_file
       end
 
       def on_end
-        offenses << Offense.new(check: self, message: "on_end used", platformos_app_file: @platformos_app_file)
+        offenses << Offense.new(check: self, message: "on_end used", app_file: @app_file)
       end
     end
 
@@ -249,7 +249,7 @@ module PlatformosCheck
         @checks.call(:on_end)
         @disabled_checks.remove_disabled_offenses(@checks)
 
-        assert_empty(@on_end_check.offenses.map(&:platformos_app_file))
+        assert_empty(@on_end_check.offenses.map(&:app_file))
       end
     end
 
@@ -263,7 +263,7 @@ module PlatformosCheck
       @visitor.visit_liquid_file(liquid_file)
       @disabled_checks.remove_disabled_offenses(@checks)
 
-      assert_empty(@assign_check.offenses.map(&:platformos_app_file))
+      assert_empty(@assign_check.offenses.map(&:app_file))
     end
 
     def test_should_ignore_regex_checks_inside_comments

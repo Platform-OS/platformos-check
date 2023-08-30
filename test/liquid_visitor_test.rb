@@ -14,10 +14,10 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_assign
-    platformos_app_file = parse_liquid(<<~END)
+    app_file = parse_liquid(<<~END)
       {% assign x = 'hello' %}
     END
-    @visitor.visit_liquid_file(platformos_app_file)
+    @visitor.visit_liquid_file(app_file)
 
     assert_equal([
                    :on_document,
@@ -34,13 +34,13 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_if
-    platformos_app_file = parse_liquid(<<~END)
+    app_file = parse_liquid(<<~END)
       {% if x == 'condition' %}
         {% assign x = 'hello' %}
       {% else %}
       {% endif %}
     END
-    @visitor.visit_liquid_file(platformos_app_file)
+    @visitor.visit_liquid_file(app_file)
 
     assert_equal([
                    :on_document,
@@ -72,7 +72,7 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_try_rc
-    platformos_app_file = parse_liquid(<<~END)
+    app_file = parse_liquid(<<~END)
       {% liquid
         try_rc
           function res = 'lib/commands/complex_func', object: 'Hello'
@@ -83,7 +83,7 @@ class LiquidVisitorTest < Minitest::Test
         endtry_rc
       %}
     END
-    @visitor.visit_liquid_file(platformos_app_file)
+    @visitor.visit_liquid_file(app_file)
 
     assert_equal([:on_document,
                   :on_tag,
@@ -122,13 +122,13 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_render
-    platformos_app_file = parse_liquid(<<~END)
+    app_file = parse_liquid(<<~END)
       {% for block in section.blocks %}
         {% assign x = 1 %}
         {% render block with x %}
       {% endfor %}
     END
-    @visitor.visit_liquid_file(platformos_app_file)
+    @visitor.visit_liquid_file(app_file)
 
     assert_equal([
                    :on_document,
@@ -171,11 +171,11 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_form
-    platformos_app_file = parse_liquid(<<~END)
+    app_file = parse_liquid(<<~END)
       {% form 'type', object, key: value %}
       {% endform %}
     END
-    @visitor.visit_liquid_file(platformos_app_file)
+    @visitor.visit_liquid_file(app_file)
 
     assert_equal([
                    :on_document,
@@ -190,12 +190,12 @@ class LiquidVisitorTest < Minitest::Test
   end
 
   def test_parse_json
-    platformos_app_file = parse_liquid(<<~END)
+    app_file = parse_liquid(<<~END)
       {% parse_json x %}
         { "hello": var }
       {% endparse_json %}
     END
-    @visitor.visit_liquid_file(platformos_app_file)
+    @visitor.visit_liquid_file(app_file)
 
     assert_equal(
       [:on_document,

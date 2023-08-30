@@ -679,8 +679,8 @@ module PlatformosCheck
 
     # @returns [LiquidNode]
     def root_node(code)
-      platformos_app_file = parse_liquid(code)
-      LiquidNode.new(platformos_app_file.root, nil, platformos_app_file)
+      app_file = parse_liquid(code)
+      LiquidNode.new(app_file.root, nil, app_file)
     end
 
     # @returns [LiquidNode]

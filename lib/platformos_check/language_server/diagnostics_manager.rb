@@ -41,11 +41,11 @@ module PlatformosCheck
           # When analyzed_files is nil, contains all offenses.
           # When analyzed_files is !nil, contains all whole platformos_app offenses and single file offenses of the analyzed_files.
           current_diagnostics = offenses
-                                .select(&:platformos_app_file)
-                                .group_by(&:platformos_app_file)
-                                .transform_keys { |platformos_app_file| Pathname.new(platformos_app_file.relative_path) }
-                                .transform_values do |platformos_app_file_offenses|
-            platformos_app_file_offenses.map { |o| Diagnostic.new(o) }
+                                .select(&:app_file)
+                                .group_by(&:app_file)
+                                .transform_keys { |app_file| Pathname.new(app_file.relative_path) }
+                                .transform_values do |app_file_offenses|
+            app_file_offenses.map { |o| Diagnostic.new(o) }
           end
 
           previous_paths = paths(@latest_diagnostics)
