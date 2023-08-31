@@ -40,6 +40,17 @@ class UnknownFilterTest < Minitest::Test
     assert_empty(offenses)
   end
 
+  def test_reports_does_not_report_on_known_alias
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UnknownFilter.new,
+      "app/views/pages/index.liquid" => <<~END
+        {{ "my.translation" | t }}
+      END
+    )
+
+    assert_empty(offenses)
+  end
+
   def test_reports_does_not_report_on_chain_of_known_filter
     offenses = analyze_platformos_app(
       PlatformosCheck::UnknownFilter.new,

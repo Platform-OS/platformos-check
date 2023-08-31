@@ -8,10 +8,11 @@ module PlatformosCheck
       extend self
 
       def labels
-        @labels ||= SourceIndex.filters.each_with_object([]) do |f, arr|
-          arr << f.name
-          arr + f.aliases
-        end
+        @labels ||= SourceIndex.filters.map(&:name)
+      end
+
+      def aliases
+        @aliases ||= SourceIndex.filters.map(&:aliases).flatten
       end
     end
   end
