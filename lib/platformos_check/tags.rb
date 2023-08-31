@@ -8,7 +8,15 @@ module PlatformosCheck
 
     class Yield < Base; end
 
-    class IncludeForm < Liquid::Tag; end
+    class IncludeForm < Base
+      class ParseTreeVisitor < Liquid::ParseTreeVisitor
+        def children
+          [
+            @node.main_value
+          ] + @node.attributes_expr.values
+        end
+      end
+    end
 
     class << self
       attr_writer :register_tags
