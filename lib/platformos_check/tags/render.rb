@@ -23,7 +23,7 @@ module PlatformosCheck
 
       disable_tags "include"
 
-      attr_reader :template_name_expr, :variable_name_expr, :attributes
+      attr_reader :template_name_expr, :variable_name_expr, :attributes, :duplicated_attrs
 
       def initialize(tag_name, markup, options)
         super
@@ -40,7 +40,9 @@ module PlatformosCheck
         @for = (with_or_for == Liquid::Render::FOR)
 
         @attributes = {}
+        @duplicated_attrs = []
         markup.scan(Liquid::TagAttributes) do |key, value|
+          @duplicated_attrs << key if @attributes.key?(key)
           @attributes[key] = parse_expression(value)
         end
       end

@@ -1,6 +1,6 @@
-# Prevent providing invalid GraphQL arguments from Liquid (`GraphqlArgs`)
+# Prevent providing invalid arguments in function, render and graphql tags Liquid (`InvalidArgs`)
 
-This check exists to prevent providing invalid GraphQL arguments via `graphql` tag.
+This check exists to prevent providing invalid arguments via `function`, `render` and `graphql` tags.
 
 ## Examples
 
@@ -9,12 +9,22 @@ The following examples contain code snippets that either fail or pass this check
 ### &#x2717; Fail
 
 ```liquid
+{% comment %}app/graphql/my-query does not define invalid_argument{% endcomment %}
 {% graphql res = 'my-query', invalid_argument: 10 %}
+```
+
+```liquid
+{% function res = 'my-function', arg: 1, arg: 2 %}
+```
+
+```liquid
+{% render res = 'my-partial', context: context %}
 ```
 
 ### &#x2713; Pass
 
 ```liquid
+{% comment %}app/graphql/my-query defines defined_argument{% endcomment %}
 {% graphql res = 'my-query', defined_argument: 10 %}
 ```
 
@@ -23,7 +33,7 @@ The following examples contain code snippets that either fail or pass this check
 The following example contains the default configuration for this check:
 
 ```yaml
-GraphqlArgs:
+InvalidArgs:
   enabled: true
 ```
 

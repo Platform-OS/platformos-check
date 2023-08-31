@@ -33,7 +33,7 @@ SpaceInsideBraces:
   enabled: true
   ignore: []
 
-GraphqlArgs:
+InvalidArgs:
   enabled: true
   ignore: []
 

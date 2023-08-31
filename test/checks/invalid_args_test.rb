@@ -2,12 +2,49 @@
 
 require "test_helper"
 
-class GraphqlArgsTest < Minitest::Test
+class InvalidArgsTest < Minitest::Test
+  def test_report_all_duplicated_argument_in_render
+    offenses = analyze_platformos_app(
+      PlatformosCheck::InvalidArgs.new,
+      "app/views/pages/index.liquid" => <<~END
+        {% render "my-partial", var: "hello", another: 6, arg: 1, arg: 2, another: 4 %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Duplicated argument `another` at app/views/pages/index.liquid:1
+      Duplicated argument `arg` at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_report_all_duplicated_argument_in_function
+    offenses = analyze_platformos_app(
+      PlatformosCheck::InvalidArgs.new,
+      "app/views/pages/index.liquid" => <<~END
+        {% function res = "my-partial", var: "hello", another: 6, arg: 1, arg: 2, another: 4 %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Duplicated argument `another` at app/views/pages/index.liquid:1
+      Duplicated argument `arg` at app/views/pages/index.liquid:1
+    END
+  end
+
   def test_query_unknown_argument
     offenses = render_query_graphql('{% graphql res = "records/search", id: 10, page: 2, invalid: "Hey", key: "hello" %}')
 
     assert_offenses(<<~END, offenses)
       Undefined argument `invalid` provided to `app/graphql/records/search.graphql` at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_query_duplicated_argument
+    offenses = render_query_graphql('{% graphql res = "records/search", id: 10, id: 11 %}')
+
+    assert_offenses(<<~END, offenses)
+      Duplicated argument `id` at app/views/pages/index.liquid:1
+      Required argument `key` not provided to `app/graphql/records/search.graphql` at app/views/pages/index.liquid:1
     END
   end
 
@@ -63,7 +100,7 @@ class GraphqlArgsTest < Minitest::Test
 
   def test_query_parsing_error
     offenses = analyze_platformos_app(
-      PlatformosCheck::GraphqlArgs.new,
+      PlatformosCheck::InvalidArgs.new,
       "app/views/pages/index.liquid" => '{% graphql res = "records/search", key: "hello" %}',
       "app/graphql/records/search.graphql" => <<~END
               query search(
@@ -102,7 +139,7 @@ class GraphqlArgsTest < Minitest::Test
 
   def test_query_does_not_crash_when_fragments_used
     offenses = analyze_platformos_app(
-      PlatformosCheck::GraphqlArgs.new,
+      PlatformosCheck::InvalidArgs.new,
       "app/views/pages/index.liquid" => <<~END,
         {%- graphql approval = 'modules/admin/api/records/get',
           id: context.params.id,
@@ -154,7 +191,7 @@ class GraphqlArgsTest < Minitest::Test
 
   def render_query_graphql(graphql_tag)
     analyze_platformos_app(
-      PlatformosCheck::GraphqlArgs.new,
+      PlatformosCheck::InvalidArgs.new,
       "app/views/pages/index.liquid" => graphql_tag,
       "app/graphql/records/search.graphql" => <<~END
               query search(
@@ -191,7 +228,7 @@ class GraphqlArgsTest < Minitest::Test
 
   def render_mutation_graphql(graphql_tag)
     analyze_platformos_app(
-      PlatformosCheck::GraphqlArgs.new,
+      PlatformosCheck::InvalidArgs.new,
       "app/views/pages/index.liquid" => graphql_tag,
       "app/graphql/dummy/create.graphql" => <<~END
         mutation dummy_create(

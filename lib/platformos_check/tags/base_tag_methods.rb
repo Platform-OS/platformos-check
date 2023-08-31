@@ -10,7 +10,7 @@ module PlatformosCheck
       TAG_ATTRIBUTES = /([\w-]+)\s*:\s*((?-mix:(?-mix:"[^"]*"|'[^']*')|(?:[^\s,|'"]|(?-mix:"[^"]*"|'[^']*'))+))/
       BACKWARDS_COMPATIBILITY_KEYS = %w[method].freeze
 
-      attr_reader :main_value, :attributes_expr, :value_expr
+      attr_reader :main_value, :attributes_expr, :value_expr, :duplicated_attrs
 
       protected
 
@@ -32,6 +32,7 @@ module PlatformosCheck
 
       def parse_attributes(markup)
         @attributes_expr = {}
+        @duplicated_attrs = []
 
         markup.scan(TAG_ATTRIBUTES) do |key, value|
           unless well_formed_object_access?(value)
@@ -39,6 +40,7 @@ module PlatformosCheck
                   'Invalid syntax for function tag, no spaces allowed when accessing array or hash.'
           end
 
+          @duplicated_attrs << key if @attributes_expr.key?(key)
           @attributes_expr[key] = Liquid::Expression.parse(value)
         end
       end

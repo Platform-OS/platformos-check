@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PlatformosCheck
-  class GraphqlArgs < LiquidCheck
+  class InvalidArgs < LiquidCheck
     class ParsedGraphQL
       def initialize(ast)
         @ast = ast
@@ -33,7 +33,17 @@ module PlatformosCheck
     category :liquid, :graphql
     doc docs_url(__FILE__)
 
+    def on_render(node)
+      add_duplicated_key_offense(node)
+    end
+
+    def on_function(node)
+      add_duplicated_key_offense(node)
+    end
+
     def on_graphql(node)
+      add_duplicated_key_offense(node)
+
       return if node.value.inline_query
 
       graphql_partial = node.value.partial_name
@@ -60,6 +70,12 @@ module PlatformosCheck
       end
     rescue GraphQL::ParseError => e
       add_offense("GraphQL Parse error triggered by `#{graqphql_file.relative_path}`: #{e.message}", node:)
+    end
+
+    def add_duplicated_key_offense(node)
+      node.value.duplicated_attrs.each do |duplicated_arg|
+        add_offense("Duplicated argument `#{duplicated_arg}`", node:)
+      end
     end
   end
 end
