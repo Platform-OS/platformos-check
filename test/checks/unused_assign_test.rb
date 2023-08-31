@@ -348,13 +348,13 @@ class UnusedAssignTest < Minitest::Test
   def test_rename_unused_function_assign_middle_of_line
     expected_sources = {
       "app/views/partials/index.liquid" => <<~END
-        <p>test case</p>{% function _x = 'my_func' %}<p>test case</p>
+        <p>test function assign case</p>{%    function    _x = 'my_func' %}<p>test case</p>
       END
     }
     sources = fix_platformos_app(
       PlatformosCheck::UnusedAssign.new,
       "app/views/partials/index.liquid" => <<~END
-        <p>test case</p>{% function x = 'my_func' %}<p>test case</p>
+        <p>test function assign case</p>{%    function    x = 'my_func' %}<p>test case</p>
       END
     )
 
@@ -420,9 +420,9 @@ class UnusedAssignTest < Minitest::Test
       "app/views/partials/index.liquid" => <<~END
         {% liquid
           print "Hello"
-          graphql _mylongvar = 'my-mutation', arg: 10 | dig: 'results'
+          graphql _g = 'my-mutation', arg: 10 | dig: 'results'
 
-          function _another_result = 'my_partial', arg2: "World", name: "John"
+          function _f = 'my_partial', arg2: "World", name: "John"
 
           echo "World"
         %}
@@ -434,9 +434,9 @@ class UnusedAssignTest < Minitest::Test
       "app/views/partials/index.liquid" => <<~END
         {% liquid
           print "Hello"
-          graphql mylongvar = 'my-mutation', arg: 10 | dig: 'results'
+          graphql g = 'my-mutation', arg: 10 | dig: 'results'
 
-          function another_result = 'my_partial', arg2: "World", name: "John"
+          function f = 'my_partial', arg2: "World", name: "John"
 
           echo "World"
         %}
