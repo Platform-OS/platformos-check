@@ -7,10 +7,9 @@ class AnalyzerTest < Minitest::Test
     @platformos_app = make_platformos_app(
       "assets/platformos_app.js" => "",
       "assets/platformos_app.css" => "",
-      "templates/index.liquid" => "",
-      "snippets/product.liquid" => "",
-      "sections/article-template/template.liquid" => "",
-      "locales/en.default.json" => ""
+      "app/views/pages/index.liquid" => "{% render 'my-partial'%}",
+      "app/views/partials/product.liquid" => "",
+      "app/views/partials/article-template/template.liquid" => ""
     )
     @analyzer = PlatformosCheck::Analyzer.new(@platformos_app)
   end

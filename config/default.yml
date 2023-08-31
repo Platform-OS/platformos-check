@@ -68,10 +68,6 @@ UndefinedObject:
   exclude_partials: true
   config_type: :default
 
-RequiredDirectories:
-  enabled: true
-  ignore: []
-
 DeprecatedFilter:
   enabled: true
   ignore: []

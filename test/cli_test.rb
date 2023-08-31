@@ -38,9 +38,6 @@ class CliTest < Minitest::Test
         extends: :nothing
         UnusedAssign:
           enabled: true
-        RequiredDirectories:
-          enabled: true
-          severity: suggestion
       YAML
     )
 
@@ -50,89 +47,20 @@ class CliTest < Minitest::Test
 
     assert_equal(
       JSON.dump([{
-                  "path" => nil,
+                  "path" => "app/views/pages/placeholder.liquid",
                   "offenses" => [{
-                    "check" => "RequiredDirectories",
+                    "check" => "UnusedAssign",
                     "severity" => 1,
                     "start_row" => 0,
-                    "start_column" => 0,
+                    "start_column" => 3,
                     "end_row" => 0,
-                    "end_column" => 0,
-                    "message" => "App is missing 'app/lib' directory"
-                  },
-                                 {
-                                   "check" => "RequiredDirectories",
-                                   "severity" => 1,
-                                   "start_row" => 0,
-                                   "start_column" => 0,
-                                   "end_row" => 0,
-                                   "end_column" => 0,
-                                   "message" => "App is missing 'app/emails' directory"
-                                 },
-                                 {
-                                   "check" => "RequiredDirectories",
-                                   "severity" => 1,
-                                   "start_row" => 0,
-                                   "start_column" => 0,
-                                   "end_row" => 0,
-                                   "end_column" => 0,
-                                   "message" => "App is missing 'app/smses' directory"
-                                 },
-                                 {
-                                   "check" => "RequiredDirectories",
-                                   "severity" => 1,
-                                   "start_row" => 0,
-                                   "start_column" => 0,
-                                   "end_row" => 0,
-                                   "end_column" => 0,
-                                   "message" => "App is missing 'app/api_calls' directory"
-                                 },
-                                 {
-                                   "check" => "RequiredDirectories",
-                                   "severity" => 1,
-                                   "start_row" => 0,
-                                   "start_column" => 0,
-                                   "end_row" => 0,
-                                   "end_column" => 0,
-                                   "message" => "App is missing 'app/views/layouts' directory"
-                                 },
-                                 {
-                                   "check" => "RequiredDirectories",
-                                   "severity" => 1,
-                                   "start_row" => 0,
-                                   "start_column" => 0,
-                                   "end_row" => 0,
-                                   "end_column" => 0,
-                                   "message" => "App is missing 'app/schema' directory"
-                                 },
-                                 {
-                                   "check" => "RequiredDirectories",
-                                   "severity" => 1,
-                                   "start_row" => 0,
-                                   "start_column" => 0,
-                                   "end_row" => 0,
-                                   "end_column" => 0,
-                                   "message" => "App is missing 'app/graphql' directory"
-                                 }],
+                    "end_column" => 16,
+                    "message" => "`z` is never used"
+                  }],
                   "errorCount" => 0,
-                  "suggestionCount" => 7,
+                  "suggestionCount" => 1,
                   "styleCount" => 0
                 },
-                 {
-                   "path" => "app/views/pages/placeholder.liquid",
-                   "offenses" => [{
-                     "check" => "UnusedAssign",
-                     "severity" => 1,
-                     "start_row" => 0,
-                     "start_column" => 3,
-                     "end_row" => 0,
-                     "end_column" => 16,
-                     "message" => "`z` is never used"
-                   }],
-                   "errorCount" => 0,
-                   "suggestionCount" => 1,
-                   "styleCount" => 0
-                 },
                  {
                    "path" => "app/views/partials/platformos_app.liquid",
                    "offenses" => [{
@@ -210,14 +138,6 @@ class CliTest < Minitest::Test
     refute_includes(out, "liquid")
   end
 
-  def test_check_no_templates
-    assert_raises(PlatformosCheck::Cli::Abort, /^No templates found./) do
-      capture_io do
-        PlatformosCheck::Cli.parse_and_run!([__dir__])
-      end
-    end
-  end
-
   def test_list
     out, _err = capture_io do
       PlatformosCheck::Cli.parse_and_run!(%w[--list])
@@ -233,8 +153,6 @@ class CliTest < Minitest::Test
       'layout/platformos_app.liquid' => '',
       '.platformos-check.yml' => <<~YAML
         extends: :nothing
-        RequiredDirectories:
-          enabled: false
       YAML
     )
 
