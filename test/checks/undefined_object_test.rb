@@ -547,4 +547,25 @@ class UndefinedObjectTest < Minitest::Test
       Missing argument `ids` at app/views/partials/command/b_function.liquid:1
     END
   end
+
+  def test_does_not_report_undefined_object_response_inside_callback_in_notification
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new(exclude_partials: false),
+      "app/api_calls/example_call.liquid" => <<~END
+        ---
+         to: 'https://example.com/{{ data.script_name }}'
+         request_type: POST
+         callback: >
+           {% log response, type: 'defined object' %}
+         headers: >
+           {
+             "Content-Type": "application/x-www-form-urlencoded"
+           }
+         ---
+         {{ data.request_body }}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
 end

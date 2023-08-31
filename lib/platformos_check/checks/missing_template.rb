@@ -84,7 +84,7 @@ module PlatformosCheck
       return if ignore?(path) || platformos_app.grouped_files[PartialFile][path]
 
       add_offense("'#{path}' is not found", node:) do |corrector|
-        corrector.create_file(@platformos_app.storage, MissingFileCorrection.new(path:, directory: 'views/partials', extension: '.liquid').full_relative_path, "")
+        # corrector.create_file(@platformos_app.storage, MissingFileCorrection.new(path:, directory: 'views/partials', extension: '.liquid').full_relative_path, "")
       end
     end
 
@@ -92,7 +92,7 @@ module PlatformosCheck
       return if ignore?(path) || platformos_app.grouped_files[PartialFile][path]
 
       add_offense("'#{path}' is not found", node:) do |corrector|
-        corrector.create_file(@platformos_app.storage, MissingFileCorrection.new(path:, directory: 'lib', extension: '.liquid').full_relative_path, "")
+        # corrector.create_file(@platformos_app.storage, MissingFileCorrection.new(path:, directory: 'lib', extension: '.liquid').full_relative_path, "")
       end
     end
 
@@ -100,7 +100,7 @@ module PlatformosCheck
       return if ignore?(path) || platformos_app.grouped_files[GraphqlFile][path]
 
       add_offense("'#{path}' is not found", node:) do |corrector|
-        corrector.create_file(@platformos_app.storage, MissingFileCorrection.new(path:, directory: 'graphql', extension: '.graphql').full_relative_path, "")
+        # corrector.create_file(@platformos_app.storage, MissingFileCorrection.new(path:, directory: 'graphql', extension: '.graphql').full_relative_path, "")
       end
     end
   end

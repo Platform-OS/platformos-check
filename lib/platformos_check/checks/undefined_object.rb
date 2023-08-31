@@ -143,7 +143,7 @@ module PlatformosCheck
       each_template do |(_name, info)|
         if info.app_file.notification?
           # NOTE: `data` comes from graphql for notifications
-          check_object(info, all_global_objects + ['data'])
+          check_object(info, all_global_objects + %w[data response form])
         else
           check_object(info, all_global_objects)
         end

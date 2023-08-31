@@ -215,6 +215,7 @@ class MissingTemplateTest < Minitest::Test
   end
 
   def test_creates_missing_partial
+    skip "Commented out ; need to support template-values.json first etc."
     platformos_app = make_platformos_app(
       "app/views/pages/index.liquid" => <<~END
         {% include 'one' %}
@@ -232,6 +233,7 @@ class MissingTemplateTest < Minitest::Test
   end
 
   def test_creates_missing_graphql
+    skip "Commented out ; need to support template-values.json first etc."
     platformos_app = make_platformos_app(
       "app/views/pages/index.liquid" => <<~END
         {% graphql res = 'users/search' %}
@@ -248,6 +250,7 @@ class MissingTemplateTest < Minitest::Test
   end
 
   def test_creates_missing_function
+    skip "Commented out ; need to support template-values.json first etc."
     platformos_app = make_platformos_app(
       "app/views/pages/index.liquid" => <<~END
         {% function res = 'one' %}
@@ -264,6 +267,7 @@ class MissingTemplateTest < Minitest::Test
   end
 
   def test_creates_missing_module_function
+    skip "Commented out ; need to support template-values.json first etc."
     platformos_app = make_platformos_app(
       "app/views/pages/index.liquid" => <<~END
         {% function res = 'modules/my-module/one' %}
@@ -280,6 +284,7 @@ class MissingTemplateTest < Minitest::Test
   end
 
   def test_creates_missing_module_graphql
+    skip "Commented out ; need to support template-values.json first etc."
     platformos_app = make_platformos_app(
       "app/views/pages/index.liquid" => <<~END
         {% graphql res = 'modules/my-module/users/search' %}
