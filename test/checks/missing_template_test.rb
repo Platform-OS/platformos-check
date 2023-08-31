@@ -117,6 +117,21 @@ class MissingTemplateTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
+  def test_do_not_report_if_variable_used_for_function_name
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% assign function_name = 'two' %}
+        {% function res = function_name %}
+      END
+      "app/lib/one.liquid" => <<~END
+        hey
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
   def test_reports_missing_graphql
     offenses = analyze_platformos_app(
       PlatformosCheck::MissingTemplate.new,

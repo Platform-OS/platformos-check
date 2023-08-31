@@ -55,7 +55,7 @@ module PlatformosCheck
     end
 
     def on_function(node)
-      partial = node.value.from.is_a?(String) ? node.value.from : node.value.from.name
+      partial = node.value.from
       return unless partial.is_a?(String)
 
       add_missing_function_offense(partial, node:)
