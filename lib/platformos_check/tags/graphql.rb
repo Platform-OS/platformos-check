@@ -10,8 +10,8 @@ module PlatformosCheck
       attr_reader :to, :from, :inline_query, :value_expr, :partial_name, :attributes_expr, :attributes
 
       def initialize(tag_name, markup, options)
+        super
         if markup =~ QUERY_NAME_SYNTAX
-          super
           @to = Regexp.last_match(1)
           @inline_query = false
 
@@ -35,7 +35,6 @@ module PlatformosCheck
         else
           raise Liquid::SyntaxError, 'Invalid syntax for graphql tag'
         end
-        super
       end
 
       def parse(tokens)

@@ -187,6 +187,32 @@ class InvalidArgsTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
+  def test_query_does_not_crash_when_chaining_filters
+    offenses = analyze_platformos_app(
+      PlatformosCheck::InvalidArgs.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {%- graphql _g = 'modules/admin/api/records/get', id: context.params.id | fetch: 'records' | fetch: 'results' -%}
+      END
+      "modules/admin/public/graphql/api/records/get.graphql" => <<~END
+        query get($id: ID) {
+          records(
+            per_page: 1
+            filter: {
+              id: { value: $id }
+              table: { value: "records" }
+            }
+          ) {
+            results {
+              id
+            }
+          }
+        }
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
   private
 
   def render_query_graphql(graphql_tag)
