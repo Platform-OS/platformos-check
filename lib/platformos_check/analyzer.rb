@@ -139,7 +139,6 @@ module PlatformosCheck
       return unless @auto_correct
 
       @platformos_app.liquid.each(&:write)
-      @platformos_app.yaml.each(&:write)
     end
 
     private
