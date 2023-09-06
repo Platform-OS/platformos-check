@@ -187,6 +187,20 @@ module Minitest
         )
       end
 
+      def assert_can_hover_with(provider, token, label, offset = 0)
+        context = mock_context(provider, token, offset)
+
+        assert_includes(
+          provider.completions(context)[:contents],
+          label,
+          <<~ERRMSG
+            Expected '#{label}' to be suggested at the specified cursor position:
+            #{token}
+            #{' ' * (token.size + offset)}^
+          ERRMSG
+        )
+      end
+
       def refute_can_complete(provider, token, offset = 0)
         context = mock_context(provider, token, offset)
 
