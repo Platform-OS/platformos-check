@@ -33,6 +33,7 @@ module PlatformosCheck
           workDoneProgress: false
         },
         documentLinkProvider: true,
+        hoverProvider: true,
         executeCommandProvider: {
           workDoneProgress: false,
           commands: ExecuteCommandProvider.all.map(&:command)
@@ -68,6 +69,7 @@ module PlatformosCheck
         @storage = in_memory_storage(@root_path)
         @diagnostics_manager = DiagnosticsManager.new
         @completion_engine = CompletionEngine.new(@storage, @bridge)
+        @hover_engine = HoverEngine.new(@storage, @bridge)
         @document_link_engine = DocumentLinkEngine.new(@storage)
         @diagnostics_engine = DiagnosticsEngine.new(@storage, @bridge, @diagnostics_manager)
         @execute_command_engine = ExecuteCommandEngine.new
@@ -136,6 +138,13 @@ module PlatformosCheck
       def on_text_document_document_link(id, params)
         relative_path = relative_path_from_text_document_uri(params)
         @bridge.send_response(id, @document_link_engine.document_links(relative_path))
+      end
+
+      def on_text_document_hover(id, params)
+        relative_path = relative_path_from_text_document_uri(params)
+        line = params.dig(:position, :line)
+        col = params.dig(:position, :character)
+        @bridge.send_response(id, @hover_engine.completions(relative_path, line, col)[0])
       end
 
       def on_text_document_completion(id, params)

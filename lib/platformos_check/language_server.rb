@@ -36,6 +36,12 @@ Dir[__dir__ + "/language_server/completion_providers/*.rb"].each do |file|
   require file
 end
 
+require_relative "language_server/hover_provider"
+require_relative "language_server/hover_engine"
+Dir[__dir__ + "/language_server/hover_providers/*.rb"].each do |file|
+  require file
+end
+
 require_relative "language_server/document_link_provider"
 require_relative "language_server/document_link_engine"
 Dir[__dir__ + "/language_server/document_link_providers/*.rb"].each do |file|
