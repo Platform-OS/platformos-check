@@ -61,7 +61,7 @@ DIR=$(pwd)
 IMAGE_NAME=platformos/platformos-lsp:latest
 
 LOG_DIR=$DIR/logs
-mkdir $LOG_DIR
+mkdir $LOG_DIR 2>/dev/null
 LOG_FILE=$LOG_DIR/platformos-lsp.log
 
 exec docker run -i \
@@ -69,7 +69,7 @@ exec docker run -i \
   -w $DIR \
   -e PLATFORMOS_CHECK_DEBUG=true \
   -e PLATFORMOS_CHECK_DEBUG_LOG_FILE=$LOG_FILE \
-   $IMAGE_NAME
+   $IMAGE_NAME $@
 ```
 This script will automatically download the latest Docker image and initiate a language server. Visual Studio Code (VSC) manages this process automatically. However, you can run the script for verification if needed."
 
@@ -86,7 +86,7 @@ DIR=$(pwd)
 IMAGE_NAME=platformos/platformos-check:latest
 
 LOG_DIR=$DIR/logs
-mkdir $LOG_DIR
+mkdir $LOG_DIR 2>/dev/null
 LOG_FILE=$LOG_DIR/platformos-check.log
 
 exec docker run -i \
@@ -94,7 +94,14 @@ exec docker run -i \
   -w $DIR \
   -e PLATFORMOS_CHECK_DEBUG=true \
   -e PLATFORMOS_CHECK_DEBUG_LOG_FILE=$LOG_FILE \
-   $IMAGE_NAME
+   $IMAGE_NAME $@
+```
+To verify installation run `platformos-check --help`.
+
+Usage: 
+```
+cd <project>
+platformos-check 
 ```
 
 ## Configuration
