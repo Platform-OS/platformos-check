@@ -98,10 +98,9 @@ exec docker run -i \
 ```
 To verify installation run `platformos-check --help`.
 
-Usage: 
+Usage example for CI/CD: 
 ```
-cd <project>
-platformos-check 
+platformos-check --fail-level error
 ```
 
 ## Configuration
