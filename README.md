@@ -1,6 +1,6 @@
 # platformOS Check ✅ - A linter for platformOS
 
-PlaformOS Check is a tool that helps you follow platformOS recommendations & best practices by analyzing the Liquid inside your app.
+PlatformOS Check is a tool that helps you follow platformOS recommendations & best practices by analyzing the Liquid inside your app.
 
 ![](docs/preview.png)
 
@@ -35,13 +35,67 @@ For detailed descriptions and configuration options, [take a look at the complet
 
 With more to come! Suggestions welcome ([create an issue](https://github.com/Platform-OS/platformos-lsp/issues)).
 
-## Requirements
+## Installation
+
+- download and install the extension [more]
+- next steps 
+  -> [using-local-ruby]
+  -> [docker]
+
+### Using locally installed ruby 
+
+#### Requirements
 
 - Ruby 2.7+
 
-## Installation
-
 TODO
+
+### Using Docker
+
+#### PlatformOS Check Language Server
+
+- Create an executable `platformos-check-language-server` file and place it within a directory listed in your $PATH variable.
+
+```bash
+DIR=$(pwd)
+IMAGE_NAME=platformos/platformos-lsp:latest
+
+LOG_DIR=$DIR/logs
+mkdir $LOG_DIR
+LOG_FILE=$LOG_DIR/platformos-lsp.log
+
+exec docker run -i \
+  -v $DIR:$DIR \
+  -w $DIR \
+  -e PLATFORMOS_CHECK_DEBUG=true \
+  -e PLATFORMOS_CHECK_DEBUG_LOG_FILE=$LOG_FILE \
+   $IMAGE_NAME
+```
+This script will automatically download the latest Docker image and initiate a language server. Visual Studio Code (VSC) manages this process automatically. However, you can run the script for verification if needed."
+
+#### Troubleshooting 
+
+- In the event of `onlySingleFileChecks: true` not functioning as expected, please examine your Visual Studio Code (VSC) workspace. Ensure that the workspace contains only a single project.
+
+#### PlatformOS Check 
+
+PlatformOS Check can be used also as a standalone function. Prepare the following executable script:
+
+```bash
+DIR=$(pwd)
+IMAGE_NAME=platformos/platformos-check:latest
+
+LOG_DIR=$DIR/logs
+mkdir $LOG_DIR
+LOG_FILE=$LOG_DIR/platformos-check.log
+
+exec docker run -i \
+  -v $DIR:$DIR \
+  -w $DIR \
+  -e PLATFORMOS_CHECK_DEBUG=true \
+  -e PLATFORMOS_CHECK_DEBUG_LOG_FILE=$LOG_FILE \
+   $IMAGE_NAME
+```
 
 ## Configuration
 
