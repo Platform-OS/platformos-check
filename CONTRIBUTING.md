@@ -56,7 +56,7 @@ Before configuring your IDE, run the following commands in a terminal:
 ```
 "platformosCheck.checkOnChange": true,
 "platformosCheck.onlySingleFileChecks": false,
-"platformOSLiquid.languageServerPath": "/Users/<your user>/bin/platformos-check-language-server",
+"platformosLiquid.languageServerPath": "/Users/<your user>/bin/platformos-check-language-server",
 "platformosCheck.checkOnOpen": true,
 "platformosCheck.checkOnSave": true
 ```
