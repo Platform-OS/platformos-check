@@ -16,6 +16,6 @@ RUN git clone https://github.com/Platform-OS/platformos-lsp.git && \
 
 RUN adduser --disabled-password --gecos '' platformos && chown platformos:platformos -R /app
 
-ENTRYPOINT "$WORKDIR/platformos-lsp/exe/platformos-check-language-server"
+ENTRYPOINT ["/app/platformos-lsp/exe/platformos-check-language-server"]
 
 USER platformos

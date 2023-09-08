@@ -1,0 +1,13 @@
+DIR=$(pwd)
+IMAGE_NAME=platformos/platformos-lsp:latest
+
+LOG_DIR=$DIR/logs
+mkdir $LOG_DIR 2>/dev/null
+LOG_FILE=$LOG_DIR/platformos-lsp.log
+
+exec docker run -i \
+  -v $DIR:$DIR \
+  -w $DIR \
+  -e PLATFORMOS_CHECK_DEBUG=true \
+  -e PLATFORMOS_CHECK_DEBUG_LOG_FILE=$LOG_FILE \
+   $IMAGE_NAME
