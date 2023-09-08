@@ -38,15 +38,15 @@ With more to come! Suggestions welcome ([create an issue](https://github.com/Pla
 ## Installation
 
 - download and install the extension [more]
-- next steps 
+- next steps
   -> [using-local-ruby]
   -> [docker]
 
-### Using locally installed ruby 
+### Using locally installed ruby
 
 #### Requirements
 
-- Ruby 2.7+
+- Ruby 3.2+
 
 TODO
 
@@ -73,11 +73,11 @@ exec docker run -i \
 ```
 This script will automatically download the latest Docker image and initiate a language server. Visual Studio Code (VSC) manages this process automatically. However, you can run the script for verification if needed."
 
-#### Troubleshooting 
+#### Troubleshooting
 
 - In the event of `onlySingleFileChecks: true` not functioning as expected, please examine your Visual Studio Code (VSC) workspace. Ensure that the workspace contains only a single project.
 
-#### PlatformOS Check 
+#### PlatformOS Check
 
 PlatformOS Check can be used also as a standalone function. Prepare the following executable script:
 

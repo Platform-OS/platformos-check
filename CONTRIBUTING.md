@@ -49,7 +49,17 @@ Before configuring your IDE, run the following commands in a terminal:
 
 #### Configure VS Code
 
-TODO
+1. Download provided .vsix file
+2. Install it manually via View -> Extensions -> ... -> Install from VSIX
+3. Configure settings.json
+
+```
+"platformosCheck.checkOnChange": true,
+"platformosCheck.onlySingleFileChecks": false,
+"platformOSLiquid.languageServerPath": "/Users/<your user>/bin/platformos-check-language-server",
+"platformosCheck.checkOnOpen": true,
+"platformosCheck.checkOnSave": true
+```
 
 #### Configure Vim
 
