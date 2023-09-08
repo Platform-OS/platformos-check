@@ -48,7 +48,15 @@ With more to come! Suggestions welcome ([create an issue](https://github.com/Pla
 
 - Ruby 3.2+
 
-TODO
+### Install ruby and platform-check gem
+
+1. Download the latest version of Ruby - https://www.ruby-lang.org/en/documentation/installation/
+2. Install platformos-check gem
+
+`gem install platformos-check`
+
+You can verify the installation was successful by invoking `platformos-check --version`. If you chose this method, use `platformos-check-language-server` as a path to your language server instead of `/Users/<username/platformos-check-language-server`
+
 
 ### Using Docker
 
