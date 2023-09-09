@@ -89,7 +89,7 @@ module PlatformosCheck
       end
 
       def param_to_doc(param)
-        "#{param.name}:#{param.return_type.downcase}"
+        "#{param&.name || 'object'}:#{param&.return_type&.downcase || 'untyped'}"
       end
 
       def filter_to_completion(filter)
@@ -97,11 +97,10 @@ module PlatformosCheck
         first_param, *other_params = filter.parameters
         other_params = other_params.map { |param| param_to_doc(param) }
         other_params = other_params.any? ? ": #{other_params.join(', ')}" : ""
-        content = "#{param_to_doc(first_param)} | #{filter.name}#{other_params} => #{filter.return_type}"
+        content += "  \n\n#{param_to_doc(first_param)} | #{filter.name}#{other_params} => #{filter.return_type}"
 
         {
-          contents: content,
-
+          contents: content
           # label: filter.name,
           # kind: CompletionItemKinds::FUNCTION,
           # **format_hash(filter),
