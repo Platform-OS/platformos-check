@@ -122,6 +122,44 @@ module PlatformosCheck
         assert_links_include("modules/my-module/file/not_created_yet", content, engine.document_links("app/views/pages/product.graphql"), "modules/my-module/public/graphql", ".graphql")
       end
 
+      def test_makes_links_out_of_background_tags
+        content = <<~LIQUID
+          {% background res = '1' %}
+          {%- background res = "2", arg: 10 -%}
+          {% liquid
+            assign x = "x"
+            background f = '3', x: x
+          %}
+          {%- liquid
+            assign x = "x"
+            background f = '4', x: x
+          -%}
+          {% background module_res = 'modules/my-module/hello/5' %}
+          {% background module_res = 'modules/my-module/hello/6' %}
+          {% background not_created = 'file/not_created_yet' %}
+          {% background not_created_module = 'modules/my-module/file/not_created_yet' %}
+        LIQUID
+
+        engine = make_engine(
+          "app/views/pages/product.liquid" => content,
+          "app/views/partials/1.liquid" => '1',
+          "app/lib/2.liquid" => '2',
+          "app/lib/3.liquid" => '3',
+          "app/views/partials/4.liquid" => '4',
+          "modules/my-module/public/views/partials/hello/5.liquid" => '5',
+          "modules/my-module/private/lib/hello/6.liquid" => '6'
+        )
+
+        assert_links_include("1", content, engine.document_links("app/views/pages/product.liquid"), "app/views/partials", ".liquid")
+        assert_links_include("2", content, engine.document_links("app/views/pages/product.liquid"), "app/lib", ".liquid")
+        assert_links_include("3", content, engine.document_links("app/views/pages/product.liquid"), "app/lib", ".liquid")
+        assert_links_include("4", content, engine.document_links("app/views/pages/product.liquid"), "app/views/partials", ".liquid")
+        assert_links_include("modules/my-module/hello/5", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/public/views/partials", ".liquid")
+        assert_links_include("modules/my-module/hello/6", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/private/lib", ".liquid")
+        assert_links_include("file/not_created_yet", content, engine.document_links("app/views/pages/product.liquid"), "app/lib", ".liquid")
+        assert_links_include("modules/my-module/file/not_created_yet", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/public/lib", ".liquid")
+      end
+
       def test_makes_links_out_of_include_tags
         content = <<~LIQUID
           {% include '1' %}
@@ -158,6 +196,44 @@ module PlatformosCheck
         assert_links_include("4", content, engine.document_links("app/views/pages/product.liquid"), "app/views/partials", ".liquid")
         assert_links_include("modules/my-module/hello/5", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/public/views/partials", ".liquid")
         assert_links_include("modules/my-module/hello/6", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/private/lib", ".liquid")
+      end
+
+      def test_makes_links_out_of_include_form_tags
+        content = <<~LIQUID
+          {% include_form '1' %}
+          {%- include_form "2" -%}
+          {% liquid
+            assign x = "x"
+            include_form '3'
+          %}
+          {%- liquid
+            assign x = "x"
+            include_form "4"
+          -%}
+          {% include_form 'modules/my-module/hello/5' %}
+          {% include_form 'modules/my-module/hello/6' %}
+          {% include_form 'file/not_created_yet' %}
+          {% include_form 'modules/my-module/file/not_created_yet' %}
+        LIQUID
+
+        engine = make_engine(
+          "app/views/pages/product.liquid" => content,
+          "app/forms/1.liquid" => '1',
+          "app/forms/2.liquid" => '2',
+          "app/forms/3.liquid" => '3',
+          "app/forms/4.liquid" => '4',
+          "modules/my-module/public/forms/hello/5.liquid" => '5',
+          "modules/my-module/private/forms/hello/6.liquid" => '6'
+        )
+
+        assert_links_include("file/not_created_yet", content, engine.document_links("app/views/pages/product.liquid"), "app/forms", ".liquid")
+        assert_links_include("modules/my-module/file/not_created_yet", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/public/forms", ".liquid")
+        assert_links_include("1", content, engine.document_links("app/views/pages/product.liquid"), "app/forms", ".liquid")
+        assert_links_include("2", content, engine.document_links("app/views/pages/product.liquid"), "app/forms", ".liquid")
+        assert_links_include("3", content, engine.document_links("app/views/pages/product.liquid"), "app/forms", ".liquid")
+        assert_links_include("4", content, engine.document_links("app/views/pages/product.liquid"), "app/forms", ".liquid")
+        assert_links_include("modules/my-module/hello/5", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/public/forms", ".liquid")
+        assert_links_include("modules/my-module/hello/6", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/private/forms", ".liquid")
       end
 
       def test_makes_links_out_of_asset_url_filters

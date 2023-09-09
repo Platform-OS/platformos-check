@@ -144,6 +144,9 @@ module PlatformosCheck
         if info.app_file.notification?
           # NOTE: `data` comes from graphql for notifications
           check_object(info, all_global_objects + %w[data response form])
+        elsif info.app_file.form?
+          # NOTE: `data` comes from graphql for notifications
+          check_object(info, all_global_objects + %w[form form_builder])
         else
           check_object(info, all_global_objects)
         end

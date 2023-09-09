@@ -27,6 +27,10 @@ module PlatformosCheck
       false
     end
 
+    def form?
+      false
+    end
+
     def partial?
       false
     end

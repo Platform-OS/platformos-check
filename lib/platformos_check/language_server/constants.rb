@@ -26,6 +26,7 @@ module PlatformosCheck
 
     PARTIAL_RENDER = partial_tag('render')
     PARTIAL_INCLUDE = partial_tag('include')
+    PARTIAL_INCLUDE_FORM = partial_tag('include_form')
     PARTIAL_FUNCTION = partial_tag_with_result('function')
     PARTIAL_GRAPHQL = partial_tag_with_result('graphql')
     PARTIAL_BACKGROUND = partial_tag_with_result('background')
