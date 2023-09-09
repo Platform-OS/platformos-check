@@ -48,7 +48,7 @@ class AppTest < Minitest::Test
   end
 
   def test_by_name
-    assert_equal("app/assets/app.js", @platformos_app["app/assets/app.js"].name)
+    assert_equal("app.js", @platformos_app["app.js"].name)
     assert_equal("cars/card", @platformos_app["cars/card"].name)
     assert_equal("app/views/pages/index", @platformos_app["app/views/pages/index"].name)
   end
@@ -85,6 +85,6 @@ class AppTest < Minitest::Test
     ])
     platformos_app = PlatformosCheck::App.new(storage)
 
-    assert_equal(["app/assets/app.css", "app/assets/app.js"], platformos_app.assets.map(&:name).sort)
+    assert_equal(["app.css", "app.js"], platformos_app.assets.map(&:name).sort)
   end
 end

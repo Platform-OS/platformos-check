@@ -110,10 +110,6 @@ module PlatformosCheck
       grouped_files[PageFile]&.values || []
     end
 
-    def directories
-      storage.directories
-    end
-
     def all
       @all ||= grouped_files.values.map(&:values).flatten
     end
@@ -125,14 +121,6 @@ module PlatformosCheck
       else
         all.find { |t| t.name == name_or_relative_path }
       end
-    end
-
-    def sections
-      liquid.select(&:section?)
-    end
-
-    def snippets
-      liquid.select(&:snippet?)
     end
   end
 end

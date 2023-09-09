@@ -380,15 +380,15 @@ class ConfigTest < Minitest::Test
         MissingTemplate:
           enabled: true
           ignore:
-            - 'snippets/foo.js'
+            - 'views/partials/foo.js'
       END
     )
     config = PlatformosCheck::Config.from_path(storage.root)
-    missing_snippets_check = config.enabled_checks.find { |c| c.code_name == 'MissingTemplate' }
+    missing_partials_check = config.enabled_checks.find { |c| c.code_name == 'MissingTemplate' }
 
     assert_equal(
-      ["snippets/foo.js", "node_modules", "dist/*.json"],
-      missing_snippets_check.ignored_patterns
+      ["views/partials/foo.js", "node_modules", "dist/*.json"],
+      missing_partials_check.ignored_patterns
     )
   end
 

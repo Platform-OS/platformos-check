@@ -4,8 +4,9 @@ module PlatformosCheck
   module LanguageServer
     class RenderDocumentLinkProvider < DocumentLinkProvider
       @partial_regexp = PARTIAL_RENDER
-      @destination_directory = "snippets"
-      @destination_postfix = ".liquid"
+      @app_file_type = :partials
+      @default_dir = 'views/partials'
+      @default_extension = '.liquid'
     end
   end
 end

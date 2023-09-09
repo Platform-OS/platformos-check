@@ -15,10 +15,6 @@ module PlatformosCheck
       true
     end
 
-    def template?
-      name.start_with?('template')
-    end
-
     def notification?
       false
     end
@@ -37,14 +33,6 @@ module PlatformosCheck
 
     def layout?
       false
-    end
-
-    def section?
-      name.start_with?('sections')
-    end
-
-    def snippet?
-      name.start_with?('snippet')
     end
 
     def rewriter

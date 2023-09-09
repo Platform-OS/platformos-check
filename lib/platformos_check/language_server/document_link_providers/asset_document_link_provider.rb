@@ -4,8 +4,8 @@ module PlatformosCheck
   module LanguageServer
     class AssetDocumentLinkProvider < DocumentLinkProvider
       @partial_regexp = ASSET_INCLUDE
-      @destination_directory = "assets"
-      @destination_postfix = ""
+      @app_file_type = :assets
+      @default_dir = 'assets'
     end
   end
 end
