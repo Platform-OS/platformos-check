@@ -10,9 +10,9 @@ PlatformOS Check currently checks for the following:
 
 ✅ Liquid syntax errors
 ✅ JSON syntax errors
-✅ Missing snippet & section templates
+✅ Missing partials and graphqls
 ✅ Unused `{% assign ... %}`
-✅ Unused snippet templates
+✅ Unused partials
 ✅ Template length
 ✅ Deprecated tags
 ✅ Unknown tags
@@ -22,6 +22,7 @@ PlatformOS Check currently checks for the following:
 ✅ Undefined objects
 ✅ Deprecated filters
 ✅ Missing `platformos-check-enable` comment
+✅ Invalid arguments provided to `{% graphql %}` tags
 
 As well as checks that prevent easy to spot performance problems:
 
@@ -106,7 +107,7 @@ exec docker run -i \
 ```
 To verify installation run `platformos-check --help`.
 
-Usage example for CI/CD: 
+Usage example for CI/CD:
 ```
 platformos-check --fail-level error
 ```
