@@ -45,6 +45,83 @@ module PlatformosCheck
         assert_links_include("modules/my-module/file/not_created_yet", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/public/views/partials", ".liquid")
       end
 
+      def test_makes_links_out_of_function_tags
+        content = <<~LIQUID
+          {% function res = '1' %}
+          {%- function res = "2", arg: 10 -%}
+          {% liquid
+            assign x = "x"
+            function f = '3', x: x
+          %}
+          {%- liquid
+            assign x = "x"
+            function f = '4', x: x
+          -%}
+          {% function module_res = 'modules/my-module/hello/5' %}
+          {% function module_res = 'modules/my-module/hello/6' %}
+          {% function not_created = 'file/not_created_yet' %}
+          {% function not_created_module = 'modules/my-module/file/not_created_yet' %}
+        LIQUID
+
+        engine = make_engine(
+          "app/views/pages/product.liquid" => content,
+          "app/views/partials/1.liquid" => '1',
+          "app/lib/2.liquid" => '2',
+          "app/lib/3.liquid" => '3',
+          "app/views/partials/4.liquid" => '4',
+          "modules/my-module/public/views/partials/hello/5.liquid" => '5',
+          "modules/my-module/private/lib/hello/6.liquid" => '6'
+        )
+
+        assert_links_include("1", content, engine.document_links("app/views/pages/product.liquid"), "app/views/partials", ".liquid")
+        assert_links_include("2", content, engine.document_links("app/views/pages/product.liquid"), "app/lib", ".liquid")
+        assert_links_include("3", content, engine.document_links("app/views/pages/product.liquid"), "app/lib", ".liquid")
+        assert_links_include("4", content, engine.document_links("app/views/pages/product.liquid"), "app/views/partials", ".liquid")
+        assert_links_include("modules/my-module/hello/5", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/public/views/partials", ".liquid")
+        assert_links_include("modules/my-module/hello/6", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/private/lib", ".liquid")
+        assert_links_include("file/not_created_yet", content, engine.document_links("app/views/pages/product.liquid"), "app/lib", ".liquid")
+        assert_links_include("modules/my-module/file/not_created_yet", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/public/lib", ".liquid")
+      end
+
+      def test_makes_links_out_of_graphql_tags
+        content = <<~LIQUID
+          {% graphql res = '1' %}
+          {%- graphql res = "2", arg: 10 -%}
+          {% liquid
+            assign x = "x"
+            graphql f = '3', x: x
+          %}
+          {% graphql res %}query { records(per_page: 20, table: { value: "my-table" }) { results { id } }}{% endgraphql%}
+          {%- liquid
+            assign x = "x"
+            graphql f = '4', x: x
+          -%}
+          {% graphql module_res = 'modules/my-module/hello/5' %}
+          {% graphql module_res = 'modules/my-module/hello/6' %}
+          {% graphql not_created = 'file/not_created_yet' %}
+          {% graphql not_created_module = 'modules/my-module/file/not_created_yet' %}
+        LIQUID
+
+        engine = make_engine(
+          "app/views/pages/product.graphql" => content,
+          "app/graphql/1.graphql" => '1',
+          "app/graphql/2.graphql" => '2',
+          "app/graphql/3.graphql" => '3',
+          "app/graphql/4.graphql" => '4',
+          "modules/my-module/public/graphql/hello/5.graphql" => '5',
+          "modules/my-module/private/graphql/hello/6.graphql" => '6'
+        )
+
+        assert_links_include("1", content, engine.document_links("app/views/pages/product.graphql"), "app/graphql", ".graphql")
+        assert_links_include("2", content, engine.document_links("app/views/pages/product.graphql"), "app/graphql", ".graphql")
+        assert_links_include("3", content, engine.document_links("app/views/pages/product.graphql"), "app/graphql", ".graphql")
+        assert_links_include("4", content, engine.document_links("app/views/pages/product.graphql"), "app/graphql", ".graphql")
+        assert_links_include("modules/my-module/hello/5", content, engine.document_links("app/views/pages/product.graphql"), "modules/my-module/public/graphql", ".graphql")
+        assert_links_include("modules/my-module/hello/6", content, engine.document_links("app/views/pages/product.graphql"), "modules/my-module/private/graphql", ".graphql")
+        assert_links_include("file/not_created_yet", content, engine.document_links("app/views/pages/product.graphql"), "app/graphql", ".graphql")
+        assert_links_include("modules/my-module/file/not_created_yet", content, engine.document_links("app/views/pages/product.graphql"), "modules/my-module/public/graphql", ".graphql")
+      end
+
       def test_makes_links_out_of_include_tags
         content = <<~LIQUID
           {% include '1' %}

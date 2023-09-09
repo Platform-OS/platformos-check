@@ -98,6 +98,10 @@ module PlatformosCheck
       grouped_files[EmailFile]&.values || []
     end
 
+    def graphqls
+      grouped_files[GraphqlFile]&.values || []
+    end
+
     def smses
       grouped_files[SmsFile]&.values || []
     end
