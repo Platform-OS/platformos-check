@@ -208,7 +208,7 @@ class LanguageServerTest < Minitest::Test
                                jsonrpc: "2.0",
                                id: 1,
                                result: [{
-                                 target: file_uri(storage.path('snippets/a.liquid')),
+                                 target: file_uri(storage.path('app/views/partials/a.liquid')),
                                  range: {
                                    start: {
                                      line: 0,
@@ -267,7 +267,7 @@ class LanguageServerTest < Minitest::Test
                                jsonrpc: "2.0",
                                id: 1,
                                result: [{
-                                 target: file_uri(storage.path('src/platformos_app/snippets/a.liquid')),
+                                 target: file_uri(storage.path('src/platformos_app/app/views/partials/a.liquid')),
                                  range: {
                                    start: {
                                      line: 0,
@@ -347,7 +347,7 @@ class LanguageServerTest < Minitest::Test
                                jsonrpc: "2.0",
                                id: 1,
                                result: [{
-                                 target: file_uri(storage.path('path with spaces/snippets/a.liquid')),
+                                 target: file_uri(storage.path('path with spaces/app/views/partials/a.liquid')),
                                  range: {
                                    start: {
                                      line: 0,

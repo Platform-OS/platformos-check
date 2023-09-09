@@ -23,11 +23,15 @@ module PlatformosCheck
     end
 
     def name
-      @name ||= dir_prefix.nil? ? relative_path.sub_ext('').to_s : build_name
+      @name ||= dir_prefix.nil? ? remove_extension(relative_path).to_s : build_name
+    end
+
+    def remove_extension(path)
+      path.sub_ext('')
     end
 
     def build_name
-      n = relative_path.sub(dir_prefix, '').sub_ext('').to_s
+      n = remove_extension(relative_path.sub(dir_prefix, '')).to_s
       return n if module_name.nil?
 
       prefix = "modules#{File::SEPARATOR}#{module_name}#{File::SEPARATOR}"

@@ -328,7 +328,7 @@ class UndefinedObjectTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
-  def test_does_not_report_on_unused_snippet
+  def test_does_not_report_on_unused_partial
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_partials: false),
       "app/views/partials/product.liquid" => <<~END

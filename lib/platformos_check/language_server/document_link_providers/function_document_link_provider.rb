@@ -2,10 +2,10 @@
 
 module PlatformosCheck
   module LanguageServer
-    class RenderDocumentLinkProvider < DocumentLinkProvider
-      @partial_regexp = PARTIAL_RENDER
+    class FunctionDocumentLinkProvider < DocumentLinkProvider
+      @partial_regexp = PARTIAL_FUNCTION
       @app_file_type = :partials
-      @default_dir = 'views/partials'
+      @default_dir = 'lib'
       @default_extension = '.liquid'
     end
   end
