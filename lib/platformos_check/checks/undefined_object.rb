@@ -127,6 +127,19 @@ module PlatformosCheck
       @files[node.app_file.name].all_assigns[node.value.to] = node
     end
 
+    def on_background(node)
+      return if ignore?(node)
+      return unless node.value.partial_syntax
+      return unless node.value.partial_name.is_a?(String)
+
+      @files[node.app_file.name].add_render(
+        name: node.value.partial_name,
+        node:
+      )
+
+      @files[node.app_file.name].all_assigns[node.value.to] = node
+    end
+
     def on_variable_lookup(node)
       return if ignore?(node)
 

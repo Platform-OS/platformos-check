@@ -488,6 +488,38 @@ class UndefinedObjectTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
+  def test_report_when_argument_not_explicitly_provided_to_background_partial_syntax
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new(exclude_partials: false),
+      "app/views/pages/a.liquid" => <<~END,
+        {% background res = 'my_background', arg: "hello", delay: 3.5 %}
+        {{ res }}
+      END
+      "app/views/partials/my_background.liquid" => <<~END
+        {{ arg }} {{ arg2 }}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Missing argument `arg2` at app/views/pages/a.liquid:1
+    END
+  end
+
+  def test_report_when_argument_not_explicitly_provided_to_background_inline_syntax
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new(exclude_partials: false),
+      "app/views/pages/a.liquid" => <<~END
+        {% background source_name: 'my_background', arg: "hello", arg3: arg3, delay: 3.5 %}
+          {{ arg }}
+        {% endbackground %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Undefined object `arg3` at app/views/pages/a.liquid:1
+    END
+  end
+
   def test_report_when_graphql_argument_not_defined_via_function
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new(exclude_partials: false),

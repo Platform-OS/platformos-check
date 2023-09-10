@@ -6,7 +6,7 @@ module PlatformosCheck
       PARTIAL_SYNTAX = /(#{Liquid::VariableSignature}+)\s*=\s*(.*)\s*/om
       CLOSE_TAG_SYNTAX = /\A(.*)(?-mix:\{%-?)\s*(\w+)\s*(.*)?(?-mix:%\})\z/m # based on Liquid::Raw::FullTokenPossiblyInvalid
 
-      attr_reader :to, :from, :attributes, :value_expr
+      attr_reader :to, :from, :attributes, :value_expr, :partial_syntax, :partial_name
 
       def initialize(tag_name, markup, options)
         if markup =~ PARTIAL_SYNTAX
@@ -17,12 +17,14 @@ module PlatformosCheck
           after_assign_markup = Regexp.last_match(2).split('|')
           parse_markup(tag_name, after_assign_markup.shift)
           after_assign_markup.unshift(@to)
+          @partial_name = value_expr
           @from = Liquid::Variable.new(after_assign_markup.join('|'), options)
         else
           @partial_syntax = false
           parse_markup(tag_name, markup)
           super
         end
+        @attributes = attributes_expr
       end
 
       def parse(tokens)
