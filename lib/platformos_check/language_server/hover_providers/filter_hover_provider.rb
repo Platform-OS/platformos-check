@@ -18,7 +18,10 @@ module PlatformosCheck
         variable_lookup = VariableLookupFinder.lookup(context)
         denied_filters = denied_filters_for(variable_lookup)
         available_filters_for(determine_input_type(variable_lookup))
-          .select { |filter| (filter.name == partial(content, cursor)) && denied_filters.none?(filter.name) }
+          .select do |filter|
+            partial_name = partial(content, cursor)
+            (filter.name == partial_name || filter.aliases.any? { |a| a == partial_name }) && denied_filters.none?(filter.name)
+          end
           .map { |filter| filter_to_completion(filter) }
           .first
       end
@@ -88,23 +91,14 @@ module PlatformosCheck
         partial_match[1]
       end
 
-      def param_to_doc(param)
-        "#{param&.name || 'object'}:#{param&.return_type&.downcase || 'untyped'}"
-      end
-
       def filter_to_completion(filter)
         content = PlatformosLiquid::Documentation.render_doc(filter)
-        first_param, *other_params = filter.parameters
-        other_params = other_params.map { |param| param_to_doc(param) }
-        other_params = other_params.any? ? ": #{other_params.join(', ')}" : ""
-        content += "  \n\n#{param_to_doc(first_param)} | #{filter.name}#{other_params} => #{filter.return_type}"
-
         {
-          contents: content
-          # label: filter.name,
-          # kind: CompletionItemKinds::FUNCTION,
-          # **format_hash(filter),
-          # **doc_hash(content)
+          contents: content,
+          label: filter.name,
+          kind: CompletionItemKinds::FUNCTION,
+          **format_hash(filter),
+          **doc_hash(content)
         }
       end
     end

@@ -12,6 +12,10 @@ module PlatformosCheck
           "#{PLATFORMOS_DOCUMENTATION_URL}/api-reference/liquid/filters/#{hash['name']}"
         end
 
+        def full_summary
+          "#{hash['name']} - #{hash['description']}"
+        end
+
         private
 
         def return_type_hash
