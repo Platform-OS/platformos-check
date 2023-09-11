@@ -27,8 +27,10 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_dependency('graphql', '~> 2.0.0')
   spec.add_dependency('liquid', '>= 5.4.0')
   spec.add_dependency('nokogiri', '>= 1.12')
   spec.add_dependency('parser', '~> 3')
+
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
