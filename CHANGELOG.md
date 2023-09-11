@@ -1,3 +1,9 @@
+v0.0.3 / 2023-09-11
+==================
+
+  * Fix GraphQL dependency issue
+  * Support background tag in UndefinedObject check
+
 v0.0.2 / 2023-09-09
 ==================
 
