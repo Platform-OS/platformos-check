@@ -13,6 +13,12 @@ module PlatformosCheck
       @storage.write(@relative_path, content.gsub("\n", @eol))
       @source = content
       @rewriter = nil
+      @ast = nil
+      @variables = nil
+      @definition = nil
+      @parse = nil
+      @required_arguments = nil
+      @defined_arguments = nil
     end
 
     def rewriter
@@ -48,7 +54,7 @@ module PlatformosCheck
     end
 
     def warnings
-      @ast.warnings
+      parse.warnings
     end
 
     def root
@@ -59,7 +65,25 @@ module PlatformosCheck
       Struct.new(:warnings, :root)
     end
 
+    def required_arguments
+      @required_arguments ||= variables.each_with_object([]) do |v, vars|
+        vars << v.name if v.type.is_a?(GraphQL::Language::Nodes::NonNullType)
+      end
+    end
+
+    def defined_arguments
+      @defined_arguments ||= variables.map(&:name)
+    end
+
     private
+
+    def variables
+      @variables ||= definition&.variables || []
+    end
+
+    def definition
+      @definition ||= parse.definitions.detect { |d| d.is_a?(GraphQL::Language::Nodes::OperationDefinition) }
+    end
 
     def bounded(lower, x, upper)
       [lower, [x, upper].min].max

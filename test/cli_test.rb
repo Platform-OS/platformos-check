@@ -150,7 +150,7 @@ class CliTest < Minitest::Test
     PlatformosCheck::PlatformosLiquid::SourceManager.expects(:download)
 
     storage = make_file_system_storage(
-      'layout/platformos_app.liquid' => '',
+      'app/views/layouts/platformos_app.liquid' => '',
       '.platformos-check.yml' => <<~YAML
         extends: :nothing
       YAML
@@ -165,7 +165,7 @@ class CliTest < Minitest::Test
 
   def test_auto_correct
     storage = make_file_system_storage(
-      "templats/platformos_app.liquid" => <<~LIQUID
+      "app/views/layouts/platformos_app.liquid" => <<~LIQUID
         {{ content_for_layout }}
       LIQUID
     )

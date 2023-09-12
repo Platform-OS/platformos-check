@@ -73,8 +73,7 @@ module Minitest
         storage.write(path, value, 1)
       end
 
-      platformos_app = PlatformosCheck::App.new(storage)
-      analyzer = PlatformosCheck::Analyzer.new(platformos_app, check_classes)
+      analyzer = PlatformosCheck::Analyzer.new(storage.platformos_app, check_classes)
       analyzer.analyze_platformos_app
       offenses = analyzer.offenses
       diagnostics_manager = PlatformosCheck::LanguageServer::DiagnosticsManager.new
@@ -87,7 +86,7 @@ module Minitest
 
     def make_platformos_app(files = {})
       storage = make_storage(files)
-      PlatformosCheck::App.new(storage)
+      storage.platformos_app
     end
 
     def make_storage(files = {})
@@ -160,8 +159,8 @@ module Minitest
     end
 
     module CompletionProviderTestHelper
-      def assert_can_complete(provider, token, offset = 0)
-        context = mock_context(provider, token, offset)
+      def assert_can_complete(provider, token, offset = 0, line = nil)
+        context = mock_context(provider, token, offset, line)
 
         refute_empty(
           provider.completions(context).map { |x| x[:label] },
@@ -173,8 +172,8 @@ module Minitest
         )
       end
 
-      def assert_can_complete_with(provider, token, label, offset = 0)
-        context = mock_context(provider, token, offset)
+      def assert_can_complete_with(provider, token, label, offset = 0, line = nil)
+        context = mock_context(provider, token, offset, line)
 
         assert_includes(
           provider.completions(context).map { |x| x[:label] },
@@ -187,8 +186,8 @@ module Minitest
         )
       end
 
-      def assert_can_hover_with(provider, token, label, offset = 0)
-        context = mock_context(provider, token, offset)
+      def assert_can_hover_with(provider, token, label, offset = 0, line = nil)
+        context = mock_context(provider, token, offset, line)
 
         assert_includes(
           provider.completions(context)[:contents],
@@ -201,8 +200,8 @@ module Minitest
         )
       end
 
-      def refute_can_complete(provider, token, offset = 0)
-        context = mock_context(provider, token, offset)
+      def refute_can_complete(provider, token, offset = 0, line = nil)
+        context = mock_context(provider, token, offset, line)
 
         assert_empty(
           provider.completions(context),
@@ -214,8 +213,8 @@ module Minitest
         )
       end
 
-      def refute_can_complete_with(provider, token, label, offset = 0)
-        context = mock_context(provider, token, offset)
+      def refute_can_complete_with(provider, token, label, offset = 0, line = nil)
+        context = mock_context(provider, token, offset, line)
 
         refute_includes(
           provider.completions(context).map { |x| x[:label] },
@@ -230,15 +229,19 @@ module Minitest
 
       private
 
-      def mock_context(provider, token, offset)
+      def mock_context(provider, token, offset, line = nil)
         relative_path = "file:///fake_path"
         storage = provider.storage
 
         storage.stubs(:read).with(relative_path).returns(token)
 
         lines = token.split("\n")
-        line = lines.size + 1
-        col = lines.last.size + offset
+        if line
+          col = lines[line].size + offset
+        else
+          line = lines.size + 1
+          col = lines.last.size + offset
+        end
 
         PlatformosCheck::LanguageServer::CompletionContext.new(storage, relative_path, line, col)
       end

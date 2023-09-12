@@ -46,22 +46,30 @@ module PlatformosCheck
     end
 
     def grouped_files
-      @grouped_files ||= begin
-        hash = {}
-        REGEXP_MAP.each_value { |v| hash[v] = {} }
-        storage.files.each do |path|
-          regexp, klass = REGEXP_MAP.detect { |k, _v| k.match?(path) }
-          if regexp
-            f = klass.new(path, storage)
-            hash[klass][f.name] = f
-          elsif /\.liquid$/i.match?(path)
-            hash[LiquidFile] ||= {}
-            f = LiquidFile.new(path, storage)
-            hash[LiquidFile][f.name] = f
-          end
+      return @grouped_files if @grouped_files
+
+      @grouped_files = {}
+      REGEXP_MAP.each_value { |v| @grouped_files[v] ||= {} }
+      process_files(storage.files)
+    end
+
+    def update(files, remove: false)
+      process_files(files, remove:)
+    end
+
+    def process_files(files, remove: false)
+      files.each do |path|
+        regexp, klass = REGEXP_MAP.detect { |k, _v| k.match?(path) }
+        next unless regexp
+
+        f = klass.new(path, storage)
+        if remove
+          @grouped_files[klass].delete(f.name)
+        else
+          @grouped_files[klass][f.name] = f
         end
-        hash
       end
+      @grouped_files
     end
 
     def assets
@@ -121,7 +129,7 @@ module PlatformosCheck
     end
 
     def all
-      @all ||= grouped_files.values.map(&:values).flatten
+      grouped_files.values.map(&:values).flatten
     end
 
     def [](name_or_relative_path)
@@ -129,7 +137,7 @@ module PlatformosCheck
       when Pathname
         all.find { |t| t.relative_path == name_or_relative_path }
       else
-        all.find { |t| t.name == name_or_relative_path }
+        all.find { |t| t.relative_path.to_s == name_or_relative_path }
       end
     end
   end

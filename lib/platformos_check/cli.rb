@@ -190,13 +190,12 @@ module PlatformosCheck
 
       warn "Checking #{@config.root} ..."
       storage = PlatformosCheck::FileSystemStorage.new(@config.root, ignored_patterns: @config.ignored_patterns)
-      platformos_app = PlatformosCheck::App.new(storage)
-      raise Abort, "No platformos_app files found." if platformos_app.all.empty?
+      raise Abort, "No platformos_app files found." if storage.platformos_app.all.empty?
 
-      analyzer = PlatformosCheck::Analyzer.new(platformos_app, @config.enabled_checks, @config.auto_correct)
+      analyzer = PlatformosCheck::Analyzer.new(storage.platformos_app, @config.enabled_checks, @config.auto_correct)
       analyzer.analyze_platformos_app
       analyzer.correct_offenses
-      print_with_format(platformos_app, analyzer, out_stream)
+      print_with_format(storage.platformos_app, analyzer, out_stream)
       # corrections are committed after printing so that the
       # source_excerpts are still pointing to the uncorrected source.
       analyzer.write_corrections

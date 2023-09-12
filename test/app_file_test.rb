@@ -6,17 +6,17 @@ module PlatformosCheck
   class AppFileTest < Minitest::Test
     def setup
       @platformos_app = make_platformos_app(
-        "assets/windows.js" => "console.log(\r\n  hi\r\n)",
-        "assets/linux.js" => "console.log(\n  hi\n)",
-        "liquid/windows.liquid" => "hello\r\nworld",
-        "liquid/linux.liquid" => "hello\nworld",
-        "translations/en/base.yml" => "---\r\n  a: \"b\"\r\n",
-        "translations/de/base.yml" => "---\n  a: b\n"
+        "app/assets/windows.js" => "console.log(\r\n  hi\r\n)",
+        "app/assets/linux.js" => "console.log(\n  hi\n)",
+        "app/views/pages/windows.liquid" => "hello\r\nworld",
+        "app/views/pages/linux.liquid" => "hello\nworld",
+        "app/translations/en/base.yml" => "---\r\n  a: \"b\"\r\n",
+        "app/translations/de/base.yml" => "---\n  a: b\n"
       )
     end
 
     def test_eol_are_always_new_lines_internally
-      @platformos_app.liquid.each do |liquid_file|
+      @platformos_app.pages.each do |liquid_file|
         assert_equal("hello\nworld", liquid_file.source)
       end
       @platformos_app.yaml.each do |yaml_file|
@@ -32,7 +32,7 @@ module PlatformosCheck
         ["windows", "\r\n"],
         ["linux", "\n"]
       ].each do |(platform, eol)|
-        liquid_file = @platformos_app["liquid/#{platform}"]
+        liquid_file = @platformos_app["app/views/pages/#{platform}.liquid"]
 
         assert_equal("hello#{eol}world", @platformos_app.storage.read(liquid_file.relative_path.to_s))
         liquid_file.rewriter.replace(
@@ -53,7 +53,7 @@ module PlatformosCheck
         ["translations/en/base", "\r\n", "---\r\n  a: \"b\"\r\n"],
         ["translations/de/base", "\n", "---\n  a: b\n"]
       ].each do |(platform, eol, content)|
-        yaml_file = @platformos_app[platform]
+        yaml_file = @platformos_app["app/#{platform}.yml"]
 
         assert_equal(content, @platformos_app.storage.read(yaml_file.relative_path.to_s))
         yaml_file.content["a"] = "c"
@@ -68,7 +68,7 @@ module PlatformosCheck
         ["windows", "\r\n"],
         ["linux", "\n"]
       ].each do |(platform, eol)|
-        asset_file = @platformos_app["assets/#{platform}.js"]
+        asset_file = @platformos_app["app/assets/#{platform}.js"]
 
         assert_equal("console.log(#{eol}  hi#{eol})", @platformos_app.storage.read(asset_file.relative_path.to_s))
         asset_file.rewriter.replace(

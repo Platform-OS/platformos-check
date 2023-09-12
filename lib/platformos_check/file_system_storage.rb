@@ -31,10 +31,13 @@ module PlatformosCheck
 
       file(relative_path).dirname.mkpath unless file(relative_path).dirname.directory?
       file(relative_path).write(content, mode: 'w+b', encoding: 'UTF-8')
+      @platformos_app&.update([relative_path])
     end
 
     def remove(relative_path)
       file(relative_path).delete
+
+      @platformos_app&.update([relative_path], remove: true)
       reset_memoizers
     end
 
@@ -60,12 +63,6 @@ module PlatformosCheck
                       .map { |path| path.relative_path_from(@root).to_s }
     end
 
-    def directories
-      @directories ||= glob('**/')
-                       .select { |f| File.directory?(f) }
-                       .map { |f| f.relative_path_from(@root).to_s }
-    end
-
     private
 
     def file_exists?(relative_path)
@@ -74,7 +71,6 @@ module PlatformosCheck
 
     def reset_memoizers
       @file_array = nil
-      @directories = nil
     end
 
     def glob(pattern)

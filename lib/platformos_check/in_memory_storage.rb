@@ -22,47 +22,25 @@ module PlatformosCheck
     end
 
     def write(relative_path, content)
+      @platformos_app&.update([relative_path])
       @files[relative_path] = content
     end
 
     def remove(relative_path)
+      @platformos_app&.update([relative_path], remove: true)
       @files.delete(relative_path)
     end
 
     def mkdir(relative_path)
       @files[relative_path] = nil
-      reset_memoizers
     end
-
-    # TODO: Fix corrector
-    # def rename(old_path, new_path)
-    #   old_path += '/' if old_path[-1] != '/'
-    #   new_path += '/' if new_path[-1] != '/'
-    #   @files.transform_keys! { |k| k.sub(/\A#{old_path}/, new_path) }
-    #
-    #   reset_memoizers
-    # end
 
     def files
       @files.keys
     end
 
-    def directories
-      @directories ||= @files
-                       .keys
-                       .flat_map { |relative_path| Pathname.new(relative_path).ascend.to_a }
-                       .map(&:to_s)
-                       .uniq
-    end
-
     def relative_path(absolute_path)
       Pathname.new(absolute_path).relative_path_from(@root).to_s
-    end
-
-    private
-
-    def reset_memoizers
-      @directories = nil
     end
   end
 end
