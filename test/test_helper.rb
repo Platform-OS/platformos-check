@@ -239,7 +239,7 @@ module Minitest
         if line
           col = lines[line].size + offset
         else
-          line = lines.size + 1
+          line = lines.size
           col = lines.last.size + offset
         end
 

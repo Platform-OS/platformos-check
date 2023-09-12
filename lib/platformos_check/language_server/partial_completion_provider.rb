@@ -4,8 +4,8 @@ module PlatformosCheck
   module LanguageServer
     module PartialCompletionProvider
       def completions(context)
-        content = context.content
-        cursor = context.cursor
+        content = context.buffer.lines[context.line]
+        cursor = context.col
         @file_name = nil
 
         return [] if content.nil?
@@ -22,8 +22,10 @@ module PlatformosCheck
         match = content.match(regexp)
         return false if match.nil?
 
-        @file_name = match[:partial] if match.begin(:partial) <= cursor && cursor <= match.end(:partial)
-        !@file_name.nil?
+        return false unless match.begin(:partial) <= cursor && cursor <= match.end(:partial)
+
+        @file_name = match[:partial]
+        true
       end
 
       def files
@@ -37,7 +39,8 @@ module PlatformosCheck
       def file_to_completion(file)
         {
           label: file.name,
-          kind: CompletionItemKinds::SNIPPET
+          kind: CompletionItemKinds::SNIPPET,
+          detail: file.source
         }
       end
     end

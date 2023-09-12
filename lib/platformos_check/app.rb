@@ -39,15 +39,10 @@ module PlatformosCheck
       CONFIG_REGEX => ConfigFile
     }
 
-    attr_reader :storage
+    attr_reader :storage, :grouped_files
 
     def initialize(storage)
       @storage = storage
-    end
-
-    def grouped_files
-      return @grouped_files if @grouped_files
-
       @grouped_files = {}
       REGEXP_MAP.each_value { |v| @grouped_files[v] ||= {} }
       process_files(storage.files)
