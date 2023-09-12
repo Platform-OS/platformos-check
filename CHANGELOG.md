@@ -1,3 +1,9 @@
+v0.0.4 /
+==================
+
+  * Better documentation for filters
+  * Display documentation for filter aliases (l, t, etc.)
+
 v0.0.3 / 2023-09-11
 ==================
 
