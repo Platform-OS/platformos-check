@@ -13,18 +13,18 @@ module PlatformosCheck
 
         files
           .select { |x| x.name.start_with?(@file_name) }
-          .map { |x| file_to_completion(x) }
+          .map { |x| file_to_completion(x, context) }
       end
 
       private
 
       def cursor_on_quoted_argument?(content, cursor)
-        match = content.match(regexp)
-        return false if match.nil?
+        @match = content.match(regexp)
+        return false if @match.nil?
 
-        return false unless match.begin(:partial) <= cursor && cursor <= match.end(:partial)
+        return false unless @match.begin(:partial) <= cursor && cursor <= @match.end(:partial)
 
-        @file_name = match[:partial][0, cursor - match.begin(:partial)]
+        @file_name = @match[:partial][0, cursor - @match.begin(:partial)]
         true
       end
 
@@ -36,11 +36,34 @@ module PlatformosCheck
         raise NotImplementedError
       end
 
-      def file_to_completion(file)
+      def file_to_completion(file, context)
         {
           label: file.name,
-          kind: CompletionItemKinds::SNIPPET,
-          detail: file.source
+          kind: CompletionItemKinds::TEXT,
+          detail: file.source,
+          textEdit: {
+            newText: file.name,
+            insert: {
+              start: {
+                line: context.line,
+                character: @match.begin(:partial)
+              },
+              end: {
+                line: context.line,
+                character: @match.end(:partial)
+              }
+            },
+            replace: {
+              start: {
+                line: context.line,
+                character: @match.begin(:partial)
+              },
+              end: {
+                line: context.line,
+                character: @match.end(:partial)
+              }
+            }
+          }
         }
       end
     end

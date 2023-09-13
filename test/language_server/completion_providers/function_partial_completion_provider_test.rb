@@ -48,6 +48,24 @@ module PlatformosCheck
         refute_can_complete_with(@provider, markup, "hello/my_query", -36, 0)
       end
 
+      def test_knows_what_to_replace_when_used_from_the_middle
+        markup = '{% function res = "hello/multiple/level/my_html", arg: 10 %}'
+        context = mock_context(@provider, markup, -36, 0)
+
+        assert_equal [{ label: "hello/my-function",
+                        kind: 1,
+                        detail: "",
+                        textEdit: { newText: "hello/my-function",
+                                    insert: { start: { line: 0, character: 19 }, end: { line: 0, character: 47 } },
+                                    replace: { start: { line: 0, character: 19 }, end: { line: 0, character: 47 } } } },
+                      { label: "hello/multiple/level/my_html",
+                        kind: 1,
+                        detail: "",
+                        textEdit: { newText: "hello/multiple/level/my_html",
+                                    insert: { start: { line: 0, character: 19 }, end: { line: 0, character: 47 } },
+                                    replace: { start: { line: 0, character: 19 }, end: { line: 0, character: 47 } } } }], @provider.completions(context)
+      end
+
       def test_suggests_existing_partials_for_second_function
         markup = <<~END
           {% liquid
