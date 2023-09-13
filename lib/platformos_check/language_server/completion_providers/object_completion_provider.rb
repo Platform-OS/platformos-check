@@ -13,6 +13,7 @@ module PlatformosCheck
 
         PlatformosLiquid::SourceIndex
           .objects
+          .select(&:global?)
           .select { |object| object.name.start_with?(partial(variable_lookup)) }
           .map { |object| object_to_completion(object) }
       end

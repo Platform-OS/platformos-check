@@ -59,6 +59,8 @@ module PlatformosCheck
 
         refute_can_complete_with(@provider, "{{ cust", object_not_in_source_index)
         refute_can_complete_with(@provider, "{{ all_", 'cart')
+        refute_can_complete_with(@provider, "{{ curr", 'current_user')
+        refute_can_complete_with(@provider, "{{ first_n", 'first_name')
       end
     end
   end
