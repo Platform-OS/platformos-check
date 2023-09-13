@@ -2,7 +2,7 @@
 
 module PlatformosCheck
   module LanguageServer
-    class TagCompletionProvider < CompletionProvider
+    class TagHoverProvider < HoverProvider
       def completions(context)
         content = context.content
 
@@ -11,7 +11,7 @@ module PlatformosCheck
 
         partial = first_word(context.buffer.lines[context.line]) || ''
         PlatformosLiquid::SourceIndex.tags.select { |tag| tag.name.start_with?(partial) }
-                                     .map { |tag| tag_to_completion(tag) }
+                                     .map { |tag| tag_to_completion(tag) }.first
       end
 
       def can_complete?(context)
