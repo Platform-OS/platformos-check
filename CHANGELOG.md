@@ -1,4 +1,9 @@
-v0.1.0 /
+v0.2.0 /
+==================
+
+  * Completion and hover for tags
+
+v0.1.0 / 2023-09-13
 ==================
 
   * Better documentation for filters
