@@ -14,6 +14,10 @@ module PlatformosCheck
         def platformos_documentation_url
           "#{PLATFORMOS_DOCUMENTATION_URL}/developer-guide/variables/context-variable##{hash['name']}"
         end
+
+        def global?
+          hash.dig('access', 'global')
+        end
       end
     end
   end
