@@ -39,6 +39,15 @@ module PlatformosCheck
         refute_can_complete_with(@provider, markup, "hello/my_query", -17, 0)
       end
 
+      def test_suggests_existing_partials_from_the_middle
+        markup = '{% function res = "hello/multiple/level/my_html", arg: 10 %}'
+
+        assert_can_complete_with(@provider, markup, "hello/my-function", -36, 0)
+        assert_can_complete_with(@provider, markup, "hello/multiple/level/my_html", -36, 0)
+        refute_can_complete_with(@provider, markup, "modules/my-module/hello/my_html", -36, 0)
+        refute_can_complete_with(@provider, markup, "hello/my_query", -36, 0)
+      end
+
       def test_suggests_existing_partials_for_second_function
         markup = <<~END
           {% liquid

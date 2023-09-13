@@ -24,7 +24,7 @@ module PlatformosCheck
 
         return false unless match.begin(:partial) <= cursor && cursor <= match.end(:partial)
 
-        @file_name = match[:partial]
+        @file_name = match[:partial][0, cursor - match.begin(:partial)]
         true
       end
 
