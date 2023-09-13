@@ -18,8 +18,8 @@ module PlatformosCheck
       raise NotImplementedError
     end
 
-    def directories
-      raise NotImplementedError
+    def platformos_app
+      @platformos_app ||= PlatformosCheck::App.new(self)
     end
 
     def versioned?

@@ -12,10 +12,8 @@ module PlatformosCheck
         buffer = @storage.read(relative_path)
         return [] unless buffer
 
-        platformos_app = PlatformosCheck::App.new(@storage)
-
         @providers.flat_map do |p|
-          p.document_links(buffer, platformos_app)
+          p.document_links(buffer, @storage.platformos_app)
         end
       end
     end

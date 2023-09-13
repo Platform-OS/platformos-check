@@ -1,8 +1,9 @@
-v0.0.4 /
+v0.1.0 /
 ==================
 
   * Better documentation for filters
   * Display documentation for filter aliases (l, t, etc.)
+  * Support fuzzy autocomplete for render, include, graphql, background and function tags
 
 v0.0.3 / 2023-09-11
 ==================

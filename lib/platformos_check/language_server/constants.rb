@@ -15,7 +15,7 @@ module PlatformosCheck
 
     def self.partial_tag_with_result(tag)
       /
-        \{%-?\s*#{tag}\s+(?<var>[\w]+)+\s*=\s*'(?<partial>[^']*)'|
+        \{%-?\s*#{tag}\s+(?<var>[\w]+)\s*=\s*'(?<partial>[^']*)'|
         \{%-?\s*#{tag}\s+(?<var>[\w]+)\s*=\s*"(?<partial>[^"]*)"|
 
         # in liquid tags the whole line is white space until the tag

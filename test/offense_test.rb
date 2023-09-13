@@ -28,7 +28,7 @@ class OffenseTest < Minitest::Test
 
   def test_source_excerpt
     node = stub(
-      app_file: @platformos_app["app/views/pages/index"],
+      app_file: @platformos_app["app/views/pages/index.liquid"],
       line_number: 2,
       markup: "1 + 2"
     )
@@ -41,7 +41,7 @@ class OffenseTest < Minitest::Test
 
   def test_truncated_source_excerpt
     node = stub(
-      app_file: @platformos_app["app/views/pages/long"],
+      app_file: @platformos_app["app/views/pages/long.liquid"],
       line_number: 1,
       markup: "include 'icon-error'"
     )
@@ -54,10 +54,10 @@ class OffenseTest < Minitest::Test
 
   def test_correct
     node = stub(
-      app_file: @platformos_app["app/views/pages/index"],
+      app_file: @platformos_app["app/views/pages/index.liquid"],
       line_number: 2,
-      start_index: @platformos_app["app/views/pages/index"].source.index('1'),
-      end_index: @platformos_app["app/views/pages/index"].source.index('2 ') + 2,
+      start_index: @platformos_app["app/views/pages/index.liquid"].source.index('1'),
+      end_index: @platformos_app["app/views/pages/index.liquid"].source.index('2 ') + 2,
       markup: "1 + 2"
     )
     offense = PlatformosCheck::Offense.new(check: Bogus.new, node:, correction: proc { |c| c.insert_after(node, "abc") })
@@ -70,7 +70,7 @@ class OffenseTest < Minitest::Test
 
   def test_location
     node = stub(
-      app_file: @platformos_app["app/views/pages/index"],
+      app_file: @platformos_app["app/views/pages/index.liquid"],
       line_number: 2,
       markup: "1 + 2"
     )
@@ -84,7 +84,7 @@ class OffenseTest < Minitest::Test
 
   def test_multiline_markup_location
     node = stub(
-      app_file: @platformos_app["app/views/pages/multiline"],
+      app_file: @platformos_app["app/views/pages/multiline.liquid"],
       line_number: 1,
       markup: "render 'product-card',\n  product: product,\n  show: true"
     )
@@ -99,7 +99,7 @@ class OffenseTest < Minitest::Test
   def test_multiline_markup_location_with_trailing_new_line
     markup = "render 'product-card',\n  product: product,\n  show: true\n\n\n"
     node = stub(
-      app_file: make_platformos_app("stub.liquid" => "{% #{markup}%}")["stub"],
+      app_file: make_platformos_app("app/views/partials/stub.liquid" => "{% #{markup}%}")["app/views/partials/stub.liquid"],
       line_number: 1,
       markup:
     )
@@ -114,7 +114,7 @@ class OffenseTest < Minitest::Test
   def test_multiline_markup_location_with_multiple_new_lines_back_to_back
     markup = "render 'product-card',\n\n\n  product: product"
     node = stub(
-      app_file: make_platformos_app("stub.liquid" => "{% #{markup}%}")["stub"],
+      app_file: make_platformos_app("app/views/partials/stub.liquid" => "{% #{markup}%}")["app/views/partials/stub.liquid"],
       line_number: 1,
       markup:
     )
@@ -128,7 +128,7 @@ class OffenseTest < Minitest::Test
 
   def test_location_without_markup
     node = stub(
-      app_file: @platformos_app["app/views/pages/index"],
+      app_file: @platformos_app["app/views/pages/index.liquid"],
       line_number: 1,
       markup: nil
     )

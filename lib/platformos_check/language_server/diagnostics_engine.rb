@@ -21,13 +21,12 @@ module PlatformosCheck
       def analyze_and_send_offenses(absolute_path_or_paths, config, force: false, only_single_file: false)
         return unless @diagnostics_lock.try_lock
 
-        platformos_app = PlatformosCheck::App.new(storage)
-        analyzer = PlatformosCheck::Analyzer.new(platformos_app, config.enabled_checks)
+        analyzer = PlatformosCheck::Analyzer.new(storage.platformos_app, config.enabled_checks)
 
         if !only_single_file && (@diagnostics_manager.first_run? || force)
           run_full_platformos_check(analyzer)
         else
-          run_partial_platformos_check(absolute_path_or_paths, platformos_app, analyzer, only_single_file)
+          run_partial_platformos_check(absolute_path_or_paths, storage.platformos_app, analyzer, only_single_file)
         end
 
         @diagnostics_lock.unlock

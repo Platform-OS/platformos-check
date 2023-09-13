@@ -12,7 +12,7 @@ module PlatformosCheck
     def visit_liquid_file(liquid_file)
       visit(LiquidNode.new(liquid_file.root, nil, liquid_file))
     rescue Liquid::Error => e
-      e.template_name = liquid_file.name
+      e.template_name = liquid_file.relative_path
       call_checks(:on_error, e)
     end
 
