@@ -1,7 +1,8 @@
-v0.2.0 /
+v0.2.0 / 2023-09-13
 ==================
 
   * Completion and hover for tags
+  * Fix completion from the middle of the partial
 
 v0.1.0 / 2023-09-13
 ==================
