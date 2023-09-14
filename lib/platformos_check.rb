@@ -104,4 +104,9 @@ module PlatformosCheck
   ensure
     Liquid::C.enabled = true if defined?(Liquid::C) && was_enabled
   end
+
+  def self.log(message)
+    bridge = LanguageServer::Bridge.new(LanguageServer::IOMessenger.new)
+    bridge.log("###############\n #{message}\n##################")
+  end
 end

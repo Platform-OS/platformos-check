@@ -18,6 +18,10 @@ module PlatformosCheck
         def global?
           hash.dig('access', 'global')
         end
+
+        def app_file_type
+          hash.dig('access', 'app_file_type')
+        end
       end
     end
   end
