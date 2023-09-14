@@ -4,13 +4,20 @@ module PlatformosCheck
   class LiquidVisitor
     attr_reader :checks
 
-    def initialize(checks, disabled_checks)
+    def initialize(checks, disabled_checks, only_single_file: false)
       @checks = checks
       @disabled_checks = disabled_checks
+      @only_single_file = only_single_file
     end
 
     def visit_liquid_file(liquid_file)
       visit(LiquidNode.new(liquid_file.root, nil, liquid_file))
+
+      if @only_single_file
+        checks.single_file_end_dependencies(liquid_file).each do |file|
+          visit(LiquidNode.new(file.root, nil, file))
+        end
+      end
     rescue Liquid::Error => e
       e.template_name = liquid_file.relative_path
       call_checks(:on_error, e)

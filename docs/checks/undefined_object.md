@@ -45,12 +45,7 @@ The default configuration for this check is the following:
 ```yaml
 UndefinedObject:
   enabled: true
-  exclude_partials: true
 ```
-
-### `exclude_partials`
-
-The `exclude_partials` (Default: `true`) option determines whether to check for undefined objects in snippets file (as objects _may_ be defined as arguments)
 
 ## When Not To Use It
 

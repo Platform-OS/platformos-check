@@ -65,7 +65,6 @@ ValidYaml:
 UndefinedObject:
   enabled: true
   ignore: []
-  exclude_partials: true
   config_type: :default
 
 DeprecatedFilter:

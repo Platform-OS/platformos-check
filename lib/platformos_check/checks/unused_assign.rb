@@ -21,6 +21,10 @@ module PlatformosCheck
       end
     end
 
+    def self.single_file(**_args)
+      true
+    end
+
     def initialize
       @templates = {}
     end

@@ -25,6 +25,12 @@ module PlatformosCheck
       @single_file ||= self.class.new(select(&:single_file?))
     end
 
+    def single_file_end_dependencies(app_file)
+      map do |check|
+        check.respond_to?(:single_file_end_dependencies) ? check.single_file_end_dependencies(app_file) : []
+      end.flatten.compact.uniq
+    end
+
     private
 
     def call_check_method(check, method, *args)
