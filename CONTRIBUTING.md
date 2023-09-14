@@ -55,7 +55,7 @@ Before configuring your IDE, run the following commands in a terminal:
 
 ```
 "platformosCheck.checkOnChange": true,
-"platformosCheck.onlySingleFileChecks": false,
+"platformosCheck.onlySingleFileChecks": true,
 "platformosLiquid.languageServerPath": "/Users/<your user>/bin/platformos-check-language-server",
 "platformosCheck.checkOnOpen": true,
 "platformosCheck.checkOnSave": true
@@ -77,7 +77,7 @@ If you use `coc.nvim` as your completion engine, add this to your CocConfig:
         "platformosCheck": {
           "checkOnSave": true,
           "checkEnter": true,
-          "onlySingleFileChecks": false,
+          "onlySingleFileChecks": true,
           "checkOnChange": true,
           "checkOnOpen": true
         }
