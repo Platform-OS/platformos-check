@@ -16,7 +16,7 @@ module PlatformosCheck
         @app_file = app_file
       end
 
-      attr_reader :all_assigns, :all_captures, :all_forloops, :app_file
+      attr_reader :all_assigns, :all_captures, :all_forloops, :app_file, :all_renders
 
       def add_render(name:, node:)
         @all_renders[name] = node
@@ -58,39 +58,32 @@ module PlatformosCheck
       end
     end
 
-    def initialize(config_type: :default, exclude_partials: true)
+    def self.single_file(**_args)
+      true
+    end
+
+    def initialize(config_type: :default)
       @config_type = config_type
-      @exclude_partials = exclude_partials
       @files = {}
     end
 
     def on_document(node)
-      return if ignore?(node)
-
       @files[node.app_file.name] = TemplateInfo.new(app_file: node.app_file)
     end
 
     def on_assign(node)
-      return if ignore?(node)
-
       @files[node.app_file.name].all_assigns[node.value.to] = node
     end
 
     def on_capture(node)
-      return if ignore?(node)
-
       @files[node.app_file.name].all_captures[node.value.instance_variable_get(:@to)] = node
     end
 
     def on_parse_json(node)
-      return if ignore?(node)
-
       @files[node.app_file.name].all_captures[node.value.to] = node
     end
 
     def on_for(node)
-      return if ignore?(node)
-
       @files[node.app_file.name].all_forloops[node.value.variable_name] = node
     end
 
@@ -99,7 +92,6 @@ module PlatformosCheck
     end
 
     def on_render(node)
-      return if ignore?(node)
       return unless node.value.template_name_expr.is_a?(String)
 
       partial_name = node.value.template_name_expr
@@ -110,43 +102,50 @@ module PlatformosCheck
     end
 
     def on_function(node)
-      return if ignore?(node)
+      @files[node.app_file.name].all_assigns[node.value.to] = node
 
-      name = node.value.from.is_a?(String) ? node.value.from : node.value.from.name
+      return unless node.value.from.is_a?(String)
+
       @files[node.app_file.name].add_render(
-        name:,
+        name: node.value.from,
         node:
       )
-
-      @files[node.app_file.name].all_assigns[node.value.to] = node
     end
 
     def on_graphql(node)
-      return if ignore?(node)
-
       @files[node.app_file.name].all_assigns[node.value.to] = node
     end
 
     def on_background(node)
-      return if ignore?(node)
       return unless node.value.partial_syntax
+
+      @files[node.app_file.name].all_assigns[node.value.to] = node
+
       return unless node.value.partial_name.is_a?(String)
 
       @files[node.app_file.name].add_render(
         name: node.value.partial_name,
         node:
       )
-
-      @files[node.app_file.name].all_assigns[node.value.to] = node
     end
 
     def on_variable_lookup(node)
-      return if ignore?(node)
-
       @files[node.app_file.name].add_variable_lookup(
         name: node.value.name,
         node:
       )
+    end
+
+    def single_file_end_dependencies(app_file)
+      @files[app_file.name].all_renders.keys.map do |partial_name|
+        next if @files[partial_name]
+
+        partial_file = @platformos_app.partials.detect { |p| p.name == partial_name } # NOTE: undefined partial
+
+        next unless partial_file
+
+        partial_file
+      end.compact
     end
 
     def on_end
@@ -170,31 +169,28 @@ module PlatformosCheck
 
     attr_reader :config_type
 
-    def ignore?(node)
-      @exclude_partials && node.app_file.partial?
-    end
-
     def each_template
       @files.each do |(name, info)|
-        next if info.app_file.partial?
-
         yield [name, info]
       end
     end
 
-    def check_object(info, all_global_objects, render_node = nil, visited_partials = Set.new)
-      check_undefined(info, all_global_objects, render_node)
+    def check_object(info, all_global_objects, render_node = nil, visited_partials = Set.new, level = 0)
+      return if level > 1
+
+      check_undefined(info, all_global_objects, render_node) unless info.app_file.partial? && render_node.nil? # ||
 
       info.each_partial do |(partial_name, node)|
+        next if visited_partials.include?(partial_name)
+
         partial_info = @files[partial_name]
+
         next unless partial_info # NOTE: undefined partial
 
         partial_variables = node.value.attributes.keys +
                             [node.value.instance_variable_get(:@alias_name)]
-        unless visited_partials.include?(partial_name)
-          visited_partials << partial_name
-          check_object(partial_info, all_global_objects + partial_variables, node, visited_partials)
-        end
+        visited_partials << partial_name
+        check_object(partial_info, all_global_objects + partial_variables, node, visited_partials, level + 1)
       end
     end
 
@@ -213,7 +209,7 @@ module PlatformosCheck
 
         if render_node
           add_offense("Missing argument `#{name}`", node: render_node)
-        else
+        elsif !info.app_file.partial?
           add_offense("Undefined object `#{name}`", node:, line_number:)
         end
       end

@@ -105,7 +105,7 @@ module PlatformosCheck
         end
 
         # Call checks that run on a single files, only on specified file
-        liquid_visitor = LiquidVisitor.new(@liquid_checks.single_file, @disabled_checks)
+        liquid_visitor = LiquidVisitor.new(@liquid_checks.single_file, @disabled_checks, only_single_file:)
         html_visitor = HtmlVisitor.new(@html_checks.single_file)
         files.each_with_index do |app_file, i|
           yield(app_file.relative_path.to_s, offset + i, total) if block_given?

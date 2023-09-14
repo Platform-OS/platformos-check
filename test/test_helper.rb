@@ -66,6 +66,13 @@ module Minitest
       analyzer.offenses
     end
 
+    def analyze_single_file(file, *check_classes, templates)
+      app = make_platformos_app(templates)
+      analyzer = PlatformosCheck::Analyzer.new(app, check_classes)
+      analyzer.analyze_files([app[file]], only_single_file: true)
+      analyzer.offenses
+    end
+
     def diagnose_platformos_app(*check_classes, templates)
       storage = PlatformosCheck::VersionedInMemoryStorage.new(templates)
       templates.each do |path, value|
@@ -265,6 +272,10 @@ module Minitest
 
       def respond_to_missing?(_method_name, _include_private = false)
         true
+      end
+
+      def single_file_end_dependencies(liquid_file)
+        # Ignore
       end
 
       def on_node(node)
