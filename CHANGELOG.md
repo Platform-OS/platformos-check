@@ -1,3 +1,9 @@
+v0.2.1 / 2023-09-14
+==================
+
+  * Single file should be default mode for LSP now
+  * Make all checks work in single file mode - greatly enhance performance
+
 v0.2.0 / 2023-09-13
 ==================
 
