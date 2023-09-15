@@ -24,13 +24,13 @@ module PlatformosCheck
       end
 
       def test_hovers_array_group_by
-        result = "### [array_group_by](https://documentation.platformos.com/api-reference/liquid/filters/array_group_by)\nParameters:\n- objects - array to be grouped\n- method_name - method name to be used to group Objects\n\nReturns:\n- hash<methodresult => array<object>>: the original array grouped by method\nspecified by the second parameter\n\n\n---\n\n\n  - Example 0:\n\n```liquid\n{% parse_json objects %}\n  [\n    { \"size\": \"xl\", \"color\": \"red\"},\n    { \"size\": \"xl\", \"color\": \"yellow\"},\n    { \"size\": \"s\", \"color\": \"red\"}\n  ]\n{% endparse_json %}\n{{ objects | array_group_by: 'size' }}\n```\n##\nOutput: {\"xl\""
+        result = "### [array_group_by](https://documentation.platformos.com/api-reference/liquid/filters/array_group_by)\nParameters:\n- objects - array to be grouped\n- method_name - method name to be used to group Objects\n\nReturns:\n- hash: the original array grouped by method\nspecified by the second parameter\n\n\n---\n\n\n  - Example 0:\n\n```liquid\n{% parse_json objects %}\n  [\n    { \"size\": \"xl\", \"color\": \"red\"},\n    { \"size\": \"xl\", \"color\": \"yellow\"},\n    { \"size\": \"s\", \"color\": \"red\"}\n  ]\n{% endparse_json %}\n{{ objects | array_group_by: 'size' }}\n```\n##\nOutput: {\"xl\""
 
         assert_can_hover_with(@provider, "{{ foo | array_group_by", result, 0, 0)
       end
 
       def test_hovers_hash_merge
-        result = "### [hash_merge](https://documentation.platformos.com/api-reference/liquid/filters/hash_merge)\nParameters:\n- hash1 - \n- hash2 - \n\nReturns:\n- hash: new hash containing the contents of hash1 and the contents of hash2.\nOn duplicated keys we keep value from hash2\n\n\n---\n\n\n  - Example 0:\n\n```liquid\n{% liquid\n  assign a = '{\"a\": 1, \"b\": 2 }' | parse_json\n  assign b = '{\"b\": 3, \"c\": 4 }' | parse_json\n  assign new_hash = a | hash_merge: b\n%}\n{{ new_hash }}\n```\n##\nOutput: { \"a\": 1, \"b\": 3, \"c\": 4 }\n  - Example 1:\n\n```liquid\n{% liquid\n  assign a = '{\"a\": 1}' | parse_json\n  assing a = a | hash_merge: b: 2, c: 3\n  %}\n{{ a }}\n```\n##\nOutput: { \"a\": 1, \"b\": 2, \"c\": 3 }\n%}"
+        result = "### [hash_merge](https://documentation.platformos.com/api-reference/liquid/filters/hash_merge)\nParameters:\n- hash1 - \n- hash2 - \n\nReturns:\n- hash: new hash containing the contents of hash1 and the contents of hash2.\nOn duplicated keys we keep value from hash2\n\n\n---\n\n\n  - Example 0:\n\n```liquid\n{% liquid\n  assign a = '{\"a\": 1, \"b\": 2 }' | parse_json\n  assign b = '{\"b\": 3, \"c\": 4 }' | parse_json\n  assign new_hash = a | hash_merge: b\n%}\n{{ new_hash }}\n```\n##\nOutput: { \"a\": 1, \"b\": 3, \"c\": 4 }\n  - Example 1:\n\n```liquid\n{% liquid\n  assign a = '{\"a\": 1}' | parse_json\n  assing a = a | hash_merge: b: 2, c: 3\n  %}\n{{ a }}\n```\n##\nOutput: { \"a\": 1, \"b\": 2, \"c\": 3 }"
 
         assert_can_hover_with(@provider, "{{ obj | hash_merge", result, 0, 0)
       end
@@ -42,7 +42,7 @@ module PlatformosCheck
       end
 
       def test_hover_in_parse_json
-        result = "### [parse_json](https://documentation.platformos.com/api-reference/liquid/filters/parse_json)\nParameters:\n- object - String containing valid JSON\n- options - set to raw_text true to stop it from unescaping HTML entities\n\nReturns:\n- hash: Hash created based on JSON\n\n\n---\n\n\n  - Example 0:\n\n```liquid\n{% liquid\n  assign text = '{ \"name\": \"foo\", \"bar\": {} }'\n  assign object = text | parse_json\n%}\n{{ object.name }}\n```\n##\nOutput: 'foo'\n  - Example 1:\n\n```liquid\n{{ '{ \"key\": \"abc &quot; def\" }' | parse_json: raw_text: false }}\n```\n##\nOutput: { \"key\": 'abc \" def' }\n{{ '{ \"key\": \"abc &quot; def\" }' | parse_json: raw_text: true }}"
+        result = "### [parse_json](https://documentation.platformos.com/api-reference/liquid/filters/parse_json)\nParameters:\n- object - String containing valid JSON\n- options - set to raw_text true to stop it from unescaping HTML entities\n\nReturns:\n- hash: Hash created based on JSON\n\n\n---\n\n\n  - Example 0:\n\n```liquid\n{% liquid\n  assign text = '{ \"name\": \"foo\", \"bar\": {} }'\n  assign object = text | parse_json\n%}\n{{ object.name }}\n```\n##\nOutput: 'foo'\n  - Example 1:\n\n```liquid\n{{ '{ \"key\": \"abc &quot; def\" }' | parse_json: raw_text: false }}\n```\n##\nOutput: { \"key\": 'abc \" def' }\n  - Example 2:\n\n```liquid\n{{ '{ \"key\": \"abc &quot; def\" }' | parse_json: raw_text: true }}\n```\n##\nOutput: { \"key\": 'abc &quot; def' }"
 
         assert_can_hover_with(@provider, "{% assign json = '{}' | parse_json", result, 0, 0)
       end
