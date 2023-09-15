@@ -34,7 +34,7 @@ class AppTest < Minitest::Test
   end
 
   def test_all
-    assert_equal(23, @platformos_app.all.size)
+    assert_equal(24, @platformos_app.all.size)
   end
 
   def test_assets

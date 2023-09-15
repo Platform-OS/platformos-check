@@ -267,12 +267,59 @@ module PlatformosCheck
         assert_links_include("modules/my-module/hello/6.jpg", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/private/assets", "")
       end
 
-      def assert_links_include(needle, content, links, directory, extension)
+      def test_makes_links_out_of_theme_render_tags
+        content = <<~LIQUID
+          {% theme_render_rc '1' %}
+          {%- theme_render_rc "2" -%}
+          {% liquid
+            assign x = "x"
+            theme_render_rc '3'
+          %}
+          {%- liquid
+            assign x = "x"
+            theme_render_rc "4"
+          -%}
+          {% theme_render_rc 'hello/5' %}
+          {% theme_render_rc 'modules/my-module/hello/6' %}
+        LIQUID
+
+        engine = make_engine(
+          "app/config.yml" => <<~END,
+            ---
+            theme_search_paths:
+              - ''
+              - theme/{{ context.constants.THEME }}
+              - theme/selected/
+              - theme/default
+              - modules/my-module
+            ---
+          END
+          "app/views/pages/product.liquid" => content,
+          "app/views/partials/theme/selected/1.liquid" => '1',
+          "app/views/partials/theme/default/1.liquid" => '1',
+          "app/lib/theme/default/2.liquid" => '2',
+          "app/lib/theme/selected/3.liquid" => '3',
+          "app/views/partials/4.liquid" => '4',
+          "modules/my-module/public/views/partials/hello/5.liquid" => '5',
+          "modules/my-module/private/lib/hello/6.liquid" => '6'
+        )
+
+        assert_links_include("1", content, engine.document_links("app/views/pages/product.liquid"), "app/views/partials/theme/selected", ".liquid", skip_range_check: true)
+        assert_links_include("2", content, engine.document_links("app/views/pages/product.liquid"), "app/lib/theme/default", ".liquid", skip_range_check: true)
+        assert_links_include("3", content, engine.document_links("app/views/pages/product.liquid"), "app/lib/theme/selected", ".liquid", skip_range_check: true)
+        assert_links_include("4", content, engine.document_links("app/views/pages/product.liquid"), "app/views/partials", ".liquid", skip_range_check: true)
+        assert_links_include("modules/my-module/hello/5", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/public/views/partials", ".liquid", skip_range_check: true)
+        assert_links_include("modules/my-module/hello/6", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/private/lib", ".liquid", skip_range_check: true)
+      end
+
+      def assert_links_include(needle, content, links, directory, extension, skip_range_check: false)
         needle_path = needle.start_with?('modules/') ? needle.split('/').drop(2).join('/') : needle
         target = "file:///tmp/#{directory}/#{needle_path}#{extension}"
         match = links.find { |x| x[:target] == target }
 
         refute_nil(match, "Should find a document_link with target == '#{target}'")
+
+        return if skip_range_check
 
         assert_equal(
           from_index_to_row_column(content, content.index(needle)),
