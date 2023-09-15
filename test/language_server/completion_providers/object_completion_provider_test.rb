@@ -8,7 +8,13 @@ module PlatformosCheck
       include CompletionProviderTestHelper
 
       def setup
-        @provider = ObjectCompletionProvider.new
+        @storage = make_in_memory_storage(
+          "app/api_calls/send.liquid" => "",
+          "app/lib/hello/my-function.liquid" => "",
+        )
+        @storage.files.each { |relative_path| @storage.stubs(:read).with(relative_path).returns('') }
+
+        @provider = ObjectCompletionProvider.new(@storage)
         skip("Liquid-C not supported") if liquid_c_enabled?
       end
 
@@ -61,6 +67,11 @@ module PlatformosCheck
         refute_can_complete_with(@provider, "{{ all_", 'cart')
         refute_can_complete_with(@provider, "{{ curr", 'current_user')
         refute_can_complete_with(@provider, "{{ first_n", 'first_name')
+      end
+
+      def test_correctly_suggests_response_for_api_notification
+        assert_can_complete_with(@provider, "{{ re", 'response', 0, nil, 'app/api_calls/send.liquid')
+        refute_can_complete_with(@provider, "{{ re", 'response', 0, nil, 'app/lib/hello/my-function.liquid')
       end
     end
   end

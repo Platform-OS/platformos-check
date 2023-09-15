@@ -179,8 +179,8 @@ module Minitest
         )
       end
 
-      def assert_can_complete_with(provider, token, label, offset = 0, line = nil)
-        context = mock_context(provider, token, offset, line)
+      def assert_can_complete_with(provider, token, label, offset = 0, line = nil, relative_path = nil)
+        context = mock_context(provider, token, offset, line, relative_path)
 
         assert_includes(
           provider.completions(context).map { |x| x[:label] },
@@ -220,8 +220,8 @@ module Minitest
         )
       end
 
-      def refute_can_complete_with(provider, token, label, offset = 0, line = nil)
-        context = mock_context(provider, token, offset, line)
+      def refute_can_complete_with(provider, token, label, offset = 0, line = nil, relative_path = nil)
+        context = mock_context(provider, token, offset, line, relative_path)
 
         refute_includes(
           provider.completions(context).map { |x| x[:label] },
@@ -236,8 +236,7 @@ module Minitest
 
       private
 
-      def mock_context(provider, token, offset, line = nil)
-        relative_path = "file:///fake_path"
+      def mock_context(provider, token, offset, line = nil, relative_path = "file:///fake_path")
         storage = provider.storage
 
         storage.stubs(:read).with(relative_path).returns(token)
