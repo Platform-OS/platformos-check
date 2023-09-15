@@ -17,7 +17,7 @@ module PlatformosCheck
           CHECK_ON_OPEN => null_coalesce(@capabilities.initialization_option(CHECK_ON_OPEN), true),
           CHECK_ON_SAVE => null_coalesce(@capabilities.initialization_option(CHECK_ON_SAVE), true),
           CHECK_ON_CHANGE => null_coalesce(@capabilities.initialization_option(CHECK_ON_CHANGE), true),
-          ONLY_SINGLE_FILE => null_coalesce(@capabilities.initialization_option(ONLY_SINGLE_FILE), false)
+          ONLY_SINGLE_FILE => null_coalesce(@capabilities.initialization_option(ONLY_SINGLE_FILE), true)
         }
       end
 

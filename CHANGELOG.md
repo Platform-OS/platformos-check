@@ -1,3 +1,8 @@
+v0.2.2 / 2023-09-15
+==================
+
+  * Do not crash when directory is copied to partials path
+
 v0.2.1 / 2023-09-14
 ==================
 
