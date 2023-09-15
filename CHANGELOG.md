@@ -1,3 +1,8 @@
+v0.3.1 / 2023-09-15
+==================
+
+  * Complete global objects only for certain types
+
 v0.3.0 / 2023-09-15
 ==================
 
