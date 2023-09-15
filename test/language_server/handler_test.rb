@@ -183,6 +183,9 @@ module PlatformosCheck
 
       def test_handle_workspace_did_delete_files_missing_template_handling
         initialize!(1, nil, @storage.root)
+
+        PlatformosCheck::LanguageServer::Configuration.any_instance
+                                                      .stubs(:only_single_file?).returns(false)
         file_path = "app/views/partials/error.liquid"
 
         did_open!(file_path)
