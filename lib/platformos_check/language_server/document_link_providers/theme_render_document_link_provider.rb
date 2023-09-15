@@ -11,6 +11,7 @@ module PlatformosCheck
       def file_link(partial, platformos_app)
         relative_path = nil
         path_prefixes(platformos_app).each do |prefix|
+          prefix ||= ''
           partial_with_prefix = (prefix.split(File::SEPARATOR) + [partial]).join(File::SEPARATOR)
           relative_path = platformos_app.send(app_file_type).detect { |f| f.name == partial_with_prefix }&.relative_path
           break if relative_path

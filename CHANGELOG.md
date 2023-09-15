@@ -1,3 +1,8 @@
+v0.3.2 / 2023-09-15
+==================
+
+  * Allow nil prefix, which should be equivalent of ""
+
 v0.3.1 / 2023-09-15
 ==================
 
