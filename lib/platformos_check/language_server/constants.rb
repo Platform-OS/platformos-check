@@ -2,14 +2,14 @@
 
 module PlatformosCheck
   module LanguageServer
-    def self.partial_tag(tag)
+    def self.partial_tag(tag, with_rc: false)
       /
-        \{%-?\s*#{tag}\s+'(?<partial>[^']*)'|
-        \{%-?\s*#{tag}\s+"(?<partial>[^"]*)"|
+        \{%-?\s*#{tag}#{'(_rc)?' if with_rc}\s+'(?<partial>[^']*)'|
+        \{%-?\s*#{tag}#{'(_rc)?' if with_rc}\s+"(?<partial>[^"]*)"|
 
         # in liquid tags the whole line is white space until the tag
-        ^\s*#{tag}\s+'(?<partial>[^']*)'|
-        ^\s*#{tag}\s+"(?<partial>[^"]*)"
+        ^\s*#{tag}#{'(_rc)?' if with_rc}\s+'(?<partial>[^']*)'|
+        ^\s*#{tag}#{'(_rc)?' if with_rc}\s+"(?<partial>[^"]*)"
       /mix
     end
 
@@ -25,6 +25,7 @@ module PlatformosCheck
     end
 
     PARTIAL_RENDER = partial_tag('render')
+    PARTIAL_THEME_RENDER = partial_tag('theme_render', with_rc: true)
     PARTIAL_INCLUDE = partial_tag('include')
     PARTIAL_INCLUDE_FORM = partial_tag('include_form')
     PARTIAL_FUNCTION = partial_tag_with_result('function')

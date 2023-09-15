@@ -19,8 +19,8 @@ module PlatformosCheck
     SCHEMA_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(custom_model_types|model_schemas|schema)/(.+)\.yml\z}
     SMSES_REGEX =  %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(notifications/sms_notifications|smses)/(.+)\.liquid\z}
     USER_SCHEMA_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/)?)user.yml}
-    TRANSLATIONS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)translations.+.yml}
-    CONFIG_REGEX = %r{(?-mix:^\\/?((marketplace_builder|app)\\/)?)config.yml}
+    TRANSLATIONS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)translations/(.+)\.yml}
+    CONFIG_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/)?)config.yml}
 
     REGEXP_MAP = {
       API_CALLS_REGEX => ApiCallFile,
@@ -121,6 +121,10 @@ module PlatformosCheck
 
     def pages
       grouped_files[PageFile]&.values || []
+    end
+
+    def app_config
+      grouped_files[ConfigFile]&.values&.first
     end
 
     def all
