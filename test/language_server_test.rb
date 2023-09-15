@@ -65,7 +65,8 @@ class LanguageServerTest < Minitest::Test
                     id: "123",
                     method: "initialize",
                     params: {
-                      rootUri: file_uri(storage.root)
+                      rootUri: file_uri(storage.root),
+                      capabilities: { 'initializationOptions' => { PlatformosCheck::LanguageServer::Configuration::ONLY_SINGLE_FILE => false } }
                     }
                   }, {
                     jsonrpc: "2.0",
@@ -110,7 +111,8 @@ class LanguageServerTest < Minitest::Test
                     id: "123",
                     method: "initialize",
                     params: {
-                      rootUri: file_uri(storage.root)
+                      rootUri: file_uri(storage.root),
+                      capabilities: { 'initializationOptions' => { PlatformosCheck::LanguageServer::Configuration::ONLY_SINGLE_FILE => false } }
                     }
                   }, {
                     jsonrpc: "2.0",
@@ -152,7 +154,8 @@ class LanguageServerTest < Minitest::Test
                     id: "123",
                     method: "initialize",
                     params: {
-                      rootUri: file_uri(storage.root)
+                      rootUri: file_uri(storage.root),
+                      capabilities: { 'initializationOptions' => { PlatformosCheck::LanguageServer::Configuration::ONLY_SINGLE_FILE => false } }
                     }
                   }, {
                     jsonrpc: "2.0",
