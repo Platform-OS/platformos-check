@@ -31,7 +31,7 @@ module PlatformosCheck
           @inline_query = true
           parse_markup(tag_name, markup)
           @attributes = attributes_expr.keys
-          @to = @value_expr.name
+          @to = @value_expr.is_a?(String) ? @value_expr : @value_expr.name
         else
           raise Liquid::SyntaxError, 'Invalid syntax for graphql tag'
         end
