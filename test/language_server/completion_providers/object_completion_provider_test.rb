@@ -10,7 +10,7 @@ module PlatformosCheck
       def setup
         @storage = make_in_memory_storage(
           "app/api_calls/send.liquid" => "",
-          "app/lib/hello/my-function.liquid" => "",
+          "app/lib/hello/my-function.liquid" => ""
         )
         @storage.files.each { |relative_path| @storage.stubs(:read).with(relative_path).returns('') }
 

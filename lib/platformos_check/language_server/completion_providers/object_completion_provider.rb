@@ -11,7 +11,6 @@ module PlatformosCheck
         return [] unless variable_lookup.lookups.empty?
         return [] if content[context.cursor - 1] == "."
 
-
         current_file_type = file_type(find_file(context))
 
         PlatformosLiquid::SourceIndex
@@ -41,11 +40,11 @@ module PlatformosCheck
 
       def find_file(context)
         @storage.platformos_app
-          .grouped_files
-          .values
-          .map(&:values)
-          .flatten
-          .find { |app_file| app_file.relative_path.to_s == context.relative_path }
+                .grouped_files
+                .values
+                .map(&:values)
+                .flatten
+                .find { |app_file| app_file.relative_path.to_s == context.relative_path }
       end
 
       def file_type(app_file)
