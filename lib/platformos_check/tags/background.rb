@@ -5,6 +5,7 @@ module PlatformosCheck
     class Background < Base
       PARTIAL_SYNTAX = /(#{Liquid::VariableSignature}+)\s*=\s*(.*)\s*/om
       CLOSE_TAG_SYNTAX = /\A(.*)(?-mix:\{%-?)\s*(\w+)\s*(.*)?(?-mix:%\})\z/m # based on Liquid::Raw::FullTokenPossiblyInvalid
+      INTERNAL_ATTRIBUTES = %w[delay priority max_attempts source_name]
 
       attr_reader :to, :from, :attributes, :value_expr, :partial_syntax, :partial_name
 
@@ -25,6 +26,10 @@ module PlatformosCheck
           super
         end
         @attributes = attributes_expr
+      end
+
+      def internal_attributes
+        INTERNAL_ATTRIBUTES
       end
 
       def parse(tokens)

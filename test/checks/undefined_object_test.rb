@@ -456,6 +456,23 @@ class UndefinedObjectTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
+  def test_report_unused_function_arg
+    offenses = analyze_single_file(
+      "app/views/partials/a.liquid",
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', not_used: "hello", used: "hi" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Unused argument `not_used` at app/views/partials/a.liquid:1
+    END
+  end
+
   def test_does_not_report_argument_provided_to_function
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new,

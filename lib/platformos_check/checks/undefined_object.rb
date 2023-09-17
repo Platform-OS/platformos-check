@@ -196,9 +196,12 @@ module PlatformosCheck
 
     def check_undefined(info, all_global_objects, render_node)
       all_variables = info.all_variables
-
+      potentially_unused_variables = render_node.value.attributes.keys if render_node
       info.each_variable_lookup(!!render_node) do |(key, node)|
         name, line_number = key
+
+        potentially_unused_variables&.delete(name)
+
         next if all_variables.include?(name)
         next if all_global_objects.include?(name)
 
@@ -212,6 +215,11 @@ module PlatformosCheck
         elsif !info.app_file.partial?
           add_offense("Undefined object `#{name}`", node:, line_number:)
         end
+      end
+
+      potentially_unused_variables -= render_node.value.internal_attributes if render_node && render_node.value.respond_to?(:internal_attributes)
+      potentially_unused_variables&.each do |name|
+        add_offense("Unused argument `#{name}`", node: render_node)
       end
     end
   end

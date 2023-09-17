@@ -4,12 +4,11 @@ This check prevents errors by making sure that no undefined variables are being 
 
 ## Check Details
 
-This check is aimed at eliminating undefined object errors.
+This check is aimed at eliminating undefined object errors. Additionally it reports any missing or unused attributes in render, function and background tags.
 
 :-1: Examples of **incorrect** code for this check:
 
 ```liquid
-{% assign greetings = "Hello" %}
 {% if greeting == "Hello" %}
   Hello
 {% endif %}
@@ -31,7 +30,7 @@ This check is aimed at eliminating undefined object errors.
 ```liquid
 {% liquid
   # my_function body
-  assign my_arg = my_arg: default nil
+  assign my_arg = my_arg | default: nil
   return my_arg
 %}
 ```
