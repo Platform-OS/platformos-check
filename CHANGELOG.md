@@ -1,3 +1,8 @@
+v0.4.0 / 2023-09-17
+==================
+
+  * Add unused attributes messages in render/function/background tags invocations
+
 v0.3.3 / 2023-09-16
 ==================
 
