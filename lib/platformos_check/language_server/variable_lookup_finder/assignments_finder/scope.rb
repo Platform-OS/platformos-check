@@ -21,6 +21,9 @@ module PlatformosCheck
             when Liquid::Assign
               variable_name = tag.to
               variables[variable_name] = as_potential_lookup(tag.from.name)
+            when Tags::Function, Tags::Graphql
+              variable_name = tag.to
+              variables[variable_name] = literal_lookup(tag.from)
             when Liquid::For, Liquid::TableRow
               variable_name = tag.variable_name
               variables[variable_name] = as_potential_lookup(tag.collection_name, ['first'])

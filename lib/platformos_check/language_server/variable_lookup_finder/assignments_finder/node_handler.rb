@@ -53,6 +53,10 @@ module PlatformosCheck
             scope
           end
 
+          def on_graphql(node, scope)
+            on_assign(node, scope)
+          end
+
           ##
           # Table row tags do not rely on blocks to define scopes,
           # so we index their value here
