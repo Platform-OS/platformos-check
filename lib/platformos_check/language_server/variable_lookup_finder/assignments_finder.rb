@@ -47,7 +47,7 @@ module PlatformosCheck
         end
 
         def regular_parse(content)
-          Liquid::Template.parse(content)
+          LiquidFile.parse(content)
         rescue Liquid::SyntaxError
           # Ignore syntax errors at the regular parse phase
         end
