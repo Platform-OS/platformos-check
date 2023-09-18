@@ -39,12 +39,7 @@ module PlatformosCheck
       end
 
       def find_file(context)
-        @storage.platformos_app
-                .grouped_files
-                .values
-                .map(&:values)
-                .flatten
-                .find { |app_file| app_file.relative_path.to_s == context.relative_path }
+        @storage.platformos_app[context.relative_path]
       end
 
       def file_type(app_file)
