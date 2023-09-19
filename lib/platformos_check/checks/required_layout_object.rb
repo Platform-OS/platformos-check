@@ -32,8 +32,10 @@ module PlatformosCheck
     def add_missing_object_offense(name, tag)
       add_offense("layout must include {{#{name}}}", node: @layout_platformos_app_node) do
         if @layout_platformos_app_node.source.index(tag)
+
           @layout_platformos_app_node.source.insert(@layout_platformos_app_node.source.index(tag), "  {{ #{name} }}\n  ")
           @layout_platformos_app_node.markup = @layout_platformos_app_node.source
+          @content_for_layout_found = true
         end
       end
     end
