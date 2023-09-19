@@ -1,3 +1,10 @@
+v0.4.1 / 2023-09-19
+==================
+
+  * Complete variables assigned by function and graphql tags
+  * Global objects accessible only in api calls
+  * Parse graphql partial name
+
 v0.4.0 / 2023-09-17
 ==================
 
