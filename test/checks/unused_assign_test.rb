@@ -57,6 +57,18 @@ class UnusedAssignTest < Minitest::Test
     END
   end
 
+  def test_does_not_report_when_var_used_as_graphql_partial_name
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% assign partial = "my-partial" %}
+        {% graphql _x = partial, arg: 10 %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
   def test_reports_unused_graphql_inline_assigns
     offenses = analyze_platformos_app(
       PlatformosCheck::UnusedAssign.new,
