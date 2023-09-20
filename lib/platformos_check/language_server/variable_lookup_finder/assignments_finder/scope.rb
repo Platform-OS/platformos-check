@@ -23,7 +23,7 @@ module PlatformosCheck
               variables[variable_name] = as_potential_lookup(tag.from.name)
             when Tags::Function, Tags::Graphql
               variable_name = tag.to
-              variables[variable_name] = literal_lookup(tag.from)
+              variables[variable_name] = as_potential_lookup_graphql(tag)
             when Liquid::For, Liquid::TableRow
               variable_name = tag.variable_name
               variables[variable_name] = as_potential_lookup(tag.collection_name, ['first'])
@@ -55,6 +55,15 @@ module PlatformosCheck
             lookups = variable_lookup.lookups.concat(default_lookups)
 
             PotentialLookup.new(name, lookups, variables)
+          end
+
+          def as_potential_lookup_graphql(tag)
+            variable_lookup = tag.from.name
+            name = variable_lookup
+            lookups = variable_lookup.lookups.concat([])
+
+            # TODO: this is smelly
+            PotentialLookup.new(name, ["graphql/#{tag.partial_name}"], variables)
           end
         end
       end

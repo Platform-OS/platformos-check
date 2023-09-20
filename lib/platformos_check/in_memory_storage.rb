@@ -39,6 +39,10 @@ module PlatformosCheck
       @files.keys
     end
 
+    def files_with_content
+      @files
+    end
+
     def relative_path(absolute_path)
       Pathname.new(absolute_path).relative_path_from(@root).to_s
     end

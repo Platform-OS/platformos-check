@@ -8,7 +8,41 @@ module PlatformosCheck
       include CompletionProviderTestHelper
 
       def setup
-        @provider = ObjectAttributeCompletionProvider.new
+        @storage = make_in_memory_storage(
+          "app/graphql/users/find.graphql" => '
+            query {
+              records{
+                total_entries
+                total_pages
+                has_previous_page
+                has_next_page
+                results {
+                  id
+                  key: property(name: "key")
+                }
+              }
+            }',
+          "app/graphql/users/find_with_fragment.graphql" => '
+            fragment UserFields on User {
+              id
+              email
+              first_name: property(name: "first_name")
+              last_name: property(name: "last_name")
+              slug: property(name: "slug")
+            }
+
+            query get{
+              records {
+                results {
+                  id
+                  ...UserFields
+                }
+              }
+            }'
+        )
+        @storage.files_with_content.each { |relative_path, content| @storage.stubs(:read).with(relative_path).returns(content) }
+
+        @provider = ObjectAttributeCompletionProvider.new(@storage)
       end
 
       def test_completions_when_it_completes_variable_lookups
@@ -63,6 +97,17 @@ module PlatformosCheck
 
       def test_completions_when_it_has_multiple_dots
         refute_can_complete(@provider, '{{ cart..')
+      end
+
+      def test_completions_when_it_completes_graphql_variable
+        assert_can_complete_with(@provider, '{% graphql g = "users/find" %}{{ g.', 'records')
+        assert_can_complete_with(@provider, '{% graphql g = "users/find" %}{{ g.records.', 'total_entries')
+        assert_can_complete_with(@provider, '{% graphql g = "users/find" %}{{ g.records.results', 'key')
+      end
+
+      def test_completions_when_it_completes_graphql_variable_with_fragment
+        assert_can_complete_with(@provider, '{% graphql g = "users/find_with_fragment" %}{{ g.records.results', 'id')
+        assert_can_complete_with(@provider, '{% graphql g = "users/find_with_fragment" %}{{ g.records.results', 'slug')
       end
     end
   end

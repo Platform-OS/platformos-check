@@ -75,6 +75,14 @@ module PlatformosCheck
       @defined_arguments ||= variables.map(&:name)
     end
 
+    def selections
+      definition.selections
+    end
+
+    def fragments
+      @fragments ||= parse.definitions.select { |d| d.is_a?(GraphQL::Language::Nodes::FragmentDefinition) }
+    end
+
     private
 
     def variables
