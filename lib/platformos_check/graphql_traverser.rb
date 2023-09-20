@@ -43,7 +43,7 @@ module PlatformosCheck
         else
           selection
         end
-      end.flatten.uniq { |s| s.name }
+      end.flatten.uniq { |s| name_from_selection(s) }
     end
 
     def find_fragment(fragment_name)
