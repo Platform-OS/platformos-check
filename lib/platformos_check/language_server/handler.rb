@@ -174,6 +174,8 @@ module PlatformosCheck
         return unless paths
 
         paths.each do |path|
+          next if File.directory?(path)
+
           relative_path = @storage.relative_path(path)
           file_system_content = Pathname.new(path).read(mode: 'rb', encoding: 'UTF-8')
           @storage.write(relative_path, file_system_content, nil)
