@@ -111,14 +111,33 @@ module PlatformosCheck
       end
 
       def test_completions_when_it_completes_graphql_inside_liquid_tag
-        skip('it does not work with liquid tag')
         assert_can_complete_with(
-          @provider, '
-{% liquid
+          @provider, '{% liquid
   graphql g = "users/find_with_fragment"
   g.
 %}',
-          'records')
+          'records', 0, 2, nil, 3)
+
+        assert_can_complete_with(
+          @provider, '{%liquid
+  graphql gresult = "users/find_with_fragment"
+  gresult.
+%}',
+          'records', 0, 2, nil, 9)
+
+        assert_can_complete_with(
+          @provider, '{% liquid
+  graphql g = "users/find_with_fragment"
+  assign r = g.
+%}',
+          'records', 0, 2, nil, 14)
+
+        assert_can_complete_with(
+          @provider, '{% liquid
+  graphql g = "users/find_with_fragment"
+  function r = "call_me_maybe", foo: g.
+%}',
+          'records', 0, 2, nil, 38)
       end
     end
   end

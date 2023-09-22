@@ -179,8 +179,8 @@ module Minitest
         )
       end
 
-      def assert_can_complete_with(provider, token, label, offset = 0, line = nil, relative_path = nil)
-        context = mock_context(provider, token, offset, line, relative_path)
+      def assert_can_complete_with(provider, token, label, offset = 0, line = nil, relative_path = nil, col = nil)
+        context = mock_context(provider, token, offset, line, relative_path, col)
 
         assert_includes(
           provider.completions(context).map { |x| x[:label] },
@@ -236,17 +236,19 @@ module Minitest
 
       private
 
-      def mock_context(provider, token, offset, line = nil, relative_path = "file:///fake_path")
+      def mock_context(provider, token, offset, line = nil, relative_path = "file:///fake_path", col)
         storage = provider.storage
 
         storage.stubs(:read).with(relative_path).returns(token)
 
-        lines = token.split("\n")
-        if line
-          col = lines[line].size + offset
-        else
-          line = lines.size
-          col = lines.last.size + offset
+        unless col
+          lines = token.split("\n")
+          if line
+            col = lines[line].size + offset
+          else
+            line = lines.size
+            col = lines.last.size + offset
+          end
         end
 
         PlatformosCheck::LanguageServer::CompletionContext.new(storage, relative_path, line, col)
