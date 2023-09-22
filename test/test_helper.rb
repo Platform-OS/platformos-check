@@ -236,7 +236,7 @@ module Minitest
 
       private
 
-      def mock_context(provider, token, offset, line = nil, relative_path = "file:///fake_path", col)
+      def mock_context(provider, token, offset, line = nil, relative_path = "file:///fake_path", col = nil)
         storage = provider.storage
 
         storage.stubs(:read).with(relative_path).returns(token)

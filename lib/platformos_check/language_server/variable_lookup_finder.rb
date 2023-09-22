@@ -78,37 +78,47 @@ module PlatformosCheck
       end
 
       def lookup_liquid_variable_inside_liquid_tag(content, cursor)
-        if content.strip.start_with?(/{%\s*liquid/)
-          previous_char = content[cursor - 1]
-          is_in_variable_segment = previous_char =~ VARIABLE_LOOKUP_CHARACTERS
-          return unless is_in_variable_segment
+        return unless content.strip.start_with?(/{%\s*liquid/)
 
-          start_index = content.slice(0, cursor).rindex("\n") + 1
-          end_index = cursor - 1
+        previous_char = content[cursor - 1]
+        is_in_variable_segment = previous_char =~ VARIABLE_LOOKUP_CHARACTERS
+        return unless is_in_variable_segment
 
-          # We take the following content
-          # - start after the first two {{
-          # - end at cursor position
-          #
-          # That way, we'll have a partial liquid variable that
-          # can be parsed such that the "last" variable_lookup
-          # will be the one we're trying to complete.
-          markup = content[start_index..end_index]
+        start_index = content.slice(0, cursor).rindex("\n") + 1
+        end_index = cursor - 1
 
-          # Early return for incomplete variables
-          return empty_lookup if /\s+$/.match?(markup)
+        # We take the following content
+        # - start after the first two {{
+        # - end at cursor position
+        #
+        # That way, we'll have a partial liquid variable that
+        # can be parsed such that the "last" variable_lookup
+        # will be the one we're trying to complete.
+        markup = content[start_index..end_index]
 
-          # Now we go to hack city... The cursor might be in the middle
-          # of a string/square bracket lookup. We need to close those
-          # otherwise the variable parse won't work.
-          markup += "'" if markup.count("'").odd?
-          markup += '"' if markup.count('"').odd?
-          markup += "]" if UNCLOSED_SQUARE_BRACKET.match?(markup)
+        # Early return for incomplete variables
+        return empty_lookup if /\s+$/.match?(markup)
 
-          variable = variable_from_markup(markup)
+        # Now we go to hack city... The cursor might be in the middle
+        # of a string/square bracket lookup. We need to close those
+        # otherwise the variable parse won't work.
+        markup += "'" if markup.count("'").odd?
+        markup += '"' if markup.count('"').odd?
+        markup += "]" if UNCLOSED_SQUARE_BRACKET.match?(markup)
 
-          variable_lookup_for_liquid_variable(variable)
+        if markup.strip.split(' ').size > 1
+          begin
+            template = Liquid::Template.parse(parseable_markup(content, cursor))
+            current_tag = template.root.nodelist[0]
+            return if current_tag.is_a?(Liquid::Tag)
+          rescue Liquid::SyntaxError
+            return
+          end
         end
+
+        variable = variable_from_markup(markup)
+
+        variable_lookup_for_liquid_variable(variable)
       end
 
       def lookup_liquid_variable(content, cursor)
