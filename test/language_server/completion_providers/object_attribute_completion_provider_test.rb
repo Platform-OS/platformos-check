@@ -152,12 +152,31 @@ module PlatformosCheck
   return g.
 %}',
           'records', 0, 2, nil, 10)
+
         assert_can_complete_with(
           @provider, '{% liquid
   graphql g = "users/find"
   log g.
 %}',
           'records', 0, 2, nil, 10)
+
+        assert_can_complete_with(
+          @provider, '{% liquid
+  hash_assign foo["bar"] = "zoo"
+  graphql g = "users/find"
+  return g.
+%}',
+          'records', 0, 3, nil, 10)
+
+        skip('fix it')
+        assert_can_complete_with(
+          @provider, '{% liquid
+  if true
+    graphql g = "users/find"
+  endif
+  return g.
+%}',
+          'records', 0, 4, nil, 10)
       end
     end
   end

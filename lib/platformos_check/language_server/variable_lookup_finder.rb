@@ -61,7 +61,8 @@ module PlatformosCheck
         content_before_cursor = content[0..cursor - 1]
         return false unless /[\[\]]/.match?(content_before_cursor)
 
-        content_before_cursor =~ ENDS_IN_BRACKET_POSITION_THAT_CANT_BE_COMPLETED
+        line_with_cursor = content_before_cursor.split("\n").last
+        line_with_cursor =~ ENDS_IN_BRACKET_POSITION_THAT_CANT_BE_COMPLETED
       end
 
       def cursor_is_on_liquid_variable_lookup_position(content, cursor)
