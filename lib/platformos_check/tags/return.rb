@@ -10,6 +10,10 @@ module PlatformosCheck
         @var = Liquid::Variable.new(markup, options)
       end
 
+      def variable
+        @var.name
+      end
+
       class ParseTreeVisitor < Liquid::ParseTreeVisitor
         def children
           [@node.var]

@@ -27,6 +27,8 @@ module PlatformosCheck
             \s(?:
               if|elsif|unless|and|or|#{Liquid::Condition.operators.keys.join("|")}
               |echo
+              |return
+              |log
               |paginate
               |case|when
               |cycle

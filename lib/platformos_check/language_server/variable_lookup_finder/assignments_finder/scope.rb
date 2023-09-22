@@ -26,7 +26,8 @@ module PlatformosCheck
               variables[variable_name] = literal_lookup(tag.from)
             when Tags::Graphql
               variable_name = tag.to
-              variables[variable_name] = as_potential_lookup_graphql(tag)
+              potential = as_potential_lookup_graphql(tag)
+              variables[variable_name] = potential
             when Liquid::For, Liquid::TableRow
               variable_name = tag.variable_name
               variables[variable_name] = as_potential_lookup(tag.collection_name, ['first'])
