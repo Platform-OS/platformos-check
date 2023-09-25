@@ -12,7 +12,7 @@ module PlatformosCheck
         super
         raise Liquid::SyntaxError, "Syntax Error in 'hash_assign' - Valid syntax: hash_assign hash[key] = value" unless markup =~ SYNTAX
 
-        @to = Regexp.last_match(1)
+        @to = Liquid::Variable.new(Regexp.last_match(1), options)
         @from = Liquid::Variable.new(Regexp.last_match(4), options)
         raw_keys = Regexp.last_match(3)
         raise Liquid::SyntaxError, "Syntax Error in 'hash_assign' - Valid syntax: hash_assign hash[key] = value" unless raw_keys
@@ -66,6 +66,7 @@ module PlatformosCheck
       class ParseTreeVisitor < Liquid::ParseTreeVisitor
         def children
           [
+            @node.to,
             @node.from
           ] + @node.keys
         end

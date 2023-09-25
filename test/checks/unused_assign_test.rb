@@ -101,6 +101,18 @@ class UnusedAssignTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
+  def test_do_not_reports_unused_assign_if_used_in_hash_assign
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% assign data = '{}' | parse_json %}
+        {% hash_assign data['id'] = "hello" %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
   def test_do_not_reports_unused_function_assigns_if_useed_in_another_function_call
     offenses = analyze_platformos_app(
       PlatformosCheck::UnusedAssign.new,
