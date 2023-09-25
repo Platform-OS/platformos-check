@@ -1,3 +1,8 @@
+v0.4.3 / 2023-09-25
+==================
+
+  * Do not remove variable if it's later used via hash_assign
+
 v0.4.2 / 2023-09-21
 ==================
 
