@@ -38,7 +38,16 @@ module PlatformosCheck
                   ...UserFields
                 }
               }
-            }'
+            }',
+          "app/lib/find_user.liquid" => '
+            {% liquid
+              return context.current_user
+            %}',
+          "app/lib/find_user_in_graphql.liquid" => '
+            {% liquid
+              graphql g = "users/find"
+              return g
+            %}',
         )
         @storage.files_with_content.each { |relative_path, content| @storage.stubs(:read).with(relative_path).returns(content) }
 
@@ -177,6 +186,30 @@ module PlatformosCheck
   return g.
 %}',
           'records', 0, 4, nil, 10)
+      end
+
+
+      def test_completions_function_result_inside_liquid_tag
+        assert_can_complete_with(
+          @provider, '{% liquid
+  function r = "find_user", id: 1
+  r.
+%}',
+          'first_name', 0, 2, nil, 3)
+
+        assert_can_complete_with(
+          @provider, '{% liquid
+  function r = "find_user_in_graphql", id: 1
+  r.
+%}',
+          'records', 0, 2, nil, 3)
+
+        assert_can_complete_with(
+          @provider, '{% liquid
+  function r = "find_user_in_graphql", id: 1
+  r.records.
+%}',
+          'results', 0, 2, nil, 3)
       end
     end
   end

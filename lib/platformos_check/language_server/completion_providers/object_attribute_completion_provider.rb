@@ -11,7 +11,22 @@ module PlatformosCheck
         return [] unless (variable_lookup = VariableLookupFinder.lookup(context))
         return [] if content[cursor - 1] == "." && content[cursor - 2] == "."
 
-        if variable_lookup.lookups.first&.start_with?('graphql/')
+        if variable_lookup.file_path
+          liquid_file = find_file(variable_lookup.file_path)
+          partial_cursor = liquid_file.source.rindex("\n")
+          partial_content = liquid_file.source
+          lines = partial_content.split("\n")
+          partial_provider = ObjectAttributeCompletionProvider.new(@storage)
+
+          line_number_with_return = lines.size - 2
+          partial_context = CompletionContext.new(
+            @storage,
+            liquid_file.relative_path.to_s,
+            line_number_with_return,
+            lines[line_number_with_return].size
+          )
+          partial_provider.completions(partial_context)
+        elsif variable_lookup.lookups.first&.start_with?('graphql/')
           graphql_completion(variable_lookup)
         else
           # Navigate through lookups until the last valid [object, property] level

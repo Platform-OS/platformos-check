@@ -54,7 +54,12 @@ module PlatformosCheck
       end
 
       def as_potential_lookup(variable, lookups: nil)
-        PotentialLookup.new(variable.name, lookups || variable.lookups)
+        PotentialLookup.new(
+          variable.name,
+          lookups || variable.lookups,
+          nil,
+          variable.respond_to?(:file_path) ? variable.file_path : nil
+        )
       end
 
       def cursor_is_on_bracket_position_that_cant_be_completed(content, cursor)
