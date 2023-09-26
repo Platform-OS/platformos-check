@@ -15,7 +15,7 @@ module PlatformosCheck
 
         return if cursor_is_on_bracket_position_that_cant_be_completed(content, cursor)
 
-        variable_lookup = lookup_liquid_variable(content, cursor) || lookup_liquid_tag(content, cursor)
+        variable_lookup = lookup_liquid_variable(content, cursor) || lookup_liquid_variable_inside_liquid_tag(content, cursor) || lookup_liquid_tag(content, cursor)
 
         return variable_lookup if variable_lookup.is_a?(PotentialLookup)
         return unless variable_lookup.is_a?(Liquid::VariableLookup)
@@ -61,7 +61,8 @@ module PlatformosCheck
         content_before_cursor = content[0..cursor - 1]
         return false unless /[\[\]]/.match?(content_before_cursor)
 
-        content_before_cursor =~ ENDS_IN_BRACKET_POSITION_THAT_CANT_BE_COMPLETED
+        line_with_cursor = content_before_cursor.split("\n").last
+        line_with_cursor =~ ENDS_IN_BRACKET_POSITION_THAT_CANT_BE_COMPLETED
       end
 
       def cursor_is_on_liquid_variable_lookup_position(content, cursor)
@@ -75,6 +76,50 @@ module PlatformosCheck
             is_on_blank_variable_lookup_position
           )
         )
+      end
+
+      def lookup_liquid_variable_inside_liquid_tag(content, cursor)
+        return unless content.strip.start_with?(/{%\s*liquid/)
+
+        previous_char = content[cursor - 1]
+        is_in_variable_segment = previous_char =~ VARIABLE_LOOKUP_CHARACTERS
+        return unless is_in_variable_segment
+
+        start_index = content.slice(0, cursor).rindex("\n") + 1
+        end_index = cursor - 1
+
+        # We take the following content
+        # - start after the first two {{
+        # - end at cursor position
+        #
+        # That way, we'll have a partial liquid variable that
+        # can be parsed such that the "last" variable_lookup
+        # will be the one we're trying to complete.
+        markup = content[start_index..end_index]
+
+        # Early return for incomplete variables
+        return empty_lookup if /\s+$/.match?(markup)
+
+        # Now we go to hack city... The cursor might be in the middle
+        # of a string/square bracket lookup. We need to close those
+        # otherwise the variable parse won't work.
+        markup += "'" if markup.count("'").odd?
+        markup += '"' if markup.count('"').odd?
+        markup += "]" if UNCLOSED_SQUARE_BRACKET.match?(markup)
+
+        if markup.strip.split(' ').size > 1
+          begin
+            template = LiquidFile.parse(parseable_markup(content, cursor))
+            current_tag = template.root.nodelist[0]
+            return if current_tag.is_a?(Liquid::Tag)
+          rescue Liquid::SyntaxError
+            return
+          end
+        end
+
+        variable = variable_from_markup(markup)
+
+        variable_lookup_for_liquid_variable(variable)
       end
 
       def lookup_liquid_variable(content, cursor)
@@ -139,7 +184,7 @@ module PlatformosCheck
         markup = parseable_markup(content, cursor)
         return empty_lookup if markup.empty?
 
-        template = Liquid::Template.parse(markup)
+        template = LiquidFile.parse(markup)
         current_tag = template.root.nodelist[0]
 
         case current_tag&.tag_name
@@ -159,6 +204,12 @@ module PlatformosCheck
           variable_lookup_for_assign_tag(current_tag)
         when "echo"
           variable_lookup_for_echo_tag(current_tag)
+        when "function"
+          variable_lookup_for_function_tag(current_tag)
+        when "return"
+          variable_lookup_for_return_tag(current_tag)
+        when "log"
+          variable_lookup_for_log_tag(current_tag)
         else
           empty_lookup
         end
@@ -217,6 +268,19 @@ module PlatformosCheck
 
       def variable_lookup_for_echo_tag(echo_tag)
         variable_lookup_for_liquid_variable(echo_tag.variable)
+      end
+
+      def variable_lookup_for_function_tag(function_tag)
+        return empty_lookup if /:\s*$/.match?(function_tag.raw)
+        function_tag.attributes.values.last
+      end
+
+      def variable_lookup_for_return_tag(return_tag)
+        return_tag.variable
+      end
+
+      def variable_lookup_for_log_tag(log_tag)
+        log_tag.variable
       end
 
       def variable_lookup_for_liquid_variable(variable)
