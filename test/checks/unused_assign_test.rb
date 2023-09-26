@@ -16,6 +16,17 @@ class UnusedAssignTest < Minitest::Test
     END
   end
 
+  def test_do_not_reports_unused_assigns_if_starts_with_underscore
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% assign _x = 'foo' %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
   def test_reports_unused_function_assigns
     offenses = analyze_platformos_app(
       PlatformosCheck::UnusedAssign.new,
