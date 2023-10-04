@@ -41,7 +41,11 @@ module PlatformosCheck
             }',
           "app/lib/find_user.liquid" => '
             {% liquid
+              if true
+                return null
+              endif
               return context.current_user
+              assign x = 1
             %}',
           "app/lib/find_context.liquid" => '
             {% liquid
