@@ -3,13 +3,17 @@
 module PlatformosCheck
   module LanguageServer
     class ObjectAttributeCompletionProvider < CompletionProvider
-      def completions(context)
+      def completions(context, child_lookup = nil)
         content = context.content
         cursor = context.cursor
 
         return [] if content.nil?
         return [] unless (variable_lookup = VariableLookupFinder.lookup(context))
         return [] if content[cursor - 1] == "." && content[cursor - 2] == "."
+
+        if child_lookup && child_lookup.lookups.any?
+          variable_lookup.lookups = variable_lookup.lookups + child_lookup.lookups
+        end
 
         if variable_lookup.file_path
           liquid_file = find_file(variable_lookup.file_path)
@@ -25,7 +29,7 @@ module PlatformosCheck
             line_number_with_return,
             lines[line_number_with_return].size
           )
-          partial_provider.completions(partial_context)
+          partial_provider.completions(partial_context, variable_lookup)
         elsif variable_lookup.lookups.first&.start_with?('graphql/')
           graphql_completion(variable_lookup)
         else

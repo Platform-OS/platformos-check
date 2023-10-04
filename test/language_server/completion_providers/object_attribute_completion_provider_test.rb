@@ -43,6 +43,10 @@ module PlatformosCheck
             {% liquid
               return context.current_user
             %}',
+          "app/lib/find_context.liquid" => '
+            {% liquid
+              return context
+            %}',
           "app/lib/find_user_in_graphql.liquid" => '
             {% liquid
               graphql g = "users/find"
@@ -199,6 +203,20 @@ module PlatformosCheck
 
         assert_can_complete_with(
           @provider, '{% liquid
+  assign r = context
+  assign x = r.current_user.
+%}',
+          'first_name', 0, 2, nil, 27)
+
+        assert_can_complete_with(
+          @provider, '{% liquid
+  function r = "find_context", id: 1
+  r.current_user.
+%}',
+          'first_name', 0, 2, nil, 16)
+
+        assert_can_complete_with(
+          @provider, '{% liquid
   function r = "find_user_in_graphql", id: 1
   r.
 %}',
@@ -209,7 +227,7 @@ module PlatformosCheck
   function r = "find_user_in_graphql", id: 1
   r.records.
 %}',
-          'results', 0, 2, nil, 3)
+          'results', 0, 2, nil, 11)
       end
     end
   end
