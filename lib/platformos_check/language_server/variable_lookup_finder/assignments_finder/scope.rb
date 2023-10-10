@@ -23,7 +23,7 @@ module PlatformosCheck
               variables[variable_name] = as_potential_lookup(tag.from.name)
             when Tags::Function
               variable_name = tag.to
-              variables[variable_name] = literal_lookup(tag.from)
+              variables[variable_name] = as_potential_lookup_function_result(tag)
             when Tags::Graphql
               variable_name = tag.to
               potential = as_potential_lookup_graphql(tag)
@@ -68,6 +68,10 @@ module PlatformosCheck
 
             # TODO: this is smelly
             PotentialLookup.new(name, ["graphql/#{tag.partial_name}"], variables)
+          end
+
+          def as_potential_lookup_function_result(tag)
+            PotentialLookup.new(tag.from, [], variables, tag.from)
           end
         end
       end

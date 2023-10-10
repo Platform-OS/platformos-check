@@ -3,7 +3,7 @@
 module PlatformosCheck
   module LanguageServer
     class ObjectAttributeCompletionProvider < CompletionProvider
-      def completions(context)
+      def completions(context, child_lookup = nil)
         content = context.content
         cursor = context.cursor
 
@@ -11,7 +11,13 @@ module PlatformosCheck
         return [] unless (variable_lookup = VariableLookupFinder.lookup(context))
         return [] if content[cursor - 1] == "." && content[cursor - 2] == "."
 
-        if variable_lookup.lookups.first&.start_with?('graphql/')
+        if child_lookup && child_lookup.lookups.any?
+          variable_lookup.lookups = variable_lookup.lookups + child_lookup.lookups
+        end
+
+        if variable_lookup.file_path
+          function_completion(variable_lookup)
+        elsif variable_lookup.lookups.first&.start_with?('graphql/')
           graphql_completion(variable_lookup)
         else
           # Navigate through lookups until the last valid [object, property] level
@@ -71,6 +77,23 @@ module PlatformosCheck
         }
         object_entry = PlatformosLiquid::SourceIndex::ObjectEntry.new(hash)
         property_to_completion(object_entry)
+      end
+
+      def function_completion(variable_lookup)
+          liquid_file = find_file(variable_lookup.file_path)
+          partial_cursor = liquid_file.source.rindex("\n")
+          partial_content = liquid_file.source
+          lines = partial_content.split("\n")
+          partial_provider = ObjectAttributeCompletionProvider.new(@storage)
+
+          line_number_with_return = lines.rindex { |x| x.include?('return') }
+          partial_context = CompletionContext.new(
+            @storage,
+            liquid_file.relative_path.to_s,
+            line_number_with_return,
+            lines[line_number_with_return].size
+          )
+          partial_provider.completions(partial_context, variable_lookup)
       end
     end
   end

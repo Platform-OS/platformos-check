@@ -3,7 +3,7 @@
 module PlatformosCheck
   module LanguageServer
     module VariableLookupFinder
-      class PotentialLookup < Struct.new(:name, :lookups, :scope)
+      class PotentialLookup < Struct.new(:name, :lookups, :scope, :file_path)
       end
     end
   end
