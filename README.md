@@ -80,7 +80,7 @@ exec docker run -i \
   -e PLATFORMOS_CHECK_DEBUG_LOG_FILE=$LOG_FILE \
    $IMAGE_NAME $@
 ```
-This script will automatically download the latest Docker image and initiate a language server. Visual Studio Code (VSC) manages this process automatically. However, you can run the script for verification if needed."
+This script will automatically download the latest Docker image and initiate a language server. Visual Studio Code (VSC) manages this process automatically. However, you can run the script for verification if needed.
 
 #### Troubleshooting
 
