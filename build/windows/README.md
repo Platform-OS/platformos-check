@@ -1,3 +1,7 @@
+# Info
+
+This allow you to pack lsp server into one exe file without any dependencies.
+
 ## Building exe
 
 - To build exe file you need windows
