@@ -16,9 +16,11 @@ module PlatformosCheck
 
         def description
           @descritpion = begin
-            desc = hash['description']&.strip || ''
+            desc = hash['description'].is_a?(Array) ? hash['description'].first : hash['description']
+            desc = desc&.strip || ''
             desc = '' if desc == 'returns'
             if parameters.any?
+              desc += "\n\n" unless desc.empty?
               desc += "Parameters:"
               parameters.each { |p| desc += "\n- #{p.full_summary}" }
             end

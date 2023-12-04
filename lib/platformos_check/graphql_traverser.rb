@@ -29,7 +29,7 @@ module PlatformosCheck
     end
 
     def map_names_from_selections(selections)
-      selections.map{ |selection| name_from_selection(selection) }
+      selections.map { |selection| name_from_selection(selection) }
     end
 
     def name_from_selection(selection)

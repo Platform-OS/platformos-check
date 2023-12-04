@@ -55,7 +55,7 @@ module PlatformosCheck
             {% liquid
               graphql g = "users/find"
               return g
-            %}',
+            %}'
         )
         @storage.files_with_content.each { |relative_path, content| @storage.stubs(:read).with(relative_path).returns(content) }
 
@@ -133,49 +133,56 @@ module PlatformosCheck
   graphql g = "users/find"
   g.
 %}',
-          'records', 0, 2, nil, 3)
+          'records', 0, 2, nil, 3
+        )
 
         assert_can_complete_with(
           @provider, '{%liquid
   graphql gresult = "users/find"
   gresult.
 %}',
-          'records', 0, 2, nil, 9)
+          'records', 0, 2, nil, 9
+        )
 
         assert_can_complete_with(
           @provider, '{% liquid
   graphql g = "users/find"
   assign r = g.
 %}',
-          'records', 0, 2, nil, 14)
+          'records', 0, 2, nil, 14
+        )
 
         assert_can_complete_with(
           @provider, '{% liquid
   graphql g = "users/find"
   function r = "call_me_maybe", foo: g.
 %}',
-          'records', 0, 2, nil, 38)
+          'records', 0, 2, nil, 38
+        )
 
         assert_can_complete_with(
           @provider, '{% liquid
   graphql x = "users/find", id: user_id
   x.
 %}',
-          'records', 0, 2, nil, 3)
+          'records', 0, 2, nil, 3
+        )
 
         assert_can_complete_with(
           @provider, '{% liquid
   graphql g = "users/find"
   return g.
 %}',
-          'records', 0, 2, nil, 10)
+          'records', 0, 2, nil, 10
+        )
 
         assert_can_complete_with(
           @provider, '{% liquid
   graphql g = "users/find"
   log g.
 %}',
-          'records', 0, 2, nil, 10)
+          'records', 0, 2, nil, 10
+        )
 
         assert_can_complete_with(
           @provider, '{% liquid
@@ -183,9 +190,11 @@ module PlatformosCheck
   graphql g = "users/find"
   return g.
 %}',
-          'records', 0, 3, nil, 10)
+          'records', 0, 3, nil, 10
+        )
 
         skip('fix it')
+
         assert_can_complete_with(
           @provider, '{% liquid
   if true
@@ -193,9 +202,9 @@ module PlatformosCheck
   endif
   return g.
 %}',
-          'records', 0, 4, nil, 10)
+          'records', 0, 4, nil, 10
+        )
       end
-
 
       def test_completions_function_result_inside_liquid_tag
         assert_can_complete_with(
@@ -203,35 +212,40 @@ module PlatformosCheck
   function r = "find_user", id: 1
   r.
 %}',
-          'first_name', 0, 2, nil, 3)
+          'first_name', 0, 2, nil, 3
+        )
 
         assert_can_complete_with(
           @provider, '{% liquid
   assign r = context
   assign x = r.current_user.
 %}',
-          'first_name', 0, 2, nil, 27)
+          'first_name', 0, 2, nil, 27
+        )
 
         assert_can_complete_with(
           @provider, '{% liquid
   function r = "find_context", id: 1
   r.current_user.
 %}',
-          'first_name', 0, 2, nil, 16)
+          'first_name', 0, 2, nil, 16
+        )
 
         assert_can_complete_with(
           @provider, '{% liquid
   function r = "find_user_in_graphql", id: 1
   r.
 %}',
-          'records', 0, 2, nil, 3)
+          'records', 0, 2, nil, 3
+        )
 
         assert_can_complete_with(
           @provider, '{% liquid
   function r = "find_user_in_graphql", id: 1
   r.records.
 %}',
-          'results', 0, 2, nil, 11)
+          'results', 0, 2, nil, 11
+        )
       end
     end
   end

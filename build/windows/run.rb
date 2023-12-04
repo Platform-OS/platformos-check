@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'platformos_check'
 
 status_code = PlatformosCheck::LanguageServer.start

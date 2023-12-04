@@ -277,6 +277,7 @@ module PlatformosCheck
 
       def variable_lookup_for_function_tag(function_tag)
         return empty_lookup if /:\s*$/.match?(function_tag.raw)
+
         function_tag.attributes.values.last
       end
 

@@ -24,12 +24,12 @@ class GraphqlTraverserTest < Minitest::Test
 
     assert_equal(
       {
-        "/"=>["records"],
-        "/records"=>["total_entries", "results"],
-        "/records/total_entries"=>[],
-        "/records/results"=>["id", "key"],
-        "/records/results/id"=>[],
-        "/records/results/key"=>[]
+        "/" => ["records"],
+        "/records" => %w[total_entries results],
+        "/records/total_entries" => [],
+        "/records/results" => %w[id key],
+        "/records/results/id" => [],
+        "/records/results/key" => []
       },
       fields
     )
@@ -60,11 +60,11 @@ class GraphqlTraverserTest < Minitest::Test
 
     assert_equal(
       {
-        "/"=>["records"],
-        "/records"=>["results"],
-        "/records/results"=>["id", "slug"],
-        "/records/results/id"=>[],
-        "/records/results/slug"=>[]
+        "/" => ["records"],
+        "/records" => ["results"],
+        "/records/results" => %w[id slug],
+        "/records/results/id" => [],
+        "/records/results/slug" => []
       },
       fields
     )
@@ -92,12 +92,12 @@ class GraphqlTraverserTest < Minitest::Test
 
     assert_equal(
       {
-        "/"=>["records"],
-        "/records"=>["results"],
-        "/records/results"=>["id", "profile"],
-        "/records/results/id"=>[],
-        "/records/results/profile"=>["full_name"],
-        "/records/results/profile/full_name"=>[]
+        "/" => ["records"],
+        "/records" => ["results"],
+        "/records/results" => %w[id profile],
+        "/records/results/id" => [],
+        "/records/results/profile" => ["full_name"],
+        "/records/results/profile/full_name" => []
       },
       fields
     )

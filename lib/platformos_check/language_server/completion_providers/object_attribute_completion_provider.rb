@@ -11,9 +11,7 @@ module PlatformosCheck
         return [] unless (variable_lookup = VariableLookupFinder.lookup(context))
         return [] if content[cursor - 1] == "." && content[cursor - 2] == "."
 
-        if child_lookup && child_lookup.lookups.any?
-          variable_lookup.lookups = variable_lookup.lookups + child_lookup.lookups
-        end
+        variable_lookup.lookups = variable_lookup.lookups + child_lookup.lookups if child_lookup&.lookups&.any?
 
         if variable_lookup.file_path
           function_completion(variable_lookup)
@@ -62,7 +60,7 @@ module PlatformosCheck
       end
 
       def graphql_completion(variable_lookup)
-        graphql_file_name = variable_lookup.lookups.first.sub(/graphql\//, '')
+        graphql_file_name = variable_lookup.lookups.first.sub("graphql/", '')
         graphql_file = find_file(graphql_file_name)
         fields = GraphqlTraverser.new(graphql_file).fields
         variable_path = File.join('', variable_lookup.lookups.slice(1..-1))
@@ -80,20 +78,19 @@ module PlatformosCheck
       end
 
       def function_completion(variable_lookup)
-          liquid_file = find_file(variable_lookup.file_path)
-          partial_cursor = liquid_file.source.rindex("\n")
-          partial_content = liquid_file.source
-          lines = partial_content.split("\n")
-          partial_provider = ObjectAttributeCompletionProvider.new(@storage)
+        liquid_file = find_file(variable_lookup.file_path)
+        partial_content = liquid_file.source
+        lines = partial_content.split("\n")
+        partial_provider = ObjectAttributeCompletionProvider.new(@storage)
 
-          line_number_with_return = lines.rindex { |x| x.include?('return') }
-          partial_context = CompletionContext.new(
-            @storage,
-            liquid_file.relative_path.to_s,
-            line_number_with_return,
-            lines[line_number_with_return].size
-          )
-          partial_provider.completions(partial_context, variable_lookup)
+        line_number_with_return = lines.rindex { |x| x.include?('return') }
+        partial_context = CompletionContext.new(
+          @storage,
+          liquid_file.relative_path.to_s,
+          line_number_with_return,
+          lines[line_number_with_return].size
+        )
+        partial_provider.completions(partial_context, variable_lookup)
       end
     end
   end

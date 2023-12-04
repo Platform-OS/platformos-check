@@ -12,7 +12,7 @@ module PlatformosCheck
       end
 
       def test_hovers_asset_url
-        result = "### [asset_url](https://documentation.platformos.com/api-reference/liquid/filters/asset_url)\nParameters:\n- file_path - path to the asset, relative to assets directory\n\nReturns:\n- string: URL to the physical file if existing, root asset URL otherwise\n\n\n---\n\n\n  - Example 0:\n\n```liquid\n{{ \"valid/file.jpg\" | asset_url }}\n```\n##\nOutput: https://cdn-server.com/valid/file.jpg?updated=1565632488\n{{ \"nonexistent/file.jpg\" | asset_url }}"
+        result = "### [asset_url](https://documentation.platformos.com/api-reference/liquid/filters/asset_url)\nGenerates CDN url to an asset\n\nParameters:\n- file_path - path to the asset, relative to assets directory\n\nReturns:\n- string: URL to the physical file if existing, root asset URL otherwise\n\n\n---\n\n\n  - Example 0:\n\n```liquid\n{{ \"valid/file.jpg\" | asset_url }}\n```\n##\nOutput: https://cdn-server.com/valid/file.jpg?updated=1565632488\n{{ \"nonexistent/file.jpg\" | asset_url }}"
 
         assert_can_hover_with(@provider, "{{ 'foo.js' | asset_url", result, 0, 0)
       end
@@ -24,7 +24,7 @@ module PlatformosCheck
       end
 
       def test_hovers_array_group_by
-        result = "### [array_group_by](https://documentation.platformos.com/api-reference/liquid/filters/array_group_by)\nParameters:\n- objects - array to be grouped\n- method_name - method name to be used to group Objects\n\nReturns:\n- hash: the original array grouped by method\nspecified by the second parameter\n\n\n---\n\n\n  - Example 0:\n\n```liquid\n{% parse_json objects %}\n  [\n    { \"size\": \"xl\", \"color\": \"red\"},\n    { \"size\": \"xl\", \"color\": \"yellow\"},\n    { \"size\": \"s\", \"color\": \"red\"}\n  ]\n{% endparse_json %}\n{{ objects | array_group_by: 'size' }}\n```\n##\nOutput: {\"xl\""
+        result = "### [array_group_by](https://documentation.platformos.com/api-reference/liquid/filters/array_group_by)\nTransforms array into hash, with keys equal to the values of object's method name and value being array containing objects\n\nParameters:\n- objects - array to be grouped\n- method_name - method name to be used to group Objects\n\nReturns:\n- hash: the original array grouped by method\nspecified by the second parameter\n\n\n---\n\n\n  - Example 0:\n\n```liquid\n{% parse_json objects %}\n  [\n    { \"size\": \"xl\", \"color\": \"red\"},\n    { \"size\": \"xl\", \"color\": \"yellow\"},\n    { \"size\": \"s\", \"color\": \"red\"}\n  ]\n{% endparse_json %}\n{{ objects | array_group_by: 'size' }}\n```\n##\nOutput: {\"xl\""
 
         assert_can_hover_with(@provider, "{{ foo | array_group_by", result, 0, 0)
       end

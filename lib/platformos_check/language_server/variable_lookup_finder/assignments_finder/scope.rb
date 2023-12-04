@@ -64,7 +64,7 @@ module PlatformosCheck
           def as_potential_lookup_graphql(tag)
             variable_lookup = tag.from.name
             name = variable_lookup
-            lookups = variable_lookup.lookups.concat([])
+            variable_lookup.lookups.push
 
             # TODO: this is smelly
             PotentialLookup.new(name, ["graphql/#{tag.partial_name}"], variables)
