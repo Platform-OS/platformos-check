@@ -1,4 +1,9 @@
-v0.4.5 / 2023-12-04
+v0.4.6 / 2023-12-19
+==================
+
+  * Add FormAuthenticityToken check
+
+v0.4.5 / 2023-12-19
 ==================
 
   * Add FormAction check
