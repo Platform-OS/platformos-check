@@ -91,6 +91,10 @@ FormAction:
   enabled: true
   ignore: []
 
+FormAuthenticityToken:
+  enabled: true
+  ignore: []
+
 HtmlParsingError:
   enabled: true
   ignore: []
