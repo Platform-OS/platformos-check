@@ -8,6 +8,8 @@ module PlatformosCheck
 
     def on_form(node)
       action = node.attributes["action"]&.strip
+      return if action.nil?
+      return if action.empty?
       return if action.start_with?('/', '{{')
 
       add_offense("Use action=\"/#{action}\" (start with /) to ensure the form can be submitted multiple times in case of validation errors", node:)
