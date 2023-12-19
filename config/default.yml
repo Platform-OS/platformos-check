@@ -87,6 +87,10 @@ ImgLazyLoading:
   enabled: true
   ignore: []
 
+FormAction:
+  enabled: true
+  ignore: []
+
 HtmlParsingError:
   enabled: true
   ignore: []
