@@ -39,7 +39,7 @@ There should be no cases where disabling this rule is needed.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.46.0.
+This check has been introduced in PlatformOS Check 0.4.6.
 
 ## Resources
 
