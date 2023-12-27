@@ -50,6 +50,10 @@ UnknownFilter:
   enabled: true
   ignore: []
 
+UnreachableCode:
+  enabled: true
+  ignore: []
+
 UnusedAssign:
   enabled: true
   ignore: []
