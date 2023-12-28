@@ -18,8 +18,7 @@ module PlatformosCheck
       end
     end
 
-    def initialize(config_type: :default)
-      @config_type = config_type
+    def initialize
       @partials = []
       @all_partials = Set.new
     end

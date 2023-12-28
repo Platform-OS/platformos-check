@@ -8,7 +8,7 @@ module PlatformosCheck
       offenses = analyze_platformos_app(
         GraphqlInForLoop.new,
         "app/views/pages/index.liquid" => <<~END
-          {% assign arr = 'a,b,c' | split: ','}
+          {% assign arr = 'a,b,c' | split: ',' %}
           {% graphql _ = 'my/graphql' %}
           {% for el in arr %}
             {% print el %}
@@ -24,7 +24,7 @@ module PlatformosCheck
       offenses = analyze_platformos_app(
         GraphqlInForLoop.new,
         "app/views/pages/index.liquid" => <<~END
-          {% assign arr = 'a,b,c' | split: ','}
+          {% assign arr = 'a,b,c' | split: ',' %}
           {% graphql _ = 'my/graphql' %}
           {% for el in arr %}
             {% graphql _ = 'my/graphql' %}
@@ -44,8 +44,8 @@ module PlatformosCheck
       offenses = analyze_platformos_app(
         GraphqlInForLoop.new,
         "app/views/pages/index.liquid" => <<~END
-          {% assign arr = 'a,b,c' | split: ','}
-          {% background source_name: "my job" %}
+          {% assign arr = 'a,b,c' | split: ',' %}
+          {% background source_name: "myjob" %}
             {% for el in arr %}
               {% graphql _ = 'my/graphql' %}
               {% print el %}
@@ -62,7 +62,7 @@ module PlatformosCheck
       offenses = analyze_platformos_app(
         GraphqlInForLoop.new,
         "app/views/pages/index.liquid" => <<~END
-          {% assign arr = 'a,b,c' | split: ','}
+          {% assign arr = 'a,b,c' | split: ',' %}
             {% for el in arr %}
               {% background source_name: "my job" %}
                 {% graphql _ = 'my/graphql' %}
@@ -89,7 +89,7 @@ module PlatformosCheck
           {% include "my/include", el: el %}
         END
         "app/views/partials/my/include.liquid" => <<~END
-          {% graphql "my/graphql" %}
+          {% graphql res = "my/graphql" %}
         END
       )
 

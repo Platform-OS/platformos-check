@@ -52,7 +52,7 @@ module PlatformosCheck
           {% liquid
             assign arr = 'a,b,c,d' | split: ','
             for el in arr
-              if el == "a""
+              if el == "a"
                 continue
                 log el
               endif
@@ -76,10 +76,10 @@ module PlatformosCheck
             endif
             if x
               assign y = "y value"
-            elsif y == blank || y == "1"
+            elsif y == blank or y == "1"
               assign x = "hello"
               if z
-                if a != b && a > 20
+                if a != b and a > 20
                   log "hello"
                   break
                 endif

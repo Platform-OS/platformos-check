@@ -68,7 +68,7 @@ module PlatformosCheck
     end
 
     def warnings
-      @ast.warnings
+      parse&.warnings
     end
 
     def root

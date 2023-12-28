@@ -2,13 +2,15 @@
 
 module PlatformosCheck
   class Analyzer
-    def initialize(platformos_app, checks = Check.all.map(&:new), auto_correct = false)
+    def initialize(platformos_app, checks = Check.all.map(&:new), auto_correct = false, store_warnings = false)
       @platformos_app = platformos_app
       @auto_correct = auto_correct
+      @store_warnings = store_warnings
 
       @liquid_checks = Checks.new
       @yaml_checks = Checks.new
       @html_checks = Checks.new
+      @warnings = {}
 
       checks.each do |check|
         check.platformos_app = @platformos_app
@@ -29,6 +31,8 @@ module PlatformosCheck
         @yaml_checks.flat_map(&:offenses) +
         @html_checks.flat_map(&:offenses)
     end
+
+    attr_reader :warnings
 
     def yaml_file_count
       @yaml_file_count ||= @platformos_app.yaml.size
@@ -54,6 +58,7 @@ module PlatformosCheck
           yield(liquid_file.relative_path.to_s, i, total_file_count) if block_given?
           liquid_visitor.visit_liquid_file(liquid_file)
           html_visitor.visit_liquid_file(liquid_file)
+          @warnings[liquid_file.path] = liquid_file.warnings if @store_warnings && !liquid_file.warnings&.empty?
         end
       end
 
