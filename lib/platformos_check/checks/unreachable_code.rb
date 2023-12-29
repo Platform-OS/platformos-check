@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module PlatformosCheck
-  # Recommends using {% liquid ... %} if 5 or more consecutive {% ... %} are found.
   class UnreachableCode < LiquidCheck
     severity :error
     category :liquid

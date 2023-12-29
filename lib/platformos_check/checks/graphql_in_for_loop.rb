@@ -18,6 +18,10 @@ module PlatformosCheck
       end
     end
 
+    def self.single_file(**_args)
+      true
+    end
+
     def initialize
       @partials = []
       @all_partials = Set.new
