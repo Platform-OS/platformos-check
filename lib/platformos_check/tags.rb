@@ -53,6 +53,8 @@ module PlatformosCheck
         register_tag('background', Background)
         register_tag('content_for', ContentFor)
         register_tag('session', Session)
+        register_tag('context', Context)
+        register_tag('context_rc', Context)
         register_tag('sign_in', SignIn)
         register_tag('yield', Yield)
         register_tag('graphql', Graphql)

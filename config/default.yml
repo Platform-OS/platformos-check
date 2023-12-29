@@ -99,6 +99,10 @@ FormAuthenticityToken:
   enabled: true
   ignore: []
 
+GraphqlInForLoop:
+  enabled: true
+  ignore: []
+
 HtmlParsingError:
   enabled: true
   ignore: []

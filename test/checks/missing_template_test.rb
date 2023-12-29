@@ -157,7 +157,7 @@ class MissingTemplateTest < Minitest::Test
               }
             }
           }
-        {% endgraphql}
+        {% endgraphql %}
       END
     )
 

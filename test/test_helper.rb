@@ -60,9 +60,18 @@ module Minitest
       defined?(Liquid::C) && Liquid::C.enabled
     end
 
-    def analyze_platformos_app(*check_classes, templates)
+    def analyze_platformos_app_without_raise(*check_classes, templates)
       analyzer = PlatformosCheck::Analyzer.new(make_platformos_app(templates), check_classes)
       analyzer.analyze_platformos_app
+      analyzer.offenses
+    end
+
+    def analyze_platformos_app(*check_classes, templates)
+      analyzer = PlatformosCheck::Analyzer.new(make_platformos_app(templates), check_classes, false, true)
+      analyzer.analyze_platformos_app
+
+      raise analyzer.warnings.inspect unless analyzer.warnings.empty?
+
       analyzer.offenses
     end
 
