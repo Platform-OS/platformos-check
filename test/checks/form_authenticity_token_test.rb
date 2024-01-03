@@ -8,9 +8,53 @@ module PlatformosCheck
       offenses = analyze_platformos_app(
         FormAuthenticityToken.new,
         "app/views/pages/index.liquid" => <<~END
-          <form action="/dummy/create">
+          <form action="/dummy/create" method="post">
             <input type="text" name="title">
             <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
+            <button type="submit">Save</button>
+          </form>
+        END
+      )
+
+      assert_offenses("", offenses)
+    end
+
+    def test_no_offense_for_get
+      offenses = analyze_platformos_app(
+        FormAuthenticityToken.new,
+        "app/views/pages/index.liquid" => <<~END
+          <form action="/dummy/create" method="GET">
+            <input type="text" name="title">
+            <button type="submit">Save</button>
+          </form>
+        END
+      )
+
+      assert_offenses("", offenses)
+    end
+
+    def test_offense_for_variable
+      offenses = analyze_platformos_app(
+        FormAuthenticityToken.new,
+        "app/views/pages/index.liquid" => <<~END
+          <form action="/dummy/create" method="{{ var }}">
+            <input type="text" name="title">
+            <button type="submit">Save</button>
+          </form>
+        END
+      )
+
+      assert_offenses(<<~END, offenses)
+        Missing authenticity_token input <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}"> at app/views/pages/index.liquid:1
+      END
+    end
+
+    def test_no_offense_if_method_missing
+      offenses = analyze_platformos_app(
+        FormAuthenticityToken.new,
+        "app/views/pages/index.liquid" => <<~END
+          <form action="/dummy/create">
+            <input type="text" name="title">
             <button type="submit">Save</button>
           </form>
         END
@@ -23,7 +67,7 @@ module PlatformosCheck
       offenses = analyze_platformos_app(
         FormAuthenticityToken.new,
         "app/views/pages/index.liquid" => <<~END
-          <form action="/dummy/create">
+          <form action="/dummy/create" method="post">
             <input type="text" name="title">
             <button type="submit">Save</button>
           </form>
@@ -39,7 +83,7 @@ module PlatformosCheck
       offenses = analyze_platformos_app(
         FormAuthenticityToken.new,
         "app/views/pages/index.liquid" => <<~END
-          <form action="/dummy/create">
+          <form action="/dummy/create" method="post">
             <input type="hidden" value="{{ context.authenticity_token }}">
             <input type="text" name="title">
             <button type="submit">Save</button>
@@ -56,7 +100,7 @@ module PlatformosCheck
       offenses = analyze_platformos_app(
         FormAuthenticityToken.new,
         "app/views/pages/index.liquid" => <<~END
-          <form action="/dummy/create">
+          <form action="/dummy/create" method="post">
             <input type="hidden" name="authenticity_token">
             <input type="text" name="title">
             <button type="submit">Save</button>
@@ -73,7 +117,7 @@ module PlatformosCheck
       offenses = analyze_platformos_app(
         FormAuthenticityToken.new,
         "app/views/pages/index.liquid" => <<~END
-          <form action="/dummy/create">
+          <form action="/dummy/create" method="post">
             <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
             <input type="text" name="title">
             <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
@@ -90,7 +134,7 @@ module PlatformosCheck
     def test_corrects_missing_authenticity_token
       expected_sources = {
         "app/views/pages/index.liquid" => <<~END
-          <form action="/dummy/create">
+          <form action="/dummy/create" method="post">
           <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
             <input type="text" name="title">
             <button type="submit">Save</button>
@@ -100,7 +144,7 @@ module PlatformosCheck
       sources = fix_platformos_app(
         FormAuthenticityToken.new,
         "app/views/pages/index.liquid" => <<~END
-          <form action="/dummy/create">
+          <form action="/dummy/create" method="post">
             <input type="text" name="title">
             <button type="submit">Save</button>
           </form>

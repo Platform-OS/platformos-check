@@ -3,7 +3,7 @@
 In platformOS all POST/PATCH/PUT/DELETE requests are protected from [CSRF Attacks][csrf-attack] through [authenticity_token][page-csrf]
 Form action defines the endpoint to which browser will make a request after submitting it.
 
-As a general rule you should include hidden input `<input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">` in every form. Missing it will result in session invalidation and any logged in user will be automatically logged out.
+As a general rule you should include hidden input `<input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">` in every form. Missing it will result in session invalidation and the logged in user will be automatically logged out.
 
 ## Check Details
 
@@ -12,14 +12,14 @@ This check is aimed at ensuring you have not forgotten to include authenticity_t
 :-1: Examples of **incorrect** code for this check:
 
 ```liquid
-<form action="dummy/create">
+<form action="dummy/create" method="post">
 </form>
 ```
 
 :+1: Examples of **correct** code for this check:
 
 ```liquid
-<form action="/dummy/create">
+<form action="/dummy/create" method="post">
   <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
 </form>
 ```

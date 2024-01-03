@@ -1,3 +1,8 @@
+v0.4.9 / unreleased
+==================
+
+  * Skip FormAuthenticityToken check for GET forms
+
 v0.4.8 / 2023-12-20
 ==================
 
