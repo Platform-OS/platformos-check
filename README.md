@@ -23,14 +23,14 @@ PlatformOS Check currently checks for the following:
 ✅ Deprecated filters
 ✅ Missing `platformos-check-enable` comment
 ✅ Invalid arguments provided to `{% graphql %}` tags
+✅ Missing `authenticity_token` in `<form>`
+✅ Unreachable code
 
 As well as checks that prevent easy to spot performance problems:
 
+✅ [GraphQL in for loop](/docs/checks/graphql_in_for_loop.md)
 ✅ Use of [parser-blocking](/docs/checks/parser_blocking_javascript.md) JavaScript
-✅ [Use of non-platformOS domains for assets](/docs/checks/remote_asset.md)
 ✅ [Missing width and height attributes on `img` tags](/docs/checks/img_width_and_height.md)
-✅ [Too much JavaScript](/docs/checks/asset_size_javascript.md)
-✅ [Too much CSS](/docs/checks/asset_size_css.md)
 
 For detailed descriptions and configuration options, [take a look at the complete list.](/docs/checks/)
 
@@ -52,12 +52,21 @@ With more to come! Suggestions welcome ([create an issue](https://github.com/Pla
 ### Install ruby and platform-check gem
 
 1. Download the latest version of Ruby - https://www.ruby-lang.org/en/documentation/installation/
+
+Verify that you've installed at least version 3.2:
+
+`ruby -v`
+
+⚠️ **Note:**  You might need to restart  the terminal after installing.
+⚠️ **Note:*** Please make sure you install ruby for your user, not the root
+
 2. Install platformos-check gem
 
 `gem install platformos-check`
 
 You can verify the installation was successful by invoking `platformos-check --version`. If you chose this method, use `platformos-check-language-server` as a path to your language server instead of `/Users/<username/platformos-check-language-server`
 
+⚠️ **Note:*** Please make sure you  install the gem for your user, not the root - i.e. without `sudo`
 
 ### Using Docker
 
