@@ -12,15 +12,34 @@ This check is aimed at ensuring you have not forgotten to include authenticity_t
 :-1: Examples of **incorrect** code for this check:
 
 ```liquid
-<form action="dummy/create" method="post">
+<form action="/dummy/create" method="post">
 </form>
 ```
 
 :+1: Examples of **correct** code for this check:
 
+With token:
 ```liquid
 <form action="/dummy/create" method="post">
   <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
+</form>
+```
+
+For GET request:
+```liquid
+<form action="/dummy/create">
+</form>
+```
+
+For external request:
+```liquid
+<form action="https://example.com/dummy/create" method="post">
+</form>
+```
+
+For parameterized request:
+```liquid
+<form action="{{ context.constants.MY_REQUEST_URL }}" method="post">
 </form>
 ```
 

@@ -33,6 +33,34 @@ module PlatformosCheck
       assert_offenses("", offenses)
     end
 
+    def test_no_offense_for_external_url
+      offenses = analyze_platformos_app(
+        FormAuthenticityToken.new,
+        "app/views/pages/index.liquid" => <<~END
+          <form action="https://example.com/action" method="post">
+            <input type="text" name="title">
+            <button type="submit">Save</button>
+          </form>
+        END
+      )
+
+      assert_offenses("", offenses)
+    end
+
+    def test_no_offense_for_variable_action
+      offenses = analyze_platformos_app(
+        FormAuthenticityToken.new,
+        "app/views/pages/index.liquid" => <<~END
+          <form action="{{ context.constants.MY_CONSTANT }}" method="post">
+            <input type="text" name="title">
+            <button type="submit">Save</button>
+          </form>
+        END
+      )
+
+      assert_offenses("", offenses)
+    end
+
     def test_offense_for_variable
       offenses = analyze_platformos_app(
         FormAuthenticityToken.new,

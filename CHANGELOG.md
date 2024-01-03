@@ -2,6 +2,7 @@ v0.4.9 / unreleased
 ==================
 
   * Skip FormAuthenticityToken check for GET forms
+  * Skip FormAuthenticityToken for action which is not relative path
 
 v0.4.8 / 2023-12-20
 ==================
