@@ -30,6 +30,12 @@ This check is aimed at ensuring you have not forgotten to start the path with /.
 </form>
 ```
 
+```liquid
+<form action="https://example.com/external">
+ ...
+</form>
+```
+
 ## Check Options
 
 The default configuration for this check is the following:

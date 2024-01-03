@@ -57,6 +57,30 @@ module PlatformosCheck
       assert_offenses("", offenses)
     end
 
+    def test_no_offense_when_action_dynamic_via_render
+      offenses = analyze_platformos_app(
+        FormAction.new,
+        "app/views/pages/index.liquid" => <<~END
+          <form action="{% render 'link_to' %}">
+          </form>
+        END
+      )
+
+      assert_offenses("", offenses)
+    end
+
+    def test_no_offense_when_external_url
+      offenses = analyze_platformos_app(
+        FormAction.new,
+        "app/views/pages/index.liquid" => <<~END
+          <form action="https://example.com">
+          </form>
+        END
+      )
+
+      assert_offenses("", offenses)
+    end
+
     def test_no_offense_when_no_action
       offenses = analyze_platformos_app(
         FormAction.new,
