@@ -253,87 +253,6 @@ class UnusedAssignTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
-  def test_removes_unused_assign
-    expected_sources = {
-      "app/views/partials/index.liquid" => "\n"
-    }
-    sources = fix_platformos_app(
-      PlatformosCheck::UnusedAssign.new,
-      "app/views/partials/index.liquid" => <<~END
-        {% assign x = 1 %}
-      END
-    )
-
-    sources.each do |path, source|
-      assert_equal(expected_sources[path], source)
-    end
-  end
-
-  def test_removes_unused_assign_liquid_block
-    expected_sources = {
-      "app/views/partials/index.liquid" => <<~END
-        {% liquid
-          assign x = 1
-          assign y = 2
-        %}
-        {{ x }}
-        {{ y }}
-      END
-    }
-    sources = fix_platformos_app(
-      PlatformosCheck::UnusedAssign.new,
-      "app/views/partials/index.liquid" => <<~END
-        {% liquid
-          assign x = 1
-          assign y = 2
-          assign z = 3
-        %}
-        {{ x }}
-        {{ y }}
-      END
-    )
-
-    sources.each do |path, source|
-      assert_equal(expected_sources[path], source)
-    end
-  end
-
-  def test_removes_unused_assign_middle_of_line
-    expected_sources = {
-      "app/views/partials/index.liquid" => <<~END
-        <p>test case</p><p>test case</p>
-      END
-    }
-    sources = fix_platformos_app(
-      PlatformosCheck::UnusedAssign.new,
-      "app/views/partials/index.liquid" => <<~END
-        <p>test case</p>{% assign x = 1 %}<p>test case</p>
-      END
-    )
-
-    sources.each do |path, source|
-      assert_equal(expected_sources[path], source)
-    end
-  end
-
-  def test_removes_unused_assign_leaves_html
-    expected_sources = {
-      "app/views/partials/index.liquid" => <<~END
-        <p>test case</p>
-      END
-    }
-    sources = fix_platformos_app(
-      PlatformosCheck::UnusedAssign.new,
-      "app/views/partials/index.liquid" => <<~END
-        <p>test case</p>{% assign x = 1 %}
-      END
-    )
-
-    sources.each do |path, source|
-      assert_equal(expected_sources[path], source)
-    end
-  end
-
   def test_rename_unused_function_assign
     expected_sources = {
       "app/views/partials/index.liquid" => "{% function _x = 'my_func' %}\n"
@@ -476,6 +395,22 @@ class UnusedAssignTest < Minitest::Test
           echo "World"
         %}
           <p>test case</p>
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_rename_unused_background_assign
+    expected_sources = {
+      "app/views/partials/index.liquid" => "{% background _x = 'my/background/job' %}\n"
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% background x = 'my/background/job' %}
       END
     )
 

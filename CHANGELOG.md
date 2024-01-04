@@ -3,6 +3,13 @@ v0.4.9 / unreleased
 
   * Skip FormAuthenticityToken check for GET forms
   * Skip FormAuthenticityToken for action which is not relative path
+  * Fix FormAction to not report offenses on valid scenarios
+  * UnusedAssign will not automatically remove assign (it changes logic when working with arrays/hash)
+  * UnusedAssign will automatically rename result of background tag if variable not used
+  * Fix reporting UndefinedObject's missing argument offenses when the same partial is used multiple times (previously offenses where displayed only for the last render)
+  * Add autocorrector for UndefinedObject's missing argument error (explicitly provide null)
+  * Add autocorrector for ImgLazyLoading
+  * ConvertIncludeToRender will not report offense as autocorrect
 
 v0.4.8 / 2023-12-20
 ==================

@@ -7,6 +7,9 @@ module PlatformosCheck
     category :liquid
     doc docs_url(__FILE__)
 
+    TAGS_FOR_AUTO_VARIABLE_PREPEND = Set.new(%i[graphql function background]).freeze
+    PREPEND_CHARACTER = '_'
+
     class TemplateInfo < Struct.new(:used_assigns, :assign_nodes, :includes)
       def collect_used_assigns(templates, visited = Set.new)
         collected = used_assigns
@@ -34,7 +37,7 @@ module PlatformosCheck
     end
 
     def on_assign(node)
-      return if ignore_underscored?(node)
+      return if ignore_prepended?(node)
 
       @templates[node.app_file.name].assign_nodes[node.value.to] = node
     end
@@ -44,13 +47,21 @@ module PlatformosCheck
     end
 
     def on_function(node)
-      return if ignore_underscored?(node)
+      return if ignore_prepended?(node)
 
       @templates[node.app_file.name].assign_nodes[node.value.to] = node
     end
 
     def on_graphql(node)
-      return if ignore_underscored?(node)
+      return if node.value.to.nil?
+      return if ignore_prepended?(node)
+
+      @templates[node.app_file.name].assign_nodes[node.value.to] = node
+    end
+
+    def on_background(node)
+      return if node.value.to.nil?
+      return if ignore_prepended?(node)
 
       @templates[node.app_file.name].assign_nodes[node.value.to] = node
     end
@@ -77,28 +88,7 @@ module PlatformosCheck
           next if used.include?(name)
 
           add_offense("`#{name}` is never used", node:) do |corrector|
-            case node.type_name
-            when :graphql
-              offset = node.markup.match(/^graphql\s+/)[0].size
-
-              corrector.insert_before(
-                node,
-                '_',
-                (node.start_index + offset)...(node.start_index + offset)
-              )
-            when :function
-              offset = node.markup.match(/^function\s+/)[0].size
-
-              corrector.insert_before(
-                node,
-                '_',
-                (node.start_index + offset)...(node.start_index + offset)
-              )
-            when :parse_json
-              # noop
-            else
-              corrector.remove(node)
-            end
+            prepend_variable(node, corrector) if TAGS_FOR_AUTO_VARIABLE_PREPEND.include?(node.type_name)
           end
         end
       end
@@ -106,8 +96,18 @@ module PlatformosCheck
 
     private
 
-    def ignore_underscored?(node)
-      node.value.to.start_with?('_')
+    def ignore_prepended?(node)
+      node.value.to.start_with?(PREPEND_CHARACTER)
+    end
+
+    def prepend_variable(node, corrector)
+      offset = node.markup.match(/^#{node.type_name}\s+/)[0].size
+
+      corrector.insert_before(
+        node,
+        PREPEND_CHARACTER,
+        (node.start_index + offset)...(node.start_index + offset)
+      )
     end
   end
 end
