@@ -11,7 +11,7 @@ PlatformOS Check currently checks for the following:
 ✅ Liquid syntax errors
 ✅ JSON syntax errors
 ✅ Missing partials and graphqls
-✅ Unused `{% assign ... %}`
+✅ Unused variables (via `{% assign var = ... %}`, {% function var = ... %} etc.)
 ✅ Unused partials
 ✅ Template length
 ✅ Deprecated tags
