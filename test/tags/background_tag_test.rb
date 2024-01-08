@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class BackgroundTagTest < Minitest::Test
+class PlatformosCheck::Tags::BackgroundTagTest < Minitest::Test
   def test_inline_syntax
     offenses = analyze_platformos_app(
       "app/views/pages/index.liquid" => <<~END

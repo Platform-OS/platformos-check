@@ -8,6 +8,7 @@ module PlatformosCheck
     doc docs_url(__FILE__)
 
     TAGS_FOR_AUTO_VARIABLE_PREPEND = Set.new(%i[graphql function background]).freeze
+    FILTERS_THAT_MODIFY_OBJECT = Set.new(%w[array_add add_to_array prepend_to_array array_prepend]).freeze
     PREPEND_CHARACTER = '_'
 
     class TemplateInfo < Struct.new(:used_assigns, :assign_nodes, :includes)
@@ -38,6 +39,7 @@ module PlatformosCheck
 
     def on_assign(node)
       return if ignore_prepended?(node)
+      return if node.value.from.filters.any? { |filter_name, *_arguments| FILTERS_THAT_MODIFY_OBJECT.include?(filter_name) }
 
       @templates[node.app_file.name].assign_nodes[node.value.to] = node
     end
@@ -88,7 +90,11 @@ module PlatformosCheck
           next if used.include?(name)
 
           add_offense("`#{name}` is never used", node:) do |corrector|
-            prepend_variable(node, corrector) if TAGS_FOR_AUTO_VARIABLE_PREPEND.include?(node.type_name)
+            if TAGS_FOR_AUTO_VARIABLE_PREPEND.include?(node.type_name)
+              prepend_variable(node, corrector)
+            else
+              corrector.remove(node)
+            end
           end
         end
       end

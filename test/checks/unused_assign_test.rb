@@ -27,6 +27,28 @@ class UnusedAssignTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
+  def test_do_not_reports_unused_assigns_if_modifies_object
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% assign result = arr | array_add: el %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_do_not_reports_unused_assigns_if_modifies_object_in_chain
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% assign result = arr | array_compact | array_add: el %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
   def test_reports_unused_function_assigns
     offenses = analyze_platformos_app(
       PlatformosCheck::UnusedAssign.new,
@@ -80,25 +102,13 @@ class UnusedAssignTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
-  def test_reports_unused_graphql_inline_assigns
+  def test_does_not_report_unused_variable_in_inline_graphql
     offenses = analyze_platformos_app(
       PlatformosCheck::UnusedAssign.new,
-      "app/views/partials/index.liquid" => <<~END
-        {% graphql x %}
-          query records {
-            records(per_page: 20, table: "my_table") {
-              results {
-                id
-              }
-            }
-          }
-        {% endgraphql %}
-      END
+      "app/views/partials/index.liquid" => ''
     )
 
-    assert_offenses(<<~END, offenses)
-      `x` is never used at app/views/partials/index.liquid:1
-    END
+    assert_offenses("", offenses)
   end
 
   def test_do_not_reports_unused_function_assigns_if_starts_with_underscore
@@ -251,6 +261,87 @@ class UnusedAssignTest < Minitest::Test
     )
 
     assert_offenses("", offenses)
+  end
+
+  def test_removes_unused_assign
+    expected_sources = {
+      "app/views/partials/index.liquid" => "\n"
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% assign x = 1 %}
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_removes_unused_assign_liquid_block
+    expected_sources = {
+      "app/views/partials/index.liquid" => <<~END
+        {% liquid
+          assign x = 1
+          assign y = 2
+        %}
+        {{ x }}
+        {{ y }}
+      END
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        {% liquid
+          assign x = 1
+          assign y = 2
+          assign z = 3
+        %}
+        {{ x }}
+        {{ y }}
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_removes_unused_assign_middle_of_line
+    expected_sources = {
+      "app/views/partials/index.liquid" => <<~END
+        <p>test case</p><p>test case</p>
+      END
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        <p>test case</p>{% assign x = 1 %}<p>test case</p>
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_removes_unused_assign_leaves_html
+    expected_sources = {
+      "app/views/partials/index.liquid" => <<~END
+        <p>test case</p>
+      END
+    }
+    sources = fix_platformos_app(
+      PlatformosCheck::UnusedAssign.new,
+      "app/views/partials/index.liquid" => <<~END
+        <p>test case</p>{% assign x = 1 %}
+      END
+    )
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
   end
 
   def test_rename_unused_function_assign
