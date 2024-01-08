@@ -12,6 +12,7 @@ v0.4.9 / unreleased
   * ConvertIncludeToRender will not report offense as autocorrect
   * Improve inline GraphQL syntax check to raise error if result variable not provided
   * Add autocorrector for UndefinedObject (Unused Argument offense) (FIXME: for N unused arguments in the same line it needs to be invoked N times)
+  * Add autocorrector for InvalidArgs - remove duplicates arguments
 
 v0.4.8 / 2023-12-20
 ==================
