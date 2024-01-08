@@ -8,7 +8,10 @@ module PlatformosCheck
     doc docs_url(__FILE__)
 
     TAGS_FOR_AUTO_VARIABLE_PREPEND = Set.new(%i[graphql function background]).freeze
-    FILTERS_THAT_MODIFY_OBJECT = Set.new(%w[array_add add_to_array prepend_to_array array_prepend]).freeze
+    FILTERS_THAT_MODIFY_OBJECT = Set.new(%w[array_add add_to_array
+                                            prepend_to_array array_prepend
+                                            assign_to_hash_key hash_add_key add_hash_key
+                                            remove_hash_key hash_delete_key delete_hash_key]).freeze
     PREPEND_CHARACTER = '_'
 
     class TemplateInfo < Struct.new(:used_assigns, :assign_nodes, :includes)
