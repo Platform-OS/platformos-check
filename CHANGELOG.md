@@ -11,6 +11,7 @@ v0.4.9 / unreleased
   * Add autocorrector for ImgLazyLoading
   * ConvertIncludeToRender will not report offense as autocorrect
   * Improve inline GraphQL syntax check to raise error if result variable not provided
+  * Add autocorrector for UndefinedObject (Unused Argument offense) (FIXME: for N unused arguments in the same line it needs to be invoked N times)
 
 v0.4.8 / 2023-12-20
 ==================

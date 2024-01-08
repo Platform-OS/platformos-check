@@ -228,7 +228,11 @@ module PlatformosCheck
 
       potentially_unused_variables -= render_node.value.internal_attributes if render_node && render_node.value.respond_to?(:internal_attributes)
       potentially_unused_variables&.each do |name|
-        add_offense("Unused argument `#{name}`", node: render_node)
+        add_offense("Unused argument `#{name}`", node: render_node) do |corrector|
+          match = render_node.markup.match(/(?<attribute>,?\s*#{name}\s*:\s*#{Liquid::QuotedFragment})\s*/)
+
+          corrector.replace(render_node, render_node.markup.sub(match[:attribute], ''), render_node.start_index...render_node.end_index)
+        end
       end
     end
   end

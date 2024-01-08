@@ -604,6 +604,196 @@ class UndefinedObjectTest < Minitest::Test
     END
   end
 
+  def test_fixes_unused_first_function_arg
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', not_used: "hello", used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_block_unused_function_arg
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% liquid
+         assign x = x | default: "a"
+         function b = 'b_function', not_used: "hello", used: "hi"
+        %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% liquid
+         assign x = x | default: "a"
+         function b = 'b_function', used: "hi"
+        %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_first_function_arg_as_variable_without_space
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', not_used:var, used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_middle_function_arg
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", not_used: "hello", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_last_function_arg
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy", not_used: "hello" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_first_function_arg_without_comma
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', not_used: "hello", used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_middle_function_arg_without_comma
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function' used: "hi" not_used: "hello" another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function' used: "hi" another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_last_function_arg_without_comma
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function' used: "hi" another_used: "ahoy" not_used: "hello" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function' used: "hi" another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
   def test_does_not_report_argument_provided_to_function
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new,
