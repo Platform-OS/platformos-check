@@ -13,6 +13,8 @@ v0.4.9 / unreleased
   * Improve inline GraphQL syntax check to raise error if result variable not provided
   * Add autocorrector for UndefinedObject (Unused Argument offense) (FIXME: for N unused arguments in the same line it needs to be invoked N times)
   * Add autocorrector for InvalidArgs - remove duplicates arguments
+  * Do not report ConvertIncludeToRender offenses for valid use cases (using `break` and using variable as a template name)
+  * Add IncludeInRender check
 
 v0.4.8 / 2023-12-20
 ==================

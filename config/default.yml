@@ -15,6 +15,10 @@ ConvertIncludeToRender:
   enabled: true
   ignore: []
 
+IncludeInRender:
+  enabled: true
+  ignore: []
+
 LiquidTag:
   enabled: true
   ignore: []

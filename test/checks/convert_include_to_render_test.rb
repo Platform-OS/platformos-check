@@ -19,7 +19,7 @@ class ConvertIncludeToRenderTest < Minitest::Test
   def test_does_not_reports_when_include_is_variable
     offenses = analyze_platformos_app(
       PlatformosCheck::ConvertIncludeToRender.new,
-      "app/views/pages/index.liquid" => <<~END,
+      "app/views/pages/index.liquid" => <<~END
         {% assign templ_name = 'foo' %}
         {% include foo %}
       END
@@ -86,7 +86,7 @@ class ConvertIncludeToRenderTest < Minitest::Test
       END
     )
 
-    # note there is no offense for app/views/pages/index.liquid, only for foo.liquid
+    # NOTE: there is no offense for app/views/pages/index.liquid, only for foo.liquid
 
     assert_offenses(<<~END, offenses)
       `include` is deprecated - convert it to `render` at app/views/partials/foo.liquid:2

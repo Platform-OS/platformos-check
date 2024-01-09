@@ -38,11 +38,11 @@ module PlatformosCheck
     def include_node_contains_render_incompatible_tag?(node)
       return false if node.nil?
 
-      node.nodelist.any? do |node|
-        if RENDER_INCOMPATIBLE_TAGS.include?(node.respond_to?(:tag_name) && node.tag_name)
+      node.nodelist.any? do |n|
+        if RENDER_INCOMPATIBLE_TAGS.include?(n.respond_to?(:tag_name) && n.tag_name)
           true
-        elsif node.respond_to?(:nodelist) && node.nodelist
-          include_node_contains_render_incompatible_tag?(node)
+        elsif n.respond_to?(:nodelist) && n.nodelist
+          include_node_contains_render_incompatible_tag?(n)
         else
           false
         end
