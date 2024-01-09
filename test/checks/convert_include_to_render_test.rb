@@ -105,13 +105,46 @@ class ConvertIncludeToRenderTest < Minitest::Test
   end
 
   def test_corrects_include
-    skip "To be fixed"
+    # a bit hackish, to use UndefinedObject in this unit test
+
+    sources = fix_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      fix_platformos_app(
+        PlatformosCheck::ConvertIncludeToRender.new,
+        "app/views/pages/index.liquid" => <<~END,
+          {% include 'foo' %}
+          {% assign greeting = "hello world" %}
+          {% include 'greeting' %}
+        END
+        "app/views/partials/greeting.liquid" => <<~END
+          {{ greeting }}
+        END
+      )
+    )
+    expected_sources = {
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'foo' %}
+        {% assign greeting = "hello world" %}
+        {% render 'greeting', greeting: greeting %}
+      END
+      "app/views/partials/greeting.liquid" => <<~END
+        {{ greeting }}
+      END
+    }
+
+    sources.each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_corrects_include_and_preserved_arguments
+    # a bit hackish, to use UndefinedObject in this unit test
+
     sources = fix_platformos_app(
       PlatformosCheck::ConvertIncludeToRender.new,
       "app/views/pages/index.liquid" => <<~END,
         {% include 'foo' %}
-        {% assign greeting = "hello world" %}
-        {% include 'greeting' %}
+        {% include 'greeting', greeting: "hello world", includeAll: true %}
       END
       "app/views/partials/greeting.liquid" => <<~END
         {{ greeting }}
@@ -120,10 +153,9 @@ class ConvertIncludeToRenderTest < Minitest::Test
     expected_sources = {
       "app/views/pages/index.liquid" => <<~END,
         {% render 'foo' %}
-        {% assign greeting = "hello world" %}
-        {% render 'greeting', greeting: greeting %}
+        {% render 'greeting', greeting: "hello world", includeAll: true %}
       END
-      "app/views/partials/greeting" => <<~END
+      "app/views/partials/greeting.liquid" => <<~END
         {{ greeting }}
       END
     }

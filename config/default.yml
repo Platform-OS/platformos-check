@@ -73,7 +73,6 @@ ValidYaml:
 UndefinedObject:
   enabled: true
   ignore: []
-  config_type: :default
 
 DeprecatedFilter:
   enabled: true

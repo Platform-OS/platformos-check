@@ -16,10 +16,10 @@ module PlatformosCheck
     def on_include(node)
       return if allowed_usecase?(node)
 
-      add_offense("`include` is deprecated - convert it to `render`", node:) # do |corrector|
-      # We need to fix #445 and pass the variables from the context or don't replace at all.
-      # corrector.replace(node, "render \'#{node.value.template_name_expr}\' ")
-      # end
+      add_offense("`include` is deprecated - convert it to `render`", node:) do |corrector|
+        match = node.markup.match(/(?<include>include\s*)/)
+        corrector.replace(node, node.markup.sub(match[:include], 'render '), node.start_index...node.end_index)
+      end
     end
 
     protected

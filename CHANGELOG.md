@@ -15,6 +15,9 @@ v0.4.9 / unreleased
   * Add autocorrector for InvalidArgs - remove duplicates arguments
   * Do not report ConvertIncludeToRender offenses for valid use cases (using `break` and using variable as a template name)
   * Add IncludeInRender check
+  * Improve autocorrector for UndefinedObject's missing argument error - if variable is defined, it will be passed instead of hardcoding null
+  * Re-enable autocorrector for ConvertIncludeToRender
+  * Make UndefinedObject more clever - it will report undefined object if variable is used before declaration
 
 v0.4.8 / 2023-12-20
 ==================

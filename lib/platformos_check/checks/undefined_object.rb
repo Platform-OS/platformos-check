@@ -62,14 +62,17 @@ module PlatformosCheck
           yield [key, info]
         end
       end
+
+      def first_declaration(name)
+        [all_assigns[name], all_captures[name]].compact.sort_by(&:line_number).first
+      end
     end
 
     def self.single_file(**_args)
       true
     end
 
-    def initialize(config_type: :default)
-      @config_type = config_type
+    def initialize
       @files = {}
     end
 
@@ -78,15 +81,15 @@ module PlatformosCheck
     end
 
     def on_assign(node)
-      @files[node.app_file.name].all_assigns[node.value.to] = node
+      @files[node.app_file.name].all_assigns[node.value.to] ||= node
     end
 
     def on_capture(node)
-      @files[node.app_file.name].all_captures[node.value.instance_variable_get(:@to)] = node
+      @files[node.app_file.name].all_captures[node.value.instance_variable_get(:@to)] ||= node
     end
 
     def on_parse_json(node)
-      @files[node.app_file.name].all_captures[node.value.to] = node
+      @files[node.app_file.name].all_captures[node.value.to] ||= node
     end
 
     def on_for(node)
@@ -108,7 +111,7 @@ module PlatformosCheck
     end
 
     def on_function(node)
-      @files[node.app_file.name].all_assigns[node.value.to] = node
+      @files[node.app_file.name].all_assigns[node.value.to] ||= node
 
       return unless node.value.from.is_a?(String)
 
@@ -119,13 +122,13 @@ module PlatformosCheck
     end
 
     def on_graphql(node)
-      @files[node.app_file.name].all_assigns[node.value.to] = node
+      @files[node.app_file.name].all_assigns[node.value.to] ||= node
     end
 
     def on_background(node)
       return unless node.value.partial_syntax
 
-      @files[node.app_file.name].all_assigns[node.value.to] = node
+      @files[node.app_file.name].all_assigns[node.value.to] ||= node
 
       return unless node.value.partial_name.is_a?(String)
 
@@ -173,8 +176,6 @@ module PlatformosCheck
 
     private
 
-    attr_reader :config_type
-
     def each_template
       @files.each do |(name, info)|
         yield [name, info]
@@ -198,14 +199,14 @@ module PlatformosCheck
     end
 
     def check_undefined(info, all_global_objects, render_node)
-      all_variables = info.all_variables
       potentially_unused_variables = render_node.value.attributes.keys if render_node
+      missing_arguments = []
       info.each_variable_lookup(!!render_node) do |(key, node)|
         name, line_number = key
 
         potentially_unused_variables&.delete(name)
 
-        next if all_variables.include?(name)
+        next if info.all_variables.include?(name) && variable_declared_before_used?(name, info, line_number)
         next if all_global_objects.include?(name)
 
         node = node.parent
@@ -214,13 +215,7 @@ module PlatformosCheck
         next if node.variable? && node.filters.any? { |(filter_name)| filter_name == "default" }
 
         if render_node
-          add_offense("Missing argument `#{name}`", node: render_node) do |corrector|
-            new_attribute = ", #{name}: null"
-
-            start_pos = render_node.end_index
-            start_pos -= 1 while start_pos > 0 && render_node.source[start_pos - 1] == ' '
-            corrector.insert_after(render_node, new_attribute, start_pos...start_pos)
-          end
+          missing_arguments << name
         elsif !info.app_file.partial?
           add_offense("Undefined object `#{name}`", node:, line_number:)
         end
@@ -234,6 +229,27 @@ module PlatformosCheck
           corrector.replace(render_node, render_node.markup.sub(match[:attribute], ''), render_node.start_index...render_node.end_index)
         end
       end
+
+      return if missing_arguments.empty?
+
+      add_offense("Missing arguments: #{missing_arguments.map { |name| "`#{name}`" }.join(', ')}", node: render_node) do |corrector|
+        new_attributes = ''
+        missing_arguments.each do |name|
+          new_attributes += ", #{name}: "
+          new_attributes += @files[render_node.app_file.name].all_assigns.key?(name) ? name : 'null'
+        end
+
+        start_pos = render_node.end_index
+        start_pos -= 1 while start_pos > 0 && render_node.source[start_pos - 1] == ' '
+        corrector.replace(render_node, new_attributes, start_pos...start_pos)
+      end
+    end
+
+    def variable_declared_before_used?(name, info, line_number_when_used)
+      declaration = info.first_declaration(name)
+      return true if declaration.nil?
+
+      declaration.line_number <= line_number_when_used
     end
   end
 end

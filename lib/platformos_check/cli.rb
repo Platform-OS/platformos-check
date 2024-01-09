@@ -188,7 +188,7 @@ module PlatformosCheck
     def check(out_stream = STDOUT)
       update_docs
 
-      warn "Checking #{@config.root} ..."
+      warn "Checking #{@config.root}:"
       storage = PlatformosCheck::FileSystemStorage.new(@config.root, ignored_patterns: @config.ignored_patterns)
       raise Abort, "No platformos_app files found." if storage.platformos_app.all.empty?
 

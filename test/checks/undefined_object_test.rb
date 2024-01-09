@@ -16,6 +16,19 @@ class UndefinedObjectTest < Minitest::Test
     END
   end
 
+  def test_report_on_undefined_variable_when_hash_assign
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END
+        {% hash_assign object['var'] = 'hello' %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Undefined object `object` at app/views/pages/index.liquid:1
+    END
+  end
+
   def test_report_on_repeated_undefined_variable_on_different_lines
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new,
@@ -193,8 +206,116 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `price` at app/views/pages/index.liquid:2
+      Missing arguments: `price` at app/views/pages/index.liquid:2
     END
+  end
+
+  def test_report_on_render_when_variable_used_before_declaration
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'increment_price' %}
+      END
+      "app/views/partials/increment_price.liquid" => <<~END
+        {% hash_assign object['price'] = object['price'] | plus: 1 %}
+        {% function object = 'do_something', object: object %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Missing arguments: `object` at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_does_not_report_when_variable_declared_before_used
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'increment_price' %}
+      END
+      "app/views/partials/increment_price.liquid" => <<~END
+        {% function object = 'do_something', object: object %}
+        {% hash_assign object['price'] = object['price'] | plus: 1 %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_does_not_report_when_variable_declared_multiple_times_first_parse_json
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'increment_price' %}
+      END
+      "app/views/partials/increment_price.liquid" => <<~END
+        {% parse_json object %}{}{% endparse_json %}
+        {% hash_assign object['price'] = object['price'] | plus: 1 %}
+        {% function object = 'do_something', object: object %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_does_not_report_when_variable_declared_multiple_times_first_function
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'increment_price' %}
+      END
+      "app/views/partials/increment_price.liquid" => <<~END
+        {% function object = 'do_something', object: object %}
+        {% hash_assign object['price'] = object['price'] | plus: 1 %}
+        {% parse_json object %}{}{% endparse_json %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_report_when_variable_declared_multiple_times_but_both_times_after_it_is_used
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'increment_price' %}
+      END
+      "app/views/partials/increment_price.liquid" => <<~END
+        {% print object %}
+        {% function object = 'do_something', object: object %}
+        {% parse_json object %}{}{% endparse_json %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Missing arguments: `object` at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_fixes_missing_variable_on_render_by_passing_variable_from_parent_context
+    sources = {
+      "app/views/pages/index.liquid" => <<~END,
+        {% assign price = "$3.00" %}
+        {% render 'product' %}
+      END
+      "app/views/partials/product.liquid" => <<~END
+        {{ price }}
+      END
+    }
+
+    expected_sources = {
+      "app/views/pages/index.liquid" => <<~END,
+        {% assign price = "$3.00" %}
+        {% render 'product', price: price %}
+      END
+      "app/views/partials/product.liquid" => <<~END
+        {{ price }}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
   end
 
   def test_report_on_render_with_undefined_variable_as_argument
@@ -253,7 +374,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `price` at app/views/pages/index.liquid:1
+      Missing arguments: `price` at app/views/pages/index.liquid:1
     END
   end
 
@@ -271,7 +392,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `price` at app/views/pages/index.liquid:1
+      Missing arguments: `price` at app/views/pages/index.liquid:1
     END
   end
 
@@ -304,8 +425,7 @@ class UndefinedObjectTest < Minitest::Test
     offenses = analyze_platformos_app(PlatformosCheck::UndefinedObject.new, sources)
 
     assert_offenses(<<~END, offenses)
-      Missing argument `currency` at app/views/pages/index.liquid:2
-      Missing argument `price` at app/views/pages/index.liquid:2
+      Missing arguments: `price`, `currency` at app/views/pages/index.liquid:2
     END
 
     fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
@@ -415,7 +535,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `price` at app/views/pages/index.liquid:1
+      Missing arguments: `price` at app/views/pages/index.liquid:1
     END
   end
 
@@ -434,7 +554,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `price` at app/views/partials/collection.liquid:1
+      Missing arguments: `price` at app/views/partials/collection.liquid:1
     END
   end
 
@@ -544,7 +664,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `some_end_condition` at app/views/partials/one.liquid:1
+      Missing arguments: `some_end_condition` at app/views/partials/one.liquid:1
     END
   end
 
@@ -567,8 +687,8 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `some_end_condition` at app/views/partials/one.liquid:1
-      Missing argument `some_end_condition` at app/views/partials/one.liquid:3
+      Missing arguments: `some_end_condition` at app/views/partials/one.liquid:1
+      Missing arguments: `some_end_condition` at app/views/partials/one.liquid:3
     END
   end
 
@@ -822,7 +942,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `my_arg` at app/views/pages/a.liquid:1
+      Missing arguments: `my_arg` at app/views/pages/a.liquid:1
     END
   end
 
@@ -842,9 +962,9 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `my_arg` at app/views/pages/a.liquid:1
-      Missing argument `my_arg` at app/views/pages/a.liquid:3
-      Missing argument `my_arg` at app/views/pages/a.liquid:4
+      Missing arguments: `my_arg` at app/views/pages/a.liquid:1
+      Missing arguments: `my_arg` at app/views/pages/a.liquid:3
+      Missing arguments: `my_arg` at app/views/pages/a.liquid:4
     END
   end
 
@@ -868,7 +988,7 @@ class UndefinedObjectTest < Minitest::Test
     offenses = analyze_platformos_app(PlatformosCheck::UndefinedObject.new, sources)
 
     assert_offenses(<<~END, offenses)
-      Missing argument `my_arg` at app/views/partials/a.liquid:1
+      Missing arguments: `my_arg` at app/views/partials/a.liquid:1
     END
 
     fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
@@ -937,7 +1057,7 @@ class UndefinedObjectTest < Minitest::Test
     offenses = analyze_platformos_app(PlatformosCheck::UndefinedObject.new, sources)
 
     assert_offenses(<<~END, offenses)
-      Missing argument `arg2` at app/views/pages/a.liquid:1
+      Missing arguments: `arg2` at app/views/pages/a.liquid:1
     END
 
     fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
@@ -974,7 +1094,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `user_id` at app/views/pages/a.liquid:1
+      Missing arguments: `user_id` at app/views/pages/a.liquid:1
     END
   end
 
@@ -1036,7 +1156,7 @@ class UndefinedObjectTest < Minitest::Test
     offenses = analyze_platformos_app(PlatformosCheck::UndefinedObject.new, sources)
 
     assert_offenses(<<~END, offenses)
-      Missing argument `ids` at app/views/partials/command/b_function.liquid:1
+      Missing arguments: `ids` at app/views/partials/command/b_function.liquid:1
     END
 
     fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
