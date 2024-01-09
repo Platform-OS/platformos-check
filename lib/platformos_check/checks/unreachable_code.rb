@@ -8,7 +8,7 @@ module PlatformosCheck
 
     FLOW_COMMAND = %i[break continue return]
     CONDITION_TYPES = Set.new(%i[condition else_condition])
-    INCLUDE_FLOW_COMMAND = %w[break]
+    INCLUDE_FLOW_COMMAND = %w[break].freeze
 
     def on_document(node)
       @processed_files = {}
@@ -94,10 +94,10 @@ module PlatformosCheck
       @processed_files[path]
     end
 
-    def include_node_contains_flow_command?(root)
-      return false if root.nil?
+    def include_node_contains_flow_command?(node)
+      return false if node.nil?
 
-      root.nodelist.any? do |node|
+      node.nodelist.any? do |node|
         if INCLUDE_FLOW_COMMAND.include?(node.respond_to?(:tag_name) && node.tag_name)
           true
         elsif node.respond_to?(:nodelist) && node.nodelist
