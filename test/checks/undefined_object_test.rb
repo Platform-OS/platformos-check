@@ -16,6 +16,19 @@ class UndefinedObjectTest < Minitest::Test
     END
   end
 
+  def test_report_on_undefined_variable_when_hash_assign
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END
+        {% hash_assign object['var'] = 'hello' %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Undefined object `object` at app/views/pages/index.liquid:1
+    END
+  end
+
   def test_report_on_repeated_undefined_variable_on_different_lines
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new,
@@ -193,8 +206,116 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `price` at app/views/pages/index.liquid:2
+      Missing arguments: `price` at app/views/pages/index.liquid:2
     END
+  end
+
+  def test_report_on_render_when_variable_used_before_declaration
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'increment_price' %}
+      END
+      "app/views/partials/increment_price.liquid" => <<~END
+        {% hash_assign object['price'] = object['price'] | plus: 1 %}
+        {% function object = 'do_something', object: object %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Missing arguments: `object` at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_does_not_report_when_variable_declared_before_used
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'increment_price' %}
+      END
+      "app/views/partials/increment_price.liquid" => <<~END
+        {% function object = 'do_something', object: object %}
+        {% hash_assign object['price'] = object['price'] | plus: 1 %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_does_not_report_when_variable_declared_multiple_times_first_parse_json
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'increment_price' %}
+      END
+      "app/views/partials/increment_price.liquid" => <<~END
+        {% parse_json object %}{}{% endparse_json %}
+        {% hash_assign object['price'] = object['price'] | plus: 1 %}
+        {% function object = 'do_something', object: object %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_does_not_report_when_variable_declared_multiple_times_first_function
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'increment_price' %}
+      END
+      "app/views/partials/increment_price.liquid" => <<~END
+        {% function object = 'do_something', object: object %}
+        {% hash_assign object['price'] = object['price'] | plus: 1 %}
+        {% parse_json object %}{}{% endparse_json %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_report_when_variable_declared_multiple_times_but_both_times_after_it_is_used
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'increment_price' %}
+      END
+      "app/views/partials/increment_price.liquid" => <<~END
+        {% print object %}
+        {% function object = 'do_something', object: object %}
+        {% parse_json object %}{}{% endparse_json %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Missing arguments: `object` at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_fixes_missing_variable_on_render_by_passing_variable_from_parent_context
+    sources = {
+      "app/views/pages/index.liquid" => <<~END,
+        {% assign price = "$3.00" %}
+        {% render 'product' %}
+      END
+      "app/views/partials/product.liquid" => <<~END
+        {{ price }}
+      END
+    }
+
+    expected_sources = {
+      "app/views/pages/index.liquid" => <<~END,
+        {% assign price = "$3.00" %}
+        {% render 'product', price: price %}
+      END
+      "app/views/partials/product.liquid" => <<~END
+        {{ price }}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
   end
 
   def test_report_on_render_with_undefined_variable_as_argument
@@ -202,11 +323,13 @@ class UndefinedObjectTest < Minitest::Test
       PlatformosCheck::UndefinedObject.new,
       "app/views/pages/index.liquid" => <<~END
         {% render 'product', price: adjusted_price %}
+        {% render 'product', price: adjusted_price %}
       END
     )
 
     assert_offenses(<<~END, offenses)
       Undefined object `adjusted_price` at app/views/pages/index.liquid:1
+      Undefined object `adjusted_price` at app/views/pages/index.liquid:2
     END
   end
 
@@ -251,7 +374,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `price` at app/views/pages/index.liquid:1
+      Missing arguments: `price` at app/views/pages/index.liquid:1
     END
   end
 
@@ -269,27 +392,131 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `price` at app/views/pages/index.liquid:1
+      Missing arguments: `price` at app/views/pages/index.liquid:1
     END
   end
 
   def test_report_on_render_with_undefined_argument_in_one_of_multiple_locations
-    offenses = analyze_platformos_app(
-      PlatformosCheck::UndefinedObject.new,
+    sources = {
       "app/views/pages/index.liquid" => <<~END,
-        {% render 'product' %}
+        <h1>Your product:</h1>
+        <div class="product">{% render 'product' %}</div>
       END
       "app/views/pages/collection.liquid" => <<~END,
-        {% render 'product', price: "$3.00" %}
+        {% render 'product', price: "3.00", currency: '$' %}
       END
       "app/views/partials/product.liquid" => <<~END
-        {{ price }}
+        {{ price | append: currency }}
       END
-    )
+    }
+    expected_sources = {
+      "app/views/pages/index.liquid" => <<~END,
+        <h1>Your product:</h1>
+        <div class="product">{% render 'product', price: null, currency: null %}</div>
+      END
+      "app/views/pages/collection.liquid" => <<~END,
+        {% render 'product', price: "3.00", currency: '$' %}
+      END
+      "app/views/partials/product.liquid" => <<~END
+        {{ price | append: currency }}
+      END
+
+    }
+    offenses = analyze_platformos_app(PlatformosCheck::UndefinedObject.new, sources)
 
     assert_offenses(<<~END, offenses)
-      Missing argument `price` at app/views/pages/index.liquid:1
+      Missing arguments: `price`, `currency` at app/views/pages/index.liquid:2
     END
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fix_when_same_render_used_twice
+    sources = {
+      "app/views/pages/index.liquid" => <<~END,
+        {% assign now = 'now' | to_time | strftime: '%Y-%m-%dT%H:%M:%S.%L%z' %}
+
+        <form action="{% render 'link_to', text: context.params.object %}" method="post">
+          <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
+          <input type="hidden" name="return_to" value="{% render 'link_to', anchor: "my_anchor" %}">
+        </form>
+      END
+      "app/views/partials/link_to.liquid" => <<~END
+        <a href="{{ url }}\#{{ anchor }}"><{{ text }}></a>
+      END
+    }
+    expected_sources = {
+      "app/views/pages/index.liquid" => <<~END,
+        {% assign now = 'now' | to_time | strftime: '%Y-%m-%dT%H:%M:%S.%L%z' %}
+
+        <form action="{% render 'link_to', text: context.params.object, url: null, anchor: null %}" method="post">
+          <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
+          <input type="hidden" name="return_to" value="{% render 'link_to', anchor: "my_anchor", url: null, text: null %}">
+        </form>
+      END
+      "app/views/partials/link_to.liquid" => <<~END
+        <a href="{{ url }}\#{{ anchor }}"><{{ text }}></a>
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fix_when_same_render_used_twice_in_liquid_blocks
+    sources = {
+      "app/views/pages/index.liquid" => <<~END,
+        {% assign now = 'now' | to_time | strftime: '%Y-%m-%dT%H:%M:%S.%L%z' %}
+
+        <form action="{% render 'link_to', text: context.params.object %}" method="post">
+          <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
+          {% liquid
+            print '<input type="hidden" name="return_to" value="'
+            render 'link_to', anchor: "my_anchor"
+            print '">'
+
+            if true
+              render 'link_to'
+            else
+              render 'link_to', url: "/"
+            endif
+          %}
+        </form>
+      END
+      "app/views/partials/link_to.liquid" => <<~END
+        <a href="{{ url }}\#{{ anchor }}"><{{ text }}></a>
+      END
+    }
+    expected_sources = {
+      "app/views/pages/index.liquid" => <<~END,
+        {% assign now = 'now' | to_time | strftime: '%Y-%m-%dT%H:%M:%S.%L%z' %}
+
+        <form action="{% render 'link_to', text: context.params.object, url: null, anchor: null %}" method="post">
+          <input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
+          {% liquid
+            print '<input type="hidden" name="return_to" value="'
+            render 'link_to', anchor: "my_anchor", url: null, text: null
+            print '">'
+
+            if true
+              render 'link_to', url: null, anchor: null, text: null
+            else
+              render 'link_to', url: "/", anchor: null, text: null
+            endif
+          %}
+        </form>
+      END
+      "app/views/partials/link_to.liquid" => <<~END
+        <a href="{{ url }}\#{{ anchor }}"><{{ text }}></a>
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
   end
 
   def test_report_on_render_with_undefined_argument_in_one_of_multiple_locations_in_single_file_mode_for_page
@@ -308,7 +535,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `price` at app/views/pages/index.liquid:1
+      Missing arguments: `price` at app/views/pages/index.liquid:1
     END
   end
 
@@ -327,7 +554,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `price` at app/views/partials/collection.liquid:1
+      Missing arguments: `price` at app/views/partials/collection.liquid:1
     END
   end
 
@@ -437,7 +664,31 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `some_end_condition` at app/views/partials/one.liquid:1
+      Missing arguments: `some_end_condition` at app/views/partials/one.liquid:1
+    END
+  end
+
+  def test_recursion_with_duplicated_render
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UndefinedObject.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% render 'one' %}
+      END
+      "app/views/partials/one.liquid" => <<~END,
+        {% render 'two' %}
+        {% render 'two', some_end_condition: true %}
+        {% render 'two' %}
+      END
+      "app/views/partials/two.liquid" => <<~END
+        {% if some_end_condition %}
+          {% render 'one' %}
+        {% endif %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      Missing arguments: `some_end_condition` at app/views/partials/one.liquid:1
+      Missing arguments: `some_end_condition` at app/views/partials/one.liquid:3
     END
   end
 
@@ -473,6 +724,196 @@ class UndefinedObjectTest < Minitest::Test
     END
   end
 
+  def test_fixes_unused_first_function_arg
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', not_used: "hello", used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_block_unused_function_arg
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% liquid
+         assign x = x | default: "a"
+         function b = 'b_function', not_used: "hello", used: "hi"
+        %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% liquid
+         assign x = x | default: "a"
+         function b = 'b_function', used: "hi"
+        %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_first_function_arg_as_variable_without_space
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', not_used:var, used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_middle_function_arg
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", not_used: "hello", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_last_function_arg
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy", not_used: "hello" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_first_function_arg_without_comma
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', not_used: "hello", used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', used: "hi", another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_middle_function_arg_without_comma
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function' used: "hi" not_used: "hello" another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function' used: "hi" another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
+  def test_fixes_unused_last_function_arg_without_comma
+    sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function' used: "hi" another_used: "ahoy" not_used: "hello" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function' used: "hi" another_used: "ahoy" %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return used | append: another_used %}
+      END
+    }
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
+  end
+
   def test_does_not_report_argument_provided_to_function
     offenses = analyze_platformos_app(
       PlatformosCheck::UndefinedObject.new,
@@ -501,7 +942,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `my_arg` at app/views/pages/a.liquid:1
+      Missing arguments: `my_arg` at app/views/pages/a.liquid:1
     END
   end
 
@@ -521,27 +962,38 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `my_arg` at app/views/pages/a.liquid:1
-      Missing argument `my_arg` at app/views/pages/a.liquid:3
-      Missing argument `my_arg` at app/views/pages/a.liquid:4
+      Missing arguments: `my_arg` at app/views/pages/a.liquid:1
+      Missing arguments: `my_arg` at app/views/pages/a.liquid:3
+      Missing arguments: `my_arg` at app/views/pages/a.liquid:4
     END
   end
 
   def test_report_on_undefined_function_argument_for_partials
-    offenses = analyze_single_file(
-      "app/views/partials/a.liquid",
-      PlatformosCheck::UndefinedObject.new,
+    sources = {
       "app/views/partials/a.liquid" => <<~END,
         {% function b = 'b_function' %}
       END
       "app/lib/b_function.liquid" => <<~END
         {% return my_arg %}
       END
-    )
+    }
+    expected_sources = {
+      "app/views/partials/a.liquid" => <<~END,
+        {% function b = 'b_function', my_arg: null %}
+      END
+      "app/lib/b_function.liquid" => <<~END
+        {% return my_arg %}
+      END
+    }
+    offenses = analyze_platformos_app(PlatformosCheck::UndefinedObject.new, sources)
 
     assert_offenses(<<~END, offenses)
-      Missing argument `my_arg` at app/views/partials/a.liquid:1
+      Missing arguments: `my_arg` at app/views/partials/a.liquid:1
     END
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
   end
 
   def test_does_not_report_on_default_function_argument
@@ -583,8 +1035,7 @@ class UndefinedObjectTest < Minitest::Test
   end
 
   def test_report_when_argument_not_explicitly_provided_to_background_partial_syntax
-    offenses = analyze_platformos_app(
-      PlatformosCheck::UndefinedObject.new,
+    sources = {
       "app/views/pages/a.liquid" => <<~END,
         {% background res = 'my_background', arg: "hello", delay: 3.5 %}
         {{ res }}
@@ -592,11 +1043,26 @@ class UndefinedObjectTest < Minitest::Test
       "app/views/partials/my_background.liquid" => <<~END
         {{ arg }} {{ arg2 }}
       END
-    )
+    }
+
+    expected_sources = {
+      "app/views/pages/a.liquid" => <<~END,
+        {% background res = 'my_background', arg: "hello", delay: 3.5, arg2: null %}
+        {{ res }}
+      END
+      "app/views/partials/my_background.liquid" => <<~END
+        {{ arg }} {{ arg2 }}
+      END
+    }
+    offenses = analyze_platformos_app(PlatformosCheck::UndefinedObject.new, sources)
 
     assert_offenses(<<~END, offenses)
-      Missing argument `arg2` at app/views/pages/a.liquid:1
+      Missing arguments: `arg2` at app/views/pages/a.liquid:1
     END
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
   end
 
   def test_report_when_argument_not_explicitly_provided_to_background_inline_syntax
@@ -628,7 +1094,7 @@ class UndefinedObjectTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      Missing argument `user_id` at app/views/pages/a.liquid:1
+      Missing arguments: `user_id` at app/views/pages/a.liquid:1
     END
   end
 
@@ -647,8 +1113,7 @@ class UndefinedObjectTest < Minitest::Test
   end
 
   def test_report_when_undefined_object_used_inside_parse_json
-    offenses = analyze_platformos_app(
-      PlatformosCheck::UndefinedObject.new,
+    sources = {
       "app/views/pages/a.liquid" => <<~END,
         {% function b = 'command/b_function' %}
         {{ b }}
@@ -667,11 +1132,36 @@ class UndefinedObjectTest < Minitest::Test
         {% endparse_json %}
         {% return object %}
       END
-    )
+    }
+    expected_sources = {
+      "app/views/pages/a.liquid" => <<~END,
+        {% function b = 'command/b_function' %}
+        {{ b }}
+      END
+      "app/views/partials/command/b_function.liquid" => <<~END,
+        {% function res = 'command/b_function/build', uuid: "Hello", type: "World", ids: null %}
+        {% return res %}
+      END
+      "app/views/partials/command/b_function/build.liquid" => <<~END
+        {% parse_json object %}
+          {
+            "uuid": {{ uuid | json }},
+            "type": {{ type | json }},
+            "ids":  {{ ids | json }}
+          }
+        {% endparse_json %}
+        {% return object %}
+      END
+    }
+    offenses = analyze_platformos_app(PlatformosCheck::UndefinedObject.new, sources)
 
     assert_offenses(<<~END, offenses)
-      Missing argument `ids` at app/views/partials/command/b_function.liquid:1
+      Missing arguments: `ids` at app/views/partials/command/b_function.liquid:1
     END
+
+    fix_platformos_app(PlatformosCheck::UndefinedObject.new, sources).each do |path, source|
+      assert_equal(expected_sources[path], source)
+    end
   end
 
   def test_does_not_report_undefined_object_response_inside_callback_in_notification

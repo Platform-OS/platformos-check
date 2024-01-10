@@ -6,6 +6,9 @@ module PlatformosCheck
     doc docs_url(__FILE__)
     severity :error
 
+    NOTIFICATION_GLOBAL_OBJECTS = %w[data response form].freeze
+    FORM_GLOBAL_OBJECTS = %w[form form_builder].freeze
+
     class TemplateInfo
       def initialize(app_file: nil)
         @all_variable_lookups = {}
@@ -19,7 +22,8 @@ module PlatformosCheck
       attr_reader :all_assigns, :all_captures, :all_forloops, :app_file, :all_renders
 
       def add_render(name:, node:)
-        @all_renders[name] = node
+        @all_renders[name] ||= []
+        @all_renders[name] << node
       end
 
       def add_variable_lookup(name:, node:)
@@ -39,8 +43,10 @@ module PlatformosCheck
       end
 
       def each_partial
-        @all_renders.each do |(name, info)|
-          yield [name, info]
+        @all_renders.each do |(name, nodes)|
+          nodes.each do |node|
+            yield [name, node]
+          end
         end
       end
 
@@ -56,14 +62,17 @@ module PlatformosCheck
           yield [key, info]
         end
       end
+
+      def first_declaration(name)
+        [all_assigns[name], all_captures[name]].compact.sort_by(&:line_number).first
+      end
     end
 
     def self.single_file(**_args)
       true
     end
 
-    def initialize(config_type: :default)
-      @config_type = config_type
+    def initialize
       @files = {}
     end
 
@@ -72,15 +81,15 @@ module PlatformosCheck
     end
 
     def on_assign(node)
-      @files[node.app_file.name].all_assigns[node.value.to] = node
+      @files[node.app_file.name].all_assigns[node.value.to] ||= node
     end
 
     def on_capture(node)
-      @files[node.app_file.name].all_captures[node.value.instance_variable_get(:@to)] = node
+      @files[node.app_file.name].all_captures[node.value.instance_variable_get(:@to)] ||= node
     end
 
     def on_parse_json(node)
-      @files[node.app_file.name].all_captures[node.value.to] = node
+      @files[node.app_file.name].all_captures[node.value.to] ||= node
     end
 
     def on_for(node)
@@ -102,7 +111,7 @@ module PlatformosCheck
     end
 
     def on_function(node)
-      @files[node.app_file.name].all_assigns[node.value.to] = node
+      @files[node.app_file.name].all_assigns[node.value.to] ||= node
 
       return unless node.value.from.is_a?(String)
 
@@ -113,13 +122,13 @@ module PlatformosCheck
     end
 
     def on_graphql(node)
-      @files[node.app_file.name].all_assigns[node.value.to] = node
+      @files[node.app_file.name].all_assigns[node.value.to] ||= node
     end
 
     def on_background(node)
       return unless node.value.partial_syntax
 
-      @files[node.app_file.name].all_assigns[node.value.to] = node
+      @files[node.app_file.name].all_assigns[node.value.to] ||= node
 
       return unless node.value.partial_name.is_a?(String)
 
@@ -155,10 +164,10 @@ module PlatformosCheck
       each_template do |(_name, info)|
         if info.app_file.notification?
           # NOTE: `data` comes from graphql for notifications
-          check_object(info, all_global_objects + %w[data response form])
+          check_object(info, all_global_objects + NOTIFICATION_GLOBAL_OBJECTS)
         elsif info.app_file.form?
           # NOTE: `data` comes from graphql for notifications
-          check_object(info, all_global_objects + %w[form form_builder])
+          check_object(info, all_global_objects + FORM_GLOBAL_OBJECTS)
         else
           check_object(info, all_global_objects)
         end
@@ -167,42 +176,37 @@ module PlatformosCheck
 
     private
 
-    attr_reader :config_type
-
     def each_template
       @files.each do |(name, info)|
         yield [name, info]
       end
     end
 
-    def check_object(info, all_global_objects, render_node = nil, visited_partials = Set.new, level = 0)
+    def check_object(info, all_global_objects, render_node = nil, level = 0)
       return if level > 1
 
       check_undefined(info, all_global_objects, render_node) unless info.app_file.partial? && render_node.nil? # ||
 
       info.each_partial do |(partial_name, node)|
-        next if visited_partials.include?(partial_name)
+        next unless @files[partial_name] # NOTE: undefined partial
 
         partial_info = @files[partial_name]
-
-        next unless partial_info # NOTE: undefined partial
-
         partial_variables = node.value.attributes.keys +
                             [node.value.instance_variable_get(:@alias_name)]
-        visited_partials << partial_name
-        check_object(partial_info, all_global_objects + partial_variables, node, visited_partials, level + 1)
+
+        check_object(partial_info, all_global_objects + partial_variables, node, level + 1)
       end
     end
 
     def check_undefined(info, all_global_objects, render_node)
-      all_variables = info.all_variables
       potentially_unused_variables = render_node.value.attributes.keys if render_node
+      missing_arguments = []
       info.each_variable_lookup(!!render_node) do |(key, node)|
         name, line_number = key
 
         potentially_unused_variables&.delete(name)
 
-        next if all_variables.include?(name)
+        next if info.all_variables.include?(name) && variable_declared_before_used?(name, info, line_number)
         next if all_global_objects.include?(name)
 
         node = node.parent
@@ -211,7 +215,7 @@ module PlatformosCheck
         next if node.variable? && node.filters.any? { |(filter_name)| filter_name == "default" }
 
         if render_node
-          add_offense("Missing argument `#{name}`", node: render_node)
+          missing_arguments << name
         elsif !info.app_file.partial?
           add_offense("Undefined object `#{name}`", node:, line_number:)
         end
@@ -219,8 +223,33 @@ module PlatformosCheck
 
       potentially_unused_variables -= render_node.value.internal_attributes if render_node && render_node.value.respond_to?(:internal_attributes)
       potentially_unused_variables&.each do |name|
-        add_offense("Unused argument `#{name}`", node: render_node)
+        add_offense("Unused argument `#{name}`", node: render_node) do |corrector|
+          match = render_node.markup.match(/(?<attribute>,?\s*#{name}\s*:\s*#{Liquid::QuotedFragment})\s*/)
+
+          corrector.replace(render_node, render_node.markup.sub(match[:attribute], ''), render_node.start_index...render_node.end_index)
+        end
       end
+
+      return if missing_arguments.empty?
+
+      add_offense("Missing arguments: #{missing_arguments.map { |name| "`#{name}`" }.join(', ')}", node: render_node) do |corrector|
+        new_attributes = ''
+        missing_arguments.each do |name|
+          new_attributes += ", #{name}: "
+          new_attributes += @files[render_node.app_file.name].all_assigns.key?(name) ? name : 'null'
+        end
+
+        start_pos = render_node.end_index
+        start_pos -= 1 while start_pos > 0 && render_node.source[start_pos - 1] == ' '
+        corrector.replace(render_node, new_attributes, start_pos...start_pos)
+      end
+    end
+
+    def variable_declared_before_used?(name, info, line_number_when_used)
+      declaration = info.first_declaration(name)
+      return true if declaration.nil?
+
+      declaration.line_number <= line_number_when_used
     end
   end
 end

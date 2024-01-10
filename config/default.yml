@@ -15,6 +15,10 @@ ConvertIncludeToRender:
   enabled: true
   ignore: []
 
+IncludeInRender:
+  enabled: true
+  ignore: []
+
 LiquidTag:
   enabled: true
   ignore: []
@@ -69,7 +73,6 @@ ValidYaml:
 UndefinedObject:
   enabled: true
   ignore: []
-  config_type: :default
 
 DeprecatedFilter:
   enabled: true
