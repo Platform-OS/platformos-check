@@ -1,3 +1,8 @@
+v0.4.10 /
+==================
+
+  * Add documentLink for translations (both for `| t` and `| l` filters)
+
 v0.4.9 / 2024-01-10
 ==================
 

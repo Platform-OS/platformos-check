@@ -32,13 +32,29 @@ module PlatformosCheck
     PARTIAL_GRAPHQL = partial_tag_with_result('graphql')
     PARTIAL_BACKGROUND = partial_tag_with_result('background')
 
+    TAGS_FOR_FILTERS = 'echo|print|log|hash_assign|assign'
+    TRANSLATION_FILTERS_NAMES = 'translate|t_escape|translate_escape|t[^\\w]'
+    OPTIONAL_SCOPE_ARGUMENT = %((:?([\\w:'"\\s]*)\\s*(scope:\\s*['"](?<scope>[^'"]*)['"]))?)
+
+    LOCALIZE_FILTERS_NAMES = ''
+
     ASSET_INCLUDE = /
       \{\{-?\s*'(?<partial>[^']*)'\s*\|\s*asset_url|
       \{\{-?\s*"(?<partial>[^"]*)"\s*\|\s*asset_url|
 
       # in liquid tags the whole line is white space until the asset partial
-      ^\s*(?:echo|assign[^=]*=)\s*'(?<partial>[^']*)'\s*\|\s*asset_url|
-      ^\s*(?:echo|assign[^=]*=)\s*"(?<partial>[^"]*)"\s*\|\s*asset_url
+      ^\s*(?:#{TAGS_FOR_FILTERS}[^=]*=)\s*'(?<partial>[^']*)'\s*\|\s*asset_url|
+      ^\s*(?:#{TAGS_FOR_FILTERS}[^=]*=)\s*"(?<partial>[^"]*)"\s*\|\s*asset_url
+    /mix
+
+    TRANSLATION_FILTER = /
+      '(?<key>[^']*)'\s*\|\s*(#{TRANSLATION_FILTERS_NAMES})#{OPTIONAL_SCOPE_ARGUMENT}|
+      "(?<key>[^"]*)"\s*\|\s*(#{TRANSLATION_FILTERS_NAMES})#{OPTIONAL_SCOPE_ARGUMENT}
+    /mix
+
+    LOCALIZE_FILTER = /
+      [\s\w'"-:.]+\|\s*(localize|l):\s*'(?<key>[^']*)'|
+      [\s\w'"-:.]+\|\s*(localize|l):\s*"(?<key>[^"]*)"
     /mix
   end
 end

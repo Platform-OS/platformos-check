@@ -64,7 +64,7 @@ module PlatformosCheck
       end
 
       def first_declaration(name)
-        [all_assigns[name], all_captures[name]].compact.sort_by(&:line_number).first
+        [all_assigns[name], all_captures[name]].compact.min_by(&:line_number)
       end
     end
 
