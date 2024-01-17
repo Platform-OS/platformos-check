@@ -7,6 +7,14 @@ module PlatformosCheck
       include PositionHelper
       include URIHelper
 
+      DEFAULT_LANGUAGE = 'en'
+
+      DefaultTranslationFile = Struct.new(:relative_path) do
+        def relative_path
+          Pathname.new(DEFAULT_LANGUAGE, "#{DEFAULT_LANGUAGE}.yml")
+        end
+      end
+
       class << self
         attr_accessor :partial_regexp, :app_file_type, :default_dir, :default_extension
 
@@ -41,18 +49,12 @@ module PlatformosCheck
 
       def document_links(buffer, platformos_app)
         matches(buffer, partial_regexp).map do |match|
-          start_row, start_column = from_index_to_row_column(
-            buffer,
-            match.begin(:partial)
-          )
+          start_row, start_column = start_coordinates(buffer, match)
 
-          end_row, end_column = from_index_to_row_column(
-            buffer,
-            match.end(:partial)
-          )
+          end_row, end_column = end_coordinates(buffer, match)
 
           {
-            target: file_link(match[:partial], platformos_app),
+            target: file_link(match, platformos_app),
             range: {
               start: {
                 line: start_row,
@@ -67,11 +69,64 @@ module PlatformosCheck
         end
       end
 
-      def file_link(partial, platformos_app)
+      def start_coordinates(buffer, match)
+        from_index_to_row_column(
+          buffer,
+          match.begin(:partial)
+        )
+      end
+
+      def end_coordinates(buffer, match)
+        from_index_to_row_column(
+          buffer,
+          match.end(:partial)
+        )
+      end
+
+      def file_link(match, platformos_app)
+        partial = match[:partial]
         relative_path = platformos_app.send(app_file_type).detect { |f| f.name == partial }&.relative_path
         relative_path ||= default_relative_path(partial)
 
         file_uri(@storage.path(relative_path))
+      end
+
+      def translation_file_link(match, platformos_app)
+        @current_best_fit = platformos_app.translations.first || DefaultTranslationFile.new
+        @current_best_fit_level = 0
+        array_of_translation_components = translation_components_for_match(match)
+        platformos_app.translations.each do |translation_file|
+          array_of_translation_components.each do |translation_components|
+            exact_match_level = translation_components.size
+            component_result = translation_file.content[DEFAULT_LANGUAGE]
+            next if component_result.nil?
+
+            i = 0
+            while i < exact_match_level
+              component_result = yaml(component_result, translation_components[i])
+
+              break if component_result.nil?
+
+              i += 1
+              if i > @current_best_fit_level
+                @current_best_fit = translation_file
+                @current_best_fit_level = i
+              end
+
+              break unless component_result.is_a?(Hash)
+            end
+          end
+        end
+
+        file_uri(@storage.path(@current_best_fit&.relative_path))
+      end
+
+      def translation_components_for_match(match)
+        raise NotImplementedError
+      end
+
+      def yaml(component_result, component)
+        component_result[component]
       end
 
       def default_relative_path(partial)

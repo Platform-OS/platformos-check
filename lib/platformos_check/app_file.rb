@@ -34,14 +34,17 @@ module PlatformosCheck
       n = remove_extension(relative_path.sub(dir_prefix, '')).to_s
       return n if module_name.nil?
 
-      prefix = "modules#{File::SEPARATOR}#{module_name}#{File::SEPARATOR}"
-      return n if n.start_with?(prefix)
+      return n if n.start_with?(module_prefix)
 
-      "#{prefix}#{n}"
+      "#{module_prefix}#{n}"
     end
 
     def dir_prefix
       nil
+    end
+
+    def module_prefix
+      @module_prefix ||= "modules#{File::SEPARATOR}#{module_name}#{File::SEPARATOR}"
     end
 
     def module_name

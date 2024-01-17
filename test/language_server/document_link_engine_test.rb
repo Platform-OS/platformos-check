@@ -312,8 +312,132 @@ module PlatformosCheck
         assert_links_include("modules/my-module/hello/6", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/private/lib", ".liquid", skip_range_check: true)
       end
 
-      def assert_links_include(needle, content, links, directory, extension, skip_range_check: false)
-        needle_path = needle.start_with?('modules/') ? needle.split('/').drop(2).join('/') : needle
+      def test_makes_links_for_translations
+        content = <<~LIQUID
+          {{ 'app.item.title' | t }}
+          {{- "app.item.text" | t_escape -}}
+          {% liquid
+            assign x = my_var | default: 'app.item.details.missing' | t
+            echo 'app.errors.presence' | translate
+            assign t = 'uniq' | translate: default: "World": scope: 'app.errors'
+          %}
+          {%- liquid
+            assign x = "app.item.discount" | t: amount: "20%"
+          -%}
+          {%- print 'sell' | t: scope: "modules/my-module/app.item" %}
+          {{ 'modules/my-module/app.item.buy' | t: default: "Buy now" }}
+          {{ '2023-10-03' | to_date }}
+        LIQUID
+
+        engine = make_engine(
+          "app/views/pages/product.liquid" => content,
+          "app/translations/en/item.yml" => <<~YML,
+            en:
+              compact: "Compact"
+              app:
+                item:
+                  title: "Item"
+                  text: "This is text"
+                  discount: "Discount %<amount>s"
+          YML
+          "app/translations/en/error.yml" => <<~YML,
+            en:
+              app:
+                errors:
+                  presence: "must be present"
+                  uniq: "must be uniq"
+          YML
+          "modules/my-module/public/translations/en/item.yml" => <<~YML,
+            en:
+              app:
+                item:
+                  buy: "Buy"
+          YML
+          "modules/my-module/private/translations/en/item.yml" => <<~YML,
+            en:
+              app:
+                item:
+                  sell: "Sell"
+          YML
+          "modules/my-module/public/translations/en/item_details.yml" => <<~YML,
+            en:
+              app:
+                item:
+                  details:
+                    title: "Title"
+          YML
+          "app/translations/en/item_details.yml" => <<~YML,
+            en:
+              app:
+                item:
+                  details:
+                    title: "Title"
+          YML
+          "app/translations/en/date.yml" => <<~YML
+            en:
+              time:
+                formats:
+                  compact: "%Y-%d-%m %H:%M"
+              date:
+                formats:
+                  compact: "%Y-%d-%m %H:%M"
+          YML
+        )
+
+        assert_translation_include("app.item.title", content, engine.document_links("app/views/pages/product.liquid"), "app/translations/en/item.yml")
+        assert_translation_include("app.item.text", content, engine.document_links("app/views/pages/product.liquid"), "app/translations/en/item.yml")
+        assert_translation_include("app.item.details.missing", content, engine.document_links("app/views/pages/product.liquid"), "app/translations/en/item_details.yml")
+        assert_translation_include("app.errors.presence", content, engine.document_links("app/views/pages/product.liquid"), "app/translations/en/error.yml")
+        assert_translation_include("uniq", content, engine.document_links("app/views/pages/product.liquid"), "app/translations/en/error.yml")
+        assert_translation_include("app.item.discount", content, engine.document_links("app/views/pages/product.liquid"), "app/translations/en/item.yml")
+        assert_translation_include("modules/my-module/app.item.buy", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/public/translations/en/item.yml")
+        assert_translation_include("sell", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/private/translations/en/item.yml")
+
+        # do not generate documentLink for filters that start with `t`, like for example `to_date`
+        lines = content.split("\n")
+        lines_with_to_date = lines.size.times.select { |i| lines[i].include?('to_date') } # => [0, 2, 6]
+
+        assert_nil(engine.document_links("app/views/pages/product.liquid").detect { |link| lines_with_to_date.include?(link[:range][:start][:line]) })
+      end
+
+      def test_makes_links_for_localizations
+        content = <<~LIQUID
+          {{ '2021-02-20T11:06:37.718Z' | l: 'compact', context.timezone }}
+          {{ var | l: 'compact', context.timezone }}
+          {% liquid
+            assign now = 'now' | to_time
+            print now | l: 'long', context.timezone }}
+          %}
+          {% echo var | l:"ymd" %}
+        LIQUID
+
+        engine = make_engine(
+          "app/views/pages/product.liquid" => content,
+          "app/translations/en/base.yml" => <<~YML,
+            en:
+              compact: "Compact"
+              ymd: "YMD"
+          YML
+          "app/translations/en/date.yml" => <<~YML
+            en:
+              time:
+                formats:
+                  compact: "%Y-%d-%m %H:%M"
+                  long: "%Y-%d-%m %H:%M%Z"
+              date:
+                formats:
+                  compact: "%Y-%d-%m "
+                  ymd: "%Y-%m-%d"
+          YML
+        )
+
+        assert_translation_include("compact", content, engine.document_links("app/views/pages/product.liquid"), "app/translations/en/date.yml")
+        assert_translation_include("long", content, engine.document_links("app/views/pages/product.liquid"), "app/translations/en/date.yml")
+        assert_translation_include("ymd", content, engine.document_links("app/views/pages/product.liquid"), "app/translations/en/date.yml")
+      end
+
+      def assert_links_include(needle, content, links, directory, extension, skip_range_check: false, needle_path: nil)
+        needle_path ||= needle.start_with?('modules/') ? needle.split('/').drop(2).join('/') : needle
         target = "file:///tmp/#{directory}/#{needle_path}#{extension}"
         match = links.find { |x| x[:target] == target }
 
@@ -336,6 +460,28 @@ module PlatformosCheck
             match.dig(:range, :end, :character)
           ]
         )
+      end
+
+      def assert_translation_include(translation, content, links, path)
+        target = "file:///tmp/#{path}"
+
+        content_index = content.index(translation)
+        if content_index
+          start_line, start_column = from_index_to_row_column(content, content_index)
+          end_line, end_column = from_index_to_row_column(content, content_index + translation.size)
+
+          match = links.find do |x|
+            x[:target] == target &&
+              x[:range][:start][:line] == start_line &&
+              x[:range][:start][:character] == start_column &&
+              x[:range][:end][:line] == end_line &&
+              x[:range][:end][:character] == end_column
+          end
+
+          refute_nil(match, "Should find a document_link with target == '#{target}' at #{start_line}:#{start_column}-#{end_line}:#{end_column}, received: #{links}")
+        else
+          refute_nil(content_index, "Cannot find document link for `#{translation}`")
+        end
       end
 
       private

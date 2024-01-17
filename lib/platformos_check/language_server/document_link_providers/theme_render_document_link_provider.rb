@@ -8,7 +8,8 @@ module PlatformosCheck
       @default_dir = 'views/partials'
       @default_extension = '.liquid'
 
-      def file_link(partial, platformos_app)
+      def file_link(match, platformos_app)
+        partial = match[:partial]
         relative_path = nil
         path_prefixes(platformos_app).each do |prefix|
           prefix ||= ''
