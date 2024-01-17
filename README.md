@@ -1,8 +1,8 @@
-# platformOS Check ✅ - A linter for platformOS
+#<a href="https://documentation.platformos.com/developer-guide" target="_blank"> platformOS Check ✅ - A linter for platformOS
 
 PlatformOS Check is a tool that helps you follow platformOS recommendations & best practices by analyzing the Liquid inside your app.
 
-![](docs/preview.png)
+![](docs/platformos-check.jpg)
 
 ## Supported Checks
 

@@ -7,11 +7,13 @@ module PlatformosCheck
       include PositionHelper
       include URIHelper
 
-      DEFAULT_LANGUAGE = 'en'
+      class DefaultTranslationFile
+        def initialize(default_language)
+          @default_language = default_language
+        end
 
-      DefaultTranslationFile = Struct.new(:relative_path) do
         def relative_path
-          Pathname.new(DEFAULT_LANGUAGE, "#{DEFAULT_LANGUAGE}.yml")
+          Pathname.new(@default_language, "#{@default_language}.yml")
         end
       end
 
@@ -92,13 +94,13 @@ module PlatformosCheck
       end
 
       def translation_file_link(match, platformos_app)
-        @current_best_fit = platformos_app.translations.first || DefaultTranslationFile.new
+        @current_best_fit = platformos_app.translations.first || DefaultTranslationFile.new(platformos_app.default_language)
         @current_best_fit_level = 0
         array_of_translation_components = translation_components_for_match(match)
         platformos_app.translations.each do |translation_file|
           array_of_translation_components.each do |translation_components|
             exact_match_level = translation_components.size
-            component_result = translation_file.content[DEFAULT_LANGUAGE]
+            component_result = translation_file.content[platformos_app.default_language]
             next if component_result.nil?
 
             i = 0

@@ -39,6 +39,8 @@ module PlatformosCheck
       CONFIG_REGEX => ConfigFile
     }
 
+    DEFAULT_LANGUAGE = 'en'
+
     attr_reader :storage, :grouped_files
 
     def initialize(storage)
@@ -137,6 +139,17 @@ module PlatformosCheck
         all.find { |t| t.relative_path == name_or_relative_path }
       else
         all.find { |t| t.relative_path.to_s == name_or_relative_path }
+      end
+    end
+
+    def default_language
+      DEFAULT_LANGUAGE
+    end
+
+    def translations_hash
+      @translations_hash ||= translations.each_with_object({}) do |translation_file, hash|
+        hash.merge!(translation_file.content)
+        hash
       end
     end
   end
