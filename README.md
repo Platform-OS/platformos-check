@@ -8,22 +8,22 @@ PlatformOS Check is a tool that helps you follow platformOS recommendations & be
 
 PlatformOS Check currently checks for the following:
 
-✅ Liquid syntax errors
-✅ JSON syntax errors
-✅ Missing partials and graphqls
-✅ Unused variables (via `{% assign var = ... %}`, {% function var = ... %} etc.)
-✅ Unused partials
-✅ Template length
-✅ Deprecated tags
-✅ Unknown tags
-✅ Unknown filters
-✅ Missing or extra spaces inside `{% ... %}` and `{{ ... }}`
-✅ Using several `{% ... %}` instead of `{% liquid ... %}`
-✅ Undefined objects
-✅ Deprecated filters
-✅ Missing `platformos-check-enable` comment
-✅ Invalid arguments provided to `{% graphql %}` tags
-✅ Missing `authenticity_token` in `<form>`
+✅ Liquid syntax errors  
+✅ JSON syntax errors  
+✅ Missing partials and graphqls  
+✅ Unused variables (via `{% assign var = ... %}`, {% function var = ... %} etc.)  
+✅ Unused partials  
+✅ Template length  
+✅ Deprecated tags  
+✅ Unknown tags  
+✅ Unknown filters  
+✅ Missing or extra spaces inside `{% ... %}` and `{{ ... }}`  
+✅ Using several `{% ... %}` instead of `{% liquid ... %}`  
+✅ Undefined objects  
+✅ Deprecated filters  
+✅ Missing `platformos-check-enable` comment  
+✅ Invalid arguments provided to `{% graphql %}` tags  
+✅ Missing `authenticity_token` in `<form>`  
 ✅ Unreachable code
 
 As well as checks that prevent easy to spot performance problems:
