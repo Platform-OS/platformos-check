@@ -28,8 +28,8 @@ PlatformOS Check currently checks for the following:
 
 As well as checks that prevent easy to spot performance problems:
 
-✅ [GraphQL in for loop](/docs/checks/graphql_in_for_loop.md)
-✅ Use of [parser-blocking](/docs/checks/parser_blocking_javascript.md) JavaScript
+✅ [GraphQL in for loop](/docs/checks/graphql_in_for_loop.md)  
+✅ Use of [parser-blocking](/docs/checks/parser_blocking_javascript.md) JavaScript  
 ✅ [Missing width and height attributes on `img` tags](/docs/checks/img_width_and_height.md)
 
 For detailed descriptions and configuration options, [take a look at the complete list.](/docs/checks/)
