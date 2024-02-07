@@ -148,7 +148,7 @@ module PlatformosCheck
 
     def translations_hash
       @translations_hash ||= translations.each_with_object({}) do |translation_file, hash|
-        hash.merge!(translation_file.content)
+        hash.deep_merge!(translation_file.content)
         hash
       end
     end

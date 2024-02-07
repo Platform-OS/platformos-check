@@ -29,18 +29,11 @@ TranslationKeyExists:
 ## When Not To Use It
 
 There should be no cases where disabling this rule is needed. For keys that are set via UI, and hence should not be part of the codebase,
-use proper configuration option, for example:
-
-```yaml
-TranslationKeyExists:
-  enabled: true
-  ignore_keys:
-    - 'modules/admin/homepage.cta'
-```
+use proper configuration option in [app/config.yml](https://documentation.platformos.com/developer-guide/platformos-workflow/codebase/config)
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.4.11.
+This check has been introduced in PlatformOS Check 0.4.10.
 
 ## Resources
 

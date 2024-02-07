@@ -114,6 +114,10 @@ TranslationKeyExists:
   enabled: true
   ignore: []
 
+TranslationFilesMatch:
+  enabled: true
+  ignore: []
+
 ParseJsonFormat:
   enabled: false
   start_level: 0

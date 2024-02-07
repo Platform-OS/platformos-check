@@ -88,6 +88,10 @@ module PlatformosCheck
       false
     end
 
+    def translation?
+      false
+    end
+
     def ==(other)
       other.is_a?(self.class) && relative_path == other.relative_path
     end
