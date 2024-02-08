@@ -53,6 +53,32 @@ module PlatformosCheck
       END
     end
 
+    def test_corrects_other_language_than_in_path
+      expected_sources = {
+        "app/translations/en/item.yml" => <<~YML
+          en:
+            app:
+              item:
+                title: "Item"
+                description: "Item"
+        YML
+      }
+      sources = fix_platformos_app(
+        TranslationFilesMatch.new,
+        "app/translations/en/item.yml" => <<~YML
+          de:
+            app:
+              item:
+                title: "Item"
+                description: "Item"
+        YML
+      )
+
+      sources.each do |path, source|
+        assert_equal(expected_sources[path], source)
+      end
+    end
+
     def test_reports_when_there_is_no_default_language_file_equivalent
       offenses = analyze_platformos_app(
         TranslationFilesMatch.new,
@@ -95,6 +121,59 @@ module PlatformosCheck
       assert_offenses(<<~END, offenses)
         Mismatch detected - missing `app/translations/de/item.yml` file to define translations for `de` at app/translations/en/item.yml
       END
+    end
+
+    def test_corrects_missing_file_for_other_language
+      expected_sources = {
+        "app/translations/en/base.yml" => <<~YML,
+          en:
+            app:
+              hello: "World"
+        YML
+        "app/translations/de/base.yml" => <<~YML,
+          de:
+            app:
+              hello: "World"
+        YML
+        "app/translations/en/item.yml" => <<~YML,
+          en:
+            app:
+              item:
+                title: "Item"
+                description: "Item"
+        YML
+        "app/translations/de/item.yml" => <<~YML
+          de:
+            app:
+              item:
+                title: "Item"
+                description: "Item"
+        YML
+      }
+      sources = fix_platformos_app(
+        TranslationFilesMatch.new,
+        "app/translations/en/base.yml" => <<~YML,
+          en:
+            app:
+              hello: "World"
+        YML
+        "app/translations/de/base.yml" => <<~YML,
+          de:
+            app:
+              hello: "World"
+        YML
+        "app/translations/en/item.yml" => <<~YML
+          en:
+            app:
+              item:
+                title: "Item"
+                description: "Item"
+        YML
+      )
+
+      sources.each do |path, source|
+        assert_equal(expected_sources[path], source)
+      end
     end
 
     def test_reports_when_other_language_file_does_not_include_key_from_default
@@ -183,6 +262,82 @@ module PlatformosCheck
       assert_offenses(<<~END, offenses)
         Mismatch detected - structure differs from the default language file app/translations/en/item.yml at app/translations/de/item.yml
       END
+    end
+
+    def test_no_offense_for_pluralization_differences
+      offenses = analyze_platformos_app(
+        TranslationFilesMatch.new,
+        "app/translations/en/item.yml" => <<~YML,
+          en:
+            app:
+              item:
+                one: Item
+                other: Items
+        YML
+        "app/translations/es/item.yml" => <<~YML
+          es:
+            app:
+              item:
+                zero: Nada
+                other: Item
+        YML
+      )
+
+      assert_offenses("", offenses)
+    end
+
+    def test_corrects_different_structure_between_other_language_and_default_language
+      expected_sources = {
+        "app/translations/en/item.yml" => <<~YML,
+          en:
+            app:
+              item:
+                title: "Item"
+                description: "Item"
+              hello:
+              my_translation: "My translation"
+            base: Base
+        YML
+        "app/translations/de/item.yml" => <<~YML
+          de:
+            app:
+              item:
+                title: "Artikel"
+                description: "Item"
+              hello:
+                world: "Welt"
+              my_translation:
+                value: "hello"
+            base: Base
+        YML
+      }
+      sources = fix_platformos_app(
+        TranslationFilesMatch.new,
+        "app/translations/en/item.yml" => <<~YML,
+          en:
+            app:
+              item:
+                title: "Item"
+                description: "Item"
+              hello:
+              my_translation: "My translation"
+            base: Base
+        YML
+        "app/translations/de/item.yml" => <<~YML
+          de:
+            app:
+              item:
+                title: "Artikel"
+              hello:
+                world: "Welt"
+              my_translation:
+                value: "hello"
+        YML
+      )
+
+      sources.each do |path, source|
+        assert_equal(expected_sources[path], source)
+      end
     end
   end
 end

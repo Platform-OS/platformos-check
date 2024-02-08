@@ -7,20 +7,36 @@ module PlatformosCheck
     attr_reader :language
 
     def load!
-      @storage.platformos_app.instance_variable_set(:@translations_hash, nil) unless @loaded
+      before_load
       super
+      after_load
+    end
+
+    def before_load
+      @storage.platformos_app.instance_variable_set(:@translations_hash, nil) unless @loaded
+    end
+
+    def after_load
       @language = @content&.keys&.first
       return if module_name.nil?
 
       @content[@language].transform_keys! { |key| key.start_with?(module_prefix) ? key : "#{module_prefix}#{key}" }
     end
 
-    def dir_prefix
-      DIR_PREFIX
-    end
-
     def language_from_path
       @language_from_path ||= name.sub(module_prefix, '').split(File::SEPARATOR).first
+    end
+
+    def update_contents(new_content = {})
+      before_load
+      super(new_content)
+      @loaded = true
+
+      after_load
+    end
+
+    def dir_prefix
+      DIR_PREFIX
     end
 
     def translation?

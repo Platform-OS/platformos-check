@@ -28,14 +28,19 @@ module PlatformosCheck
     end
 
     def write
+      pretty = content_to_string
+      @storage.write(@relative_path, pretty)
+      @source = pretty
+    end
+
+    def content_to_string
       pretty = YAML.dump(@content)
       return unless source.rstrip != pretty.rstrip
 
       # Most editors add a trailing \n at the end of files. Here we
       # try to maintain the convention.
       eof = source.end_with?("\n") ? "\n" : ""
-      @storage.write(@relative_path, pretty.gsub("\n", @eol) + eof)
-      @source = pretty
+      pretty.gsub("\n", @eol) + eof
     end
 
     def yaml?
