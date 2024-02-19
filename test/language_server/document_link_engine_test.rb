@@ -353,7 +353,7 @@ module PlatformosCheck
                 item:
                   buy: "Buy"
           YML
-          "modules/my-module/private/translations/en/item.yml" => <<~YML,
+          "modules/my-module/private/translations/en/item2.yml" => <<~YML,
             en:
               app:
                 item:
@@ -391,7 +391,7 @@ module PlatformosCheck
         assert_translation_include("uniq", content, engine.document_links("app/views/pages/product.liquid"), "app/translations/en/error.yml")
         assert_translation_include("app.item.discount", content, engine.document_links("app/views/pages/product.liquid"), "app/translations/en/item.yml")
         assert_translation_include("modules/my-module/app.item.buy", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/public/translations/en/item.yml")
-        assert_translation_include("sell", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/private/translations/en/item.yml")
+        assert_translation_include("sell", content, engine.document_links("app/views/pages/product.liquid"), "modules/my-module/private/translations/en/item2.yml")
 
         # do not generate documentLink for filters that start with `t`, like for example `to_date`
         lines = content.split("\n")
