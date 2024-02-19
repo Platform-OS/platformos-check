@@ -1,7 +1,8 @@
-v0.4.10 /
+v0.4.10 / 2024-02-19
 ==================
 
   * Add documentLink for translations (both for `| t` and `| l` filters)
+  * Add TranslationKeyExists, TranslationFilesMatch offenses to warn about issues with missing translation or inconsistency between multiple language translation files
 
 v0.4.9 / 2024-01-10
 ==================
