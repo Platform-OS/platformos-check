@@ -48,12 +48,18 @@ class InvalidArgsTest < Minitest::Test
     END
   end
 
-  def test_query_unknown_argument
+  def test_query_missing_graphql_file
     offenses = render_query_graphql('{% graphql res = "records/search", id: 10, page: 2, invalid: "Hey", key: "hello" %}')
 
     assert_offenses(<<~END, offenses)
       Undefined argument `invalid` provided to `app/graphql/records/search.graphql` at app/views/pages/index.liquid:1
     END
+  end
+
+  def test_query_unknown_argument
+    offenses = render_query_graphql('{% graphql res = "records/missing" %}')
+
+    assert_offenses("", offenses)
   end
 
   def test_query_duplicated_argument

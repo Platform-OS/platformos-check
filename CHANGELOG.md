@@ -1,3 +1,8 @@
+v0.4.11 / 
+==================
+
+  * Do not throw parse error for empty GraphQL file
+
 v0.4.10 / 2024-02-19
 ==================
 

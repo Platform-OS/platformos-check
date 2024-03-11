@@ -50,15 +50,15 @@ module PlatformosCheck
     end
 
     def parse
-      @parse ||= GraphQL.parse(source)
+      @parse ||= source && source.strip != '' ? GraphQL.parse(source) : nil
     end
 
     def warnings
-      parse.warnings
+      parse&.warnings || {}
     end
 
     def root
-      parse.root
+      parse&.root || {}
     end
 
     def self.parse(_source)
@@ -80,11 +80,15 @@ module PlatformosCheck
     end
 
     def selections
-      definition.selections
+      definition&.selections
     end
 
     def fragments
-      @fragments ||= parse.definitions.select { |d| d.is_a?(GraphQL::Language::Nodes::FragmentDefinition) }
+      @fragments ||= parse&.definitions&.select { |d| d.is_a?(GraphQL::Language::Nodes::FragmentDefinition) } || []
+    end
+
+    def graphql?
+      true
     end
 
     private
@@ -94,7 +98,7 @@ module PlatformosCheck
     end
 
     def definition
-      @definition ||= parse.definitions.detect { |d| d.is_a?(GraphQL::Language::Nodes::OperationDefinition) }
+      @definition ||= parse&.definitions&.detect { |d| d.is_a?(GraphQL::Language::Nodes::OperationDefinition) }
     end
 
     def bounded(lower, x, upper)

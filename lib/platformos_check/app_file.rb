@@ -88,6 +88,18 @@ module PlatformosCheck
       false
     end
 
+    def graphql?
+      false
+    end
+
+    def page?
+      false
+    end
+
+    def partial?
+      false
+    end
+
     def translation?
       false
     end
