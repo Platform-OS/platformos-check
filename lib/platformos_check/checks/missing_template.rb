@@ -34,7 +34,6 @@ module PlatformosCheck
     severity :suggestion
     category :liquid
     doc docs_url(__FILE__)
-    single_file false
 
     def initialize(ignore_missing: [])
       @ignore_missing = ignore_missing
@@ -44,30 +43,37 @@ module PlatformosCheck
       partial = node.value.template_name_expr
       return unless partial.is_a?(String)
 
-      add_missing_partial_offense(partial, node:)
+      add_missing_template_offense(partial, file_type: PartialFile, node:)
     end
 
     def on_render(node)
       partial = node.value.template_name_expr
       return unless partial.is_a?(String)
 
-      add_missing_partial_offense(partial, node:)
+      add_missing_template_offense(partial, file_type: PartialFile, node:)
+    end
+
+    def on_background(node)
+      partial = node.value.partial_name
+      return unless partial.is_a?(String)
+
+      add_missing_template_offense(partial, file_type: PartialFile, node:)
     end
 
     def on_function(node)
       partial = node.value.from
       return unless partial.is_a?(String)
 
-      add_missing_function_offense(partial, node:)
+      add_missing_template_offense(partial, file_type: PartialFile, node:)
     end
 
     def on_graphql(node)
       return if node.value.inline_query
 
-      graphql_partial = node.value.partial_name
-      return unless graphql_partial.is_a?(String)
+      path = node.value.partial_name
+      return unless path.is_a?(String)
 
-      add_missing_graphql_offense(graphql_partial, node:)
+      add_missing_template_offense(path, file_type: GraphqlFile, node:)
     end
 
     private
@@ -80,28 +86,15 @@ module PlatformosCheck
       @all_ignored_patterns ||= @ignore_missing + ignored_patterns
     end
 
-    def add_missing_partial_offense(path, node:)
-      return if ignore?(path) || platformos_app.grouped_files[PartialFile][path]
+    def add_missing_template_offense(path, file_type:, node:)
+      return if ignore?(path)
 
-      add_offense("'#{path}' is not found", node:) # do |corrector|
-      # corrector.create_file(@platformos_app.storage, MissingFileCorrection.new(path:, directory: 'views/partials', extension: '.liquid').full_relative_path, "")
-      # end
-    end
+      file = platformos_app.grouped_files[file_type][path]
 
-    def add_missing_function_offense(path, node:)
-      return if ignore?(path) || platformos_app.grouped_files[PartialFile][path]
+      return add_offense("'#{path}' is missing", node:) if file.nil?
+      return add_offense("'#{path}' is blank", node:) if file.source.strip == ''
 
-      add_offense("'#{path}' is not found", node:) # do |corrector|
-      # corrector.create_file(@platformos_app.storage, MissingFileCorrection.new(path:, directory: 'lib', extension: '.liquid').full_relative_path, "")
-      # end
-    end
-
-    def add_missing_graphql_offense(path, node:)
-      return if ignore?(path) || platformos_app.grouped_files[GraphqlFile][path]
-
-      add_offense("'#{path}' is not found", node:) # do |corrector|
-      # corrector.create_file(@platformos_app.storage, MissingFileCorrection.new(path:, directory: 'graphql', extension: '.graphql').full_relative_path, "")
-      # end
+      nil
     end
   end
 end

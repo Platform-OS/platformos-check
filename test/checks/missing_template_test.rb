@@ -13,8 +13,8 @@ class MissingTemplateTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      'one' is not found at app/views/pages/index.liquid:1
-      'two' is not found at app/views/pages/index.liquid:2
+      'one' is missing at app/views/pages/index.liquid:1
+      'two' is missing at app/views/pages/index.liquid:2
     END
   end
 
@@ -28,8 +28,8 @@ class MissingTemplateTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      'modules/my-module/one' is not found at app/views/pages/index.liquid:1
-      'modules/my-module/two' is not found at app/views/pages/index.liquid:2
+      'modules/my-module/one' is missing at app/views/pages/index.liquid:1
+      'modules/my-module/two' is missing at app/views/pages/index.liquid:2
     END
   end
 
@@ -85,8 +85,8 @@ class MissingTemplateTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      'modules/my-module/one' is not found at app/views/pages/index.liquid:1
-      'modules/my-module/two' is not found at app/views/pages/index.liquid:2
+      'modules/my-module/one' is missing at app/views/pages/index.liquid:1
+      'modules/my-module/two' is missing at app/views/pages/index.liquid:2
     END
   end
 
@@ -99,7 +99,7 @@ class MissingTemplateTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      'one' is not found at app/views/pages/index.liquid:1
+      'one' is missing at app/views/pages/index.liquid:1
     END
   end
 
@@ -141,7 +141,7 @@ class MissingTemplateTest < Minitest::Test
     )
 
     assert_offenses(<<~END, offenses)
-      'users/search' is not found at app/views/pages/index.liquid:1
+      'users/search' is missing at app/views/pages/index.liquid:1
     END
   end
 
@@ -164,7 +164,27 @@ class MissingTemplateTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
-  def test_do_not_report_if_graphql_exists
+  def test_no_offense_if_existing_graphql
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% graphql res = 'users/search' %}
+      END
+      "app/graphql/users/search.graphql" => <<~END
+        query records {
+          records(per_page: 20, table: "my_table") {
+            results {
+              id
+            }
+          }
+        }
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_offense_if_graphql_exists_but_is_blank
     offenses = analyze_platformos_app(
       PlatformosCheck::MissingTemplate.new,
       "app/views/pages/index.liquid" => <<~END,
@@ -173,7 +193,63 @@ class MissingTemplateTest < Minitest::Test
       "app/graphql/users/search.graphql" => ''
     )
 
+    assert_offenses(<<~END, offenses)
+      'users/search' is blank at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_ignore_inline_background
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END
+        {% background source_name: "my job" %}
+          {% log "Hello" %}
+        {% endbackground %}
+      END
+    )
+
     assert_offenses("", offenses)
+  end
+
+  def test_offense_if_background_function_missing
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END
+        {% background _job_id = 'jobs/calculate' %}
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      'jobs/calculate' is missing at app/views/pages/index.liquid:1
+    END
+  end
+
+  def test_no_offense_if_existing_background_function
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% background _job_id = 'jobs/calculate' %}
+      END
+      "app/lib/jobs/calculate.liquid" => <<~END
+        {% log "calculate" %}
+      END
+    )
+
+    assert_offenses("", offenses)
+  end
+
+  def test_offense_if_background_function_exists_but_is_blank
+    offenses = analyze_platformos_app(
+      PlatformosCheck::MissingTemplate.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% background _job_id = 'jobs/calculate' %}
+      END
+      "app/lib/jobs/calculate.liquid" => ''
+    )
+
+    assert_offenses(<<~END, offenses)
+      'jobs/calculate' is blank at app/views/pages/index.liquid:1
+    END
   end
 
   def test_ignore_missing

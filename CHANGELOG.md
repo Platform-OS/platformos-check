@@ -1,7 +1,11 @@
-v0.4.11 / 
+v0.4.11 / 2024-03-11
 ==================
 
   * Do not throw parse error for empty GraphQL file
+  * enable MissingTemplate Check in single file mode
+  * report if file is blank in MissingTemplate check
+  * add support for background tag in MissingTemplate check
+
 
 v0.4.10 / 2024-02-19
 ==================
