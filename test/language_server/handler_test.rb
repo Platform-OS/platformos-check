@@ -204,6 +204,9 @@ module PlatformosCheck
             params[:diagnostics].empty?
         end
 
+
+        did_open!('app/views/partials/main.liquid')
+
         # expecting MissingTemplate to be diagnosed for file that uses it
         assert_notification_received("textDocument/publishDiagnostics") do |params|
           params[:uri] == uri('app/views/partials/main.liquid') &&

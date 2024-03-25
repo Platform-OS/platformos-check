@@ -186,6 +186,7 @@ module PlatformosCheck
         absolute_paths = params[:files]
           &.map { |file| file[:uri] }
           &.map { |uri| file_path(uri) }
+
         return unless absolute_paths
 
         absolute_paths.each do |path|
