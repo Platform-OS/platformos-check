@@ -204,7 +204,6 @@ module PlatformosCheck
             params[:diagnostics].empty?
         end
 
-
         did_open!('app/views/partials/main.liquid')
 
         # expecting MissingTemplate to be diagnosed for file that uses it
