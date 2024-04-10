@@ -29,16 +29,13 @@ jobs:
       run: |
         cd build/windows
         ./build.sh
-
-
-    - name: Result
-      run: ls
+        ls
 
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        name: Release ${{ github.ref }}
         body: |
           New windows version
           - First Change
@@ -46,6 +43,6 @@ jobs:
         draft: true
         prerelease: true
         files: |
-          lsp.exe
+          build/windows/lsp.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
