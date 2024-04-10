@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout code
@@ -32,14 +34,19 @@ jobs:
         ./build.sh
         ls
 
+    # - name: Release
+    #   uses: softprops/action-gh-release@v1
+    #   with:
+    #     tag_name: ${{ github.ref }}
+    #     name: Release ${{ github.ref }}
+    #     body: |
+    #       New windows version
+    #     draft: true
+    #     prerelease: true
+    #     files: |
+    #       build/windows/lsp.exe
     - name: Release
-      uses: softprops/action-gh-release@v1
+    - uses: ncipollo/release-action@v1
       with:
-        tag_name: ${{ github.ref }}
-        name: Release ${{ github.ref }}
-        body: |
-          New windows version
-        draft: true
-        prerelease: true
-        files: |
-          build/windows/lsp.exe
+        artifacts: "build/windows/lsp.exe"
+        body: "New windows release"
