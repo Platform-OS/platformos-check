@@ -26,9 +26,10 @@ jobs:
         bundle install
 
     - name: Run build script
+      shell: bash
       run: |
         cd build/windows
-        ./build.sh
+        sh build.sh
         ls
 
     - name: Release
@@ -38,8 +39,6 @@ jobs:
         name: Release ${{ github.ref }}
         body: |
           New windows version
-          - First Change
-          - Second Change
         draft: true
         prerelease: true
         files: |
