@@ -13,3 +13,6 @@ ocran run.rb --output lsp.exe --add-all-core --gemfile ./Gemfile --no-dep-run --
 --dll ruby_builtin_dlls/libgcc_s_seh-1.dll \
 --dll ruby_builtin_dlls/libwinpthread-1.dll \
 --dll ruby_builtin_dlls/zlib1.dll
+
+echo 'finished'
+ls
