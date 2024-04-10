@@ -34,6 +34,12 @@ jobs:
         ./build.sh
         ls
 
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "build/windows/lsp.exe"
+        body: "New windows release"
+
     # - name: Release
     #   uses: softprops/action-gh-release@v1
     #   with:
@@ -45,8 +51,4 @@ jobs:
     #     prerelease: true
     #     files: |
     #       build/windows/lsp.exe
-    - name: Release
-    - uses: ncipollo/release-action@v1
-      with:
-        artifacts: "build/windows/lsp.exe"
-        body: "New windows release"
+    #
