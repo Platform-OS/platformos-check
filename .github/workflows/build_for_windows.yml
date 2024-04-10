@@ -29,7 +29,7 @@ jobs:
       shell: bash
       run: |
         cd build/windows
-        sh build.sh
+        ./build.sh
         ls
 
     - name: Release
