@@ -1,0 +1,31 @@
+name: Build LSP for windows
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Ruby 3.2
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.2
+
+    - name: Install dependencies
+      run: |
+        cd build/windows
+        gem install ocran
+        bundle install
+
+    - name: Run build script
+      run: |
+        cd build/windows
+        ./build.sh
