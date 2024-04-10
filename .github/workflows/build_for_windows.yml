@@ -44,5 +44,3 @@ jobs:
         prerelease: true
         files: |
           build/windows/lsp.exe
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
