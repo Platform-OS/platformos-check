@@ -5,10 +5,15 @@ on:
   # push:
   #   branches:
   #     - main
+  push:
+    tags:
+    - '*'
 
 jobs:
   build:
     runs-on: windows-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout code
@@ -26,26 +31,27 @@ jobs:
         bundle install
 
     - name: Run build script
+      shell: bash
       run: |
         cd build/windows
         ./build.sh
-
-
-    - name: Result
-      run: ls
+        ls
 
     - name: Release
-      uses: softprops/action-gh-release@v1
+      uses: ncipollo/release-action@v1
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          New windows version
-          - First Change
-          - Second Change
-        draft: true
-        prerelease: true
-        files: |
-          lsp.exe
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: "build/windows/lsp.exe"
+        body: "New windows release"
+
+    # - name: Release
+    #   uses: softprops/action-gh-release@v1
+    #   with:
+    #     tag_name: ${{ github.ref }}
+    #     name: Release ${{ github.ref }}
+    #     body: |
+    #       New windows version
+    #     draft: true
+    #     prerelease: true
+    #     files: |
+    #       build/windows/lsp.exe
+    #
