@@ -57,7 +57,7 @@ module PlatformosCheck
 
       def available_filters_for(input_type)
         filters = PlatformosLiquid::SourceIndex.filters
-                                               .select { |filter| input_type.nil? || filter.input_type == input_type }
+                                               .select { |filter| input_type.nil? || filter.input_type == input_type || filter.input_type == 'untyped' }
         return all_labels if filters.empty?
         return filters if input_type == INPUT_TYPE_VARIABLE
 

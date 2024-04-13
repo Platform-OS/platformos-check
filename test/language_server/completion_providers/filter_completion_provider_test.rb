@@ -35,6 +35,7 @@ module PlatformosCheck
       end
 
       def test_completions
+        assert_can_complete_with(@provider, "{{ 'an object' | ", "type_of")
         assert_can_complete_with(@provider, "{{ 'foo.js' | ", "capitalize")
         assert_can_complete_with(@provider, "{{ 'foo.js' | asset", "asset_url")
         assert_can_complete_with(@provider, "{{ 'foo.js' | asset_url | url", "url_decode")
