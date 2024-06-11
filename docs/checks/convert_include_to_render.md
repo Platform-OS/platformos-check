@@ -1,8 +1,8 @@
 # Discourage the use of `include` (`ConvertIncludeToRender`)
 
-The `include` tag is [deprecated][deprecated]. This tag exists to enforce the use of the `render` tag instead of `include`.
+The `include` tag is [deprecated][deprecated]. This check exists to enforce the use of the `render` tag instead of `include`.
 
-The `include` tag works similarly to the `render` tag, but it lets the code inside of the snippet to access and overwrite the variables within its parent theme file. The `include` tag has been deprecated because the way that it handles variables reduces performance and makes theme code harder to both read and maintain.
+The `include` tag works similarly to the `render` tag, but it lets the code inside of the snippet to access and overwrite the variables within its parent theme file. The `include` tag has been deprecated because the way that it handles variables reduces performance and makes the code harder to both read and maintain.
 
 ## Check Details
 
@@ -31,7 +31,15 @@ ConvertIncludeToRender:
 
 ## When Not To Use It
 
-It is discouraged to disable this rule.
+If you absolutely need to use variable as a partial name, it is not possible to use render tag, and this is the one exception for the include tag:
+
+```liquid
+{% liquid 
+  # platformos-check-disable ConvertIncludeToRender
+  include my_variable 
+  # platformos-check-enable ConvertIncludeToRender
+%}
+```
 
 ## Version
 
