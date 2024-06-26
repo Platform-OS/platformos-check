@@ -1,14 +1,15 @@
 # Check API
 
-PlatformOS Check uses static analysis. It parses theme files into an AST, and then calls the appropriate checks to analyze it.
+PlatformOS Check uses static analysis by parsing theme files into an Abstract Syntax Tree (AST), and then applying various checks to this structure.
 
-An [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) is a tree of node, representing the theme file.
+An [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree), or Abstract Syntax Tree, is a tree representation of the abstract syntactic structure of a theme file. Each node in the tree corresponds to a part of the code.
 
-Checks are Ruby classes with callback methods:
-- `on_TYPE` that runs before a node of the specific TYPE is visited.
-- `after_TYPE` that runs after a node of the specific TYPE is visited.
+The checks are implemented as Ruby classes with callback methods:
 
-There are three types of checks currently supported:
+- `on_TYPE`: Runs before a node of the specific TYPE is visited.
+- `after_TYPE`: Runs after a node of the specific TYPE has been visited.
+
+Currently, PlatformOS Check supports three types of checks:
 
 - [`LiquidCheck`](/docs/api/liquid_check.md)
 - [`HtmlCheck`](/docs/api/html_check.md)

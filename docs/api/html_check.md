@@ -1,33 +1,32 @@
-# HTML check API
+# HTML Check API
 
-For checking HTML elements in `.liquid` files.
+This API is designed for checking HTML elements within `.liquid` files.
 
-If you need to check an HTML tag or its attributes, use an `HtmlCheck`.
+To check HTML tags or attributes, use the `HtmlCheck` class. 
 
-The HTML in Liquid files is parsed using the Nokogiri, by consequence you will get [`Nokogiri::XML::Node`][nokogiri].
-
+HTML content in Liquid files is parsed using Nokogiri, which results in each element being represented as a [`Nokogiri::XML::Node`][nokogiri].
 
 ```ruby
 module PlatformosCheck
   class MyCheckName < HtmlCheck
     category :html,
-    # A check can belong to multiple categories. Valid ones:
+    # A check can belong to multiple categories. Valid categories are:
     categories :translation, :performance
     severity :suggestion # :error or :style
 
     def on_document(node)
-      # Called with the root node of all theme files
-      node.value      # is an instance of Nokogiri::XML::Node
-      node.app_file # is the html_file being analyzed, See lib/platformos_check/app_file.rb.
+      # Called with the root node of all theme files.
+      node.value      # returns the value of the node, an instance of Nokogiri::XML::Node.
+      node.app_file # points to the HTML file being analyzed. See lib/platformos_check/app_file.rb.
       node.parent     # is the parent node.
-      node.children   # are the children nodes.
-      # See lib/platformos_check/html_node.rb for more helper methods
+      node.children   # are the child nodes.
+      # Additional helper methods are available in lib/platformos_check/html_node.rb.
       theme # Gives you access to all the theme files in the theme. See lib/platformos_check/theme.rb.
     end
 
     def on_img(node)
       # Called for every <img> element in the file.
-      node.attributes["class"] # Get the class attribute of the img element.
+      node.attributes["class"] # Retrieves the 'class' attribute of the <img> tag.
     end
 
     def on_a(node)
