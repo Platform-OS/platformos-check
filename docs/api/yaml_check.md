@@ -1,4 +1,4 @@
-# JSON Check API
+# YAML Check API
 
 This API is designed for checking the content of `.yml` files.
 
