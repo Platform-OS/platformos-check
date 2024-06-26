@@ -3,7 +3,7 @@
 PlatformOS Check is a tool that checks your app’s Liquid code to make sure it follows the recommended best practices for [platformOS](https://www.platformos.com/).
 This tool looks for common errors and areas where your code could be improved, helping you clean up and optimize your code by pointing out syntax mistakes, outdated elements, and performance issues.
 
-![](docs/preview.png)
+![](docs/platformos-check.jpg)
 
 ## Supported Checks
 
@@ -47,10 +47,10 @@ We continually update and expand our checks. If you have suggestions, please [le
 
 ## Installation
 
-- Download and install the extension [more]
-- Next steps:
-  -> [using-local-ruby]
-  -> [docker]
+- Download and [install the platformOS-check VSCode extension](https://github.com/Platform-OS/platformos-check-vscode)
+- Choose your installation method for Ruby and platformos-check gem:
+* [Using Locally Installed Ruby](#using-locally-installed-ruby)
+* [Using Docker](#using-docker)
 
 ### Using Locally Installed Ruby
 
@@ -58,7 +58,7 @@ We continually update and expand our checks. If you have suggestions, please [le
 
 - Ruby 3.2+
 
-### Install Ruby and platform-check gem
+### Install Ruby and platformos-check gem
 
 ⚠️ **Note:** Please make sure you install Ruby and the gem for your user and not as root to avoid permission issues. Install without using `sudo`.
 
