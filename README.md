@@ -47,7 +47,7 @@ We continually update and expand our checks. If you have suggestions, please [le
 
 ## Installation
 
-- Download and [install the platformOS-check VSCode extension](https://github.com/Platform-OS/platformos-check-vscode)
+- Download and [install the platformOS Liquid extension](https://marketplace.visualstudio.com/items?itemName=platformOS.platformos-check-vscode)
 - Choose your installation method for Ruby and platformos-check gem:
 * [Using Locally Installed Ruby](#using-locally-installed-ruby)
 * [Using Docker](#using-docker)
