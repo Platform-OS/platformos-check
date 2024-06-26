@@ -1,10 +1,10 @@
-# Ensure consistent spacing inside Liquid tags and variables (`SpaceInsideBraces`)
+# Ensure Consistent Spacing Inside Liquid Tags and Variables (`SpaceInsideBraces`)
 
-Warns against inconsistent spacing inside liquid tags and variables.
+This check warns against inconsistent spacing inside Liquid tags and variables.
 
 ## Check Details
 
-This check is aimed at eliminating ugly Liquid:
+This check aims to eliminate inconsistent and messy Liquid code:
 
 :-1: Examples of **incorrect** code for this check:
 
@@ -58,7 +58,7 @@ SpaceInsideBraces:
 
 ## Auto-correction
 
-This check can automatically trim or add spaces around `{{ ... }}`.
+This check can automatically correct spacing around `{{ ... }}`. For example:
 
 ```liquid
 {{ x}}
@@ -74,7 +74,7 @@ Can all be auto-corrected with the `--auto-correct` option to:
 
 ## When Not To Use It
 
-If you don't care about the look of your code.
+This check can be disabled if you do not prioritize the visual consistency of your code.
 
 ## Version
 

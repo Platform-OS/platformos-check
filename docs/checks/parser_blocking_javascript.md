@@ -1,14 +1,17 @@
-# Discourage use of parser-blocking JavaScript (`ParserBlockingJavaScript`)
+# Discourage Use of Parser-Blocking JavaScript (`ParserBlockingJavaScript`)
 
-The `defer` or `async` attributes are extremely important on script tags. When neither of those attributes are used, a script tag will block the construction and rendering of the DOM until the script is _loaded_, _parsed_ and _executed_. It also creates congestion on the Network, messes with the resource priorities and significantly delays the rendering of the page.
+Using the `defer` or `async` attributes is extremely important on script tags. When neither of those attributes are used, a script tag will block the construction and rendering of the DOM until the script is _loaded_, _parsed_ and _executed_. This can create network congestion, interfere with resource priorities, and significantly delay page rendering.
 
-Considering that JavaScript on platformOS apps should always be used to progressively _enhance_ the experience of the site, app should never make use of parser-blocking script tags.
+JavaScript in platformOS apps should always be used to progressively _enhance_ the user experience. Therefore, parser-blocking script tags should never be used.
 
-As a general rule, use `defer` if the order of execution matters, `async` otherwise. When in doubt, choose either one and get 80/20 of the benefits.
+As a general rule:
+- Use `defer` if the order of execution matters.
+- Use `async` if the order of execution does not matter.
+- When in doubt, using either will provide 80/20 of the benefits.
 
 ## Check Details
 
-This check is aimed at eliminating parser-blocking JavaScript on app.
+This check aims to eliminate parser-blocking JavaScript in your app.
 
 :-1: Examples of **incorrect** code for this check:
 
@@ -78,9 +81,9 @@ ParserBlockingJavaScript:
 
 ## When Not To Use It
 
-This should only be turned off with the `platformos-check-disable` comment when there's no better way to accomplish what you're doing than with a parser-blocking script.
+This check should only be disabled with the `platformos-check-disable` comment if there is no better way to achieve the desired outcome than using a parser-blocking script.
 
-It is discouraged to turn this rule off.
+It is generally discouraged to disable this rule.
 
 ## Version
 

@@ -1,8 +1,8 @@
-# Prevent missing required objects in layouts (`RequiredLayoutThemeObject`)
+# Prevent Missing Required Objects in Layouts (`RequiredLayoutThemeObject`)
 
 ## Check Details
 
-This check prevents missing `{{ content_for_layout }}` objects in layouts.
+This check ensures that the `{{ content_for_layout }}` object is present in layouts, preventing rendering issues due to missing objects.
 
 ## Check Options
 

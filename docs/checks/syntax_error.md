@@ -1,10 +1,10 @@
 # Prevent Syntax Errors (`SyntaxError`)
 
-This check exists to inform the user of Liquid syntax error earlier.
+This check helps inform the user of Liquid syntax errors early.
 
 ## Check Details
 
-This check is aimed at eliminating syntax errors.
+This check aims to eliminate syntax errors in Liquid code.
 
 :-1: Examples of **incorrect** code for this check:
 

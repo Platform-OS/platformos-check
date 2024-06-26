@@ -1,10 +1,10 @@
-# Discourage the use of large template files (`TemplateLength`)
+# Discourage the Use of Large Template Files (`TemplateLength`)
 
-This check exists to discourage the use of large template files. Use partials and functions to componentize your app.
+This check discourages the use of large template files. Instead, use partials and functions to componentize your app.
 
 ## Check Details
 
-This check is aimed at eliminating large template files.
+This check aims to eliminate large template files by encouraging a modular approach.
 
 :-1: Examples of **incorrect** code for this check:
 
@@ -30,7 +30,7 @@ The `max_length` (Default: `200`) option determines the maximum number of lines 
 
 ## When Not To Use It
 
-If you don't care about template lengths, then it's safe to disable this rule.
+This rule can be safely disabled if you do not prioritize template length management.
 
 ## Version
 
