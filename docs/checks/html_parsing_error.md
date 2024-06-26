@@ -1,12 +1,12 @@
-# Report HTML parsing errors (`HtmlParsingError`)
+# Report HTML Parsing Errors (`HtmlParsingError`)
 
-Report errors preventing the HTML from being parsed and analyzed by PlatformOS Check.
+This check reports errors that prevent HTML from being properly parsed and analyzed by PlatformOS Check.
 
 ## Check Details
 
-This check is aimed at reporting HTML errors that prevent a file from being analyzed.
+This check focuses on identifying HTML errors that prevent a file from being analyzed.
 
-The HTML parser limits the number of attributes per element to 400, and the maximum depth of the DOM tree to 400 levels. If any one of those limits is reached, parsing stops, and all HTML offenses on this file are ignored.
+The HTML parser limits the number of attributes per element to 400, and the maximum depth of the Document Object Model (DOM) tree to 400 levels. If either of these limits is reached, parsing stops, and all HTML errors in the file are ignored.
 
 :-1: Examples of **incorrect** code for this check:
 
@@ -35,7 +35,7 @@ HtmlParsingError:
 
 ## When Not To Use It
 
-If you don't care about HTML offenses.
+This check may be disabled if identifying HTML errors is not a priority.
 
 ## Version
 

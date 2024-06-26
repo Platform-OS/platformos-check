@@ -1,4 +1,4 @@
-# Lazy loading image tags (`ImgLazyLoading`)
+# Lazy Loading Image Tags (`ImgLazyLoading`)
 
 Lazy loading is a strategy to identify resources as non-blocking (non-critical) and load these only when needed. It's a way to shorten the length of the critical rendering path, which translates into reduced page load times.
 
@@ -8,11 +8,11 @@ Very often, webpages contain many images that contribute to data-usage and how f
 
 _Quoted from [MDN - Lazy loading][mdn]_
 
-As a general rule you should apply `loading="lazy"` to elements that are **not initially visible** when the page loads. Only images that require user interaction (scrolling, hovering, clicking etc.) to be seen can be safely lazy loaded without negatively impacting the rendering performance.
+As a general rule, you should apply `loading="lazy"` to elements that are **not initially visible** when the page loads. Only images that require user interaction (scrolling, hovering, clicking etc.) to be seen can be safely lazy loaded without negatively impacting the rendering performance.
 
 ## Check Details
 
-This check is aimed at deferring loading non-critical images.
+This check is designed to ensure that non-critical images are deferred for loading, improving page load times and overall performance.
 
 :-1: Examples of **incorrect** code for this check:
 
@@ -46,7 +46,7 @@ ImgLazyLoading:
 
 ## When Not To Use It
 
-There should be no cases where disabling this rule is needed. When it comes to rendering performance, it is generally better to specify `loading="eager"` as a default. You may want to do that for sections that are often placed in different parts of the page (top, middle, bottom), which makes it hard to reason about which value should be used.
+There should be no cases where disabling this rule is needed. For optimal rendering performance, it is generally better to specify `loading="eager"` as a default. This is especially useful for sections that are often placed in different parts of the page (top, middle, bottom), making it difficult to determine the appropriate `loading` valued. be used.
 
 ## Version
 

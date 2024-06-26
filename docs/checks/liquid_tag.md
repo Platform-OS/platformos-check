@@ -1,10 +1,10 @@
-# Encourage use of liquid tag for consecutive statements (LiquidTag)
+# Encourage Use of `{% liquid ... %}` Tag for Consecutive Statements (`LiquidTag`)
 
-Recommends using `{% liquid ... %}` if 4 or more consecutive liquid tags (`{% ... %}`) are found.
+This check recommends using the `{% liquid ... %}` tag when four or more consecutive Liquid tags (`{% ... %}`) are found.
 
 ## Check Details
 
-This check is aimed at eliminating repetitive tag markers (`{%` and `%}`) in theme files.
+he purpose of this check is to eliminate repetitive tag markers (`{%` and `%}`) in theme files for improved readability and maintainability.
 
 :-1: Example of **incorrect** code for this check:
 
@@ -44,11 +44,11 @@ LiquidTag:
 
 ### `min_consecutive_statements`
 
-The `min_consecutive_statements` option (Default: `5`) determines the maximum (inclusive) number of consecutive statements before the check recommends a refactor.
+The `min_consecutive_statements` option (Default: `5`) determines the maximum (inclusive) number of consecutive statements required before the check recommends refactoring to use the `{% liquid ... %}` tag.
 
 ## When Not To Use It
 
-It's safe to disable this rule.
+It is generally safe to disable this rule if it does not align with your coding standards.
 
 ## Version
 

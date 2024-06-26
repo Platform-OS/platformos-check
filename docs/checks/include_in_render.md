@@ -1,10 +1,10 @@
-# Reports usage of `include` tag inside `render` (`IncludeInRender`)
+# Report usage of `include` tag inside `render` (`IncludeInRender`)
 
-Runtime error is used when `include` tag is used inside `render` tag.
+A runtime error occurs when an `include` tag is used inside a `render` tag. This check identifies and reports these occurrences.
 
 ## Check Details
 
-This check is aimed at eliminating the use of `include` tags `render` tag.
+This check aims to eliminate the use of `include` tags within `render` tags.
 
 :-1: Examples of **incorrect** code for this check:
 
@@ -45,7 +45,7 @@ IncludeInRender:
 
 ## When Not To Use It
 
-It is discouraged to disable this rule.
+It is not safe to disable this rule.
 
 ## Version
 

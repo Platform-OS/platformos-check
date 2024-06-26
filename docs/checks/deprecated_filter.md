@@ -1,4 +1,4 @@
-# Discourage use of deprecated filters (`DeprecatedFilter`)
+# Discourage the use of deprecated filters (`DeprecatedFilter`)
 
 This check discourages the use of [deprecated filters][deprecated].
 

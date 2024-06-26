@@ -1,12 +1,14 @@
-# Discourage the use of `include` (`ConvertIncludeToRender`)
+# Discourage the Use of `include` (`ConvertIncludeToRender`)
 
-The `include` tag is [deprecated][deprecated]. This check exists to enforce the use of the `render` tag instead of `include`.
+The `include` tag is now considered [deprecated][deprecated], and it is recommended to use the `render` tag instead. This check enforces using the `render` tag instead of `include` to help maintain the efficiency and readability of your code.
 
-The `include` tag works similarly to the `render` tag, but it lets the code inside of the snippet to access and overwrite the variables within its parent theme file. The `include` tag has been deprecated because the way that it handles variables reduces performance and makes the code harder to both read and maintain.
+## Difference between `include` and  `render`
+
+While the `include` tag functions similarly to the `render` tag by inserting snippets of code into files, there's a key difference: `include` allows the code within the snippet to access and overwrite the variables in its parent theme file. This can make your website slower and your code harder to read and maintain. That’s why it’s recommended to use the simpler `render` tag instead.
 
 ## Check Details
 
-This check is aimed at eliminating the use of `include` tags.
+The purpose of this check is to discourage the use of `include` tags.
 
 :-1: Examples of **incorrect** code for this check:
 
@@ -31,7 +33,10 @@ ConvertIncludeToRender:
 
 ## When Not To Use It
 
-If you absolutely need to use variable as a partial name, it is not possible to use render tag, and this is the one exception for the include tag:
+### Exception: Variable Partial Names
+
+There is an exception to using the `render` tag: if you need to use a variable as a partial name. In such cases, the `include` tag remains necessary because the `render` tag does not support variable partial names.
+Here's how you can use the include tag for this specific scenario:
 
 ```liquid
 {% liquid 
@@ -40,6 +45,8 @@ If you absolutely need to use variable as a partial name, it is not possible to 
   # platformos-check-enable ConvertIncludeToRender
 %}
 ```
+
+This example shows how to temporarily disable the check when you need to use `include` specifically for variable partial names.
 
 ## Version
 

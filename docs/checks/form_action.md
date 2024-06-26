@@ -1,12 +1,12 @@
-# Form action (`FormAction`)
+# Form Action (`FormAction`)
 
-Form action defines the endpoint to which browser will make a request after submitting it.
+The form action defines the endpoint to which the browser will make a request after submitting the form.
 
-As a general rule you should use relative path like `action="/my/path"` instead of for example `action="my/path"` to avoid errors.
+As a general rule, you should use an absolute path, such as `action="/my/path"`, instead of a relative path like `action="my/path"`, to avoid errors.
 
 ## Check Details
 
-This check is aimed at ensuring you have not forgotten to start the path with /.
+This check ensures that the path correctly begins with a forward slash (`/`).
 
 :-1: Examples of **incorrect** code for this check:
 
@@ -47,7 +47,7 @@ FormAction:
 
 ## When Not To Use It
 
-There should be no cases where disabling this rule is needed.
+There should be no cases where disabling this rule is necessary.
 
 ## Version
 
