@@ -1,18 +1,27 @@
-# platformOS Check ✅ - A linter for platformOS
+# platformOS Check ✅ - A Linter for platformOS
 
-PlatformOS Check is a tool that helps you follow platformOS recommendations & best practices by analyzing the Liquid inside your app.
+PlatformOS Check is a tool that checks your app’s Liquid code to make sure it follows the recommended best practices for [platformOS](https://www.platformos.com/).
+This tool looks for common errors and areas where your code could be improved, helping you clean up and optimize your code by pointing out syntax mistakes, outdated elements, and performance issues.
 
-![](docs/preview.png)
+![](docs/platformos-check.jpg)
 
 ## Supported Checks
 
-PlatformOS Check currently checks for the following:
+PlatformOS Check currently performs the following checks:
+
+**Syntax Validation:**
 
 ✅ Liquid syntax errors  
 ✅ JSON syntax errors  
-✅ Missing partials and graphqls  
-✅ Unused variables (via `{% assign var = ... %}`, {% function var = ... %} etc.)  
+
+**Resource Verification:**
+
+✅ Missing partials and GraphQL files  
+✅ Unused variables (using `{% assign var = ... %}`, {% function var = ... %} and similar tags)  
 ✅ Unused partials  
+
+**Code Efficiency and Quality:**
+
 ✅ Template length  
 ✅ Deprecated tags  
 ✅ Unknown tags  
@@ -22,57 +31,64 @@ PlatformOS Check currently checks for the following:
 ✅ Undefined objects  
 ✅ Deprecated filters  
 ✅ Missing `platformos-check-enable` comment  
-✅ Invalid arguments provided to `{% graphql %}` tags  
+✅ Invalid arguments in `{% graphql %}` tags  
 ✅ Missing `authenticity_token` in `<form>`  
 ✅ Unreachable code
 
-As well as checks that prevent easy to spot performance problems:
+**Performance Optimization:**
 
-✅ [GraphQL in for loop](/docs/checks/graphql_in_for_loop.md)  
-✅ Use of [parser-blocking](/docs/checks/parser_blocking_javascript.md) JavaScript  
-✅ [Missing width and height attributes on `img` tags](/docs/checks/img_width_and_height.md)
+✅ Preventing the [use of GraphQL queries inside loops](/docs/checks/graphql_in_for_loop.md)  
+✅ Identifying [parser-blocking JavaScript](/docs/checks/parser_blocking_javascript.md)
+✅ Ensuring `img` tags have [width and height attributes to improve loading times](/docs/checks/img_width_and_height.md)
 
-For detailed descriptions and configuration options, [take a look at the complete list.](/docs/checks/)
+For detailed descriptions and configuration options, [take a look at the complete list of checks](/docs/checks/).
 
-With more to come! Suggestions welcome ([create an issue](https://github.com/Platform-OS/platformos-lsp/issues)).
+We continually update and expand our checks. If you have suggestions, please [let us know by creating an issue](https://github.com/Platform-OS/platformos-lsp/issues).
 
 ## Installation
 
-- download and install the extension [more]
-- next steps
-  -> [using-local-ruby]
-  -> [docker]
+- Download and [install the platformOS Liquid extension](https://marketplace.visualstudio.com/items?itemName=platformOS.platformos-check-vscode)
+- Choose your installation method for Ruby and platformos-check gem:
+* [Using Locally Installed Ruby](#using-locally-installed-ruby)
+* [Using Docker](#using-docker)
 
-### Using locally installed ruby
+### Using Locally Installed Ruby
 
 #### Requirements
 
 - Ruby 3.2+
 
-### Install ruby and platform-check gem
+### Install Ruby and platformos-check gem
 
-1. Download the latest version of Ruby - https://www.ruby-lang.org/en/documentation/installation/
+⚠️ **Note:** Please make sure you install Ruby and the gem for your user and not as root to avoid permission issues. Install without using `sudo`.
 
-Verify that you've installed at least version 3.2:
+1. Download and install Ruby version 3.2 or higher using the [Official Ruby documentation](https://www.ruby-lang.org/en/documentation/installation/).
 
-`ruby -v`
+Ensure your Ruby is 3.2 or higher: 
 
-⚠️ **Note:**  You might need to restart  the terminal after installing.
-⚠️ **Note:*** Please make sure you install ruby for your user, not the root
+  ruby -v
 
-2. Install platformos-check gem
+⚠️ **Note:** Restart your terminal after installation.
 
-`gem install platformos-check`
+2. Install platformos-check gem, using:
 
-You can verify the installation was successful by invoking `platformos-check --version`. If you chose this method, use `platformos-check-language-server` as a path to your language server instead of `/Users/<username/platformos-check-language-server`
+  gem install platformos-check
 
-⚠️ **Note:*** Please make sure you  install the gem for your user, not the root - i.e. without `sudo`
+Confirm the installation was successful by checking the version:
+
+  platformos-check --version
+
+If you chose this method, use `platformos-check-language-server` as a path to your language server instead of `/Users/<username/platformos-check-language-server`.
 
 ### Using Docker
 
-#### PlatformOS Check Language Server
+To set up the PlatformOS Check Language Server using Docker, follow these steps:
 
-- Create an executable `platformos-check-language-server` file and place it within a directory listed in your $PATH variable.
+#### platformOS Check Language Server
+
+1. Create a file named `platformos-check-language-server` and ensure it's executable and placed within a directory listed in your $PATH variable.
+
+2. Use the following script:
 
 ```bash
 DIR=$(pwd)
@@ -89,15 +105,18 @@ exec docker run -i \
   -e PLATFORMOS_CHECK_DEBUG_LOG_FILE=$LOG_FILE \
    $IMAGE_NAME $@
 ```
-This script will automatically download the latest Docker image and initiate a language server. Visual Studio Code (VSC) manages this process automatically. However, you can run the script for verification if needed.
+
+This script downloads the latest Docker image and starts the language server. Visual Studio Code (VS Code) can manage this process automatically, but you can also run the script manually for verification if needed.
 
 #### Troubleshooting
 
-- In the event of `onlySingleFileChecks: true` not functioning as expected, please examine your Visual Studio Code (VSC) workspace. Ensure that the workspace contains only a single project.
+- If the `onlySingleFileChecks: true` setting does not work as expected, check your Visual Studio Code (VS Code) workspace settings. Ensure that the workspace contains only a single project.
 
-#### PlatformOS Check
+#### PlatformOS Check as a Standalone Function
 
-PlatformOS Check can be used also as a standalone function. Prepare the following executable script:
+PlatformOS Check can also be used as a standalone function.
+
+1. Prepare and run the following script to set up the Docker environment:
 
 ```bash
 DIR=$(pwd)
@@ -114,22 +133,28 @@ exec docker run -i \
   -e PLATFORMOS_CHECK_DEBUG_LOG_FILE=$LOG_FILE \
    $IMAGE_NAME $@
 ```
-To verify installation run `platformos-check --help`.
 
-Usage example for CI/CD:
-```
-platformos-check --fail-level error
-```
+2. To check if the tool is correctly installed up, run:
+
+  platformos-check --help`
+
+**Usage example for CI/CD:**
+
+  platformos-check --fail-level error
+
+This setting ensures that the CI process will fail if any errors are detected during the checks.
 
 ## Configuration
 
-Add a `.platformos-check.yml` file at the root of your app.
+To configure PlatformOS Check according to your project's needs, you create a `.platformos-check.yml` file in the root directory of your application.
 
-See [config/default.yml](config/default.yml) for available options & defaults.
+See [config/default.yml](config/default.yml) for available options and their default values.
 
-## Disable checks with comments
+## Disable Checks with Comments
 
-Use Liquid comments to disable and re-enable all checks for a section of your file:
+Control the behavior of PlatformOS Check within your Liquid templates using comments to disable and re-enable checks as needed.
+
+### Temporarily Disabling All Checks
 
 ```liquid
 {% # platformos-check-disable %}
@@ -137,7 +162,11 @@ Use Liquid comments to disable and re-enable all checks for a section of your fi
 {% # platformos-check-enable %}
 ```
 
-Disable a specific check by including it in the comment:
+All checks will be ignored between the `disable` and `enable` comments.
+
+### Disabling a Specific Check
+
+To disable a specific check, such as `UnusedAssign`, include the check's name in the comment:
 
 ```liquid
 {% # platformos-check-disable UnusedAssign %}
@@ -145,7 +174,9 @@ Disable a specific check by including it in the comment:
 {% # platformos-check-enable UnusedAssign %}
 ```
 
-Disable multiple checks by including them as a comma-separated list:
+### Disabling Multiple Checks
+
+To disable multiple checks simultaneously, list them in a comma-separated format within the comments:
 
 ```liquid
 {% # platformos-check-disable UnusedAssign,SpaceInsideBraces %}
@@ -153,7 +184,9 @@ Disable multiple checks by including them as a comma-separated list:
 {% # platformos-check-enable UnusedAssign,SpaceInsideBraces %}
 ```
 
-Disable checks for the _entire document_ by placing the comment on the first line:
+### Disabling Checks for the Entire Document
+
+To disable a check throughout the entire document, place the disabling comment in the first line:
 
 ```liquid
 {% # platformos-check-disable SpaceInsideBraces %}
@@ -162,9 +195,9 @@ Disable checks for the _entire document_ by placing the comment on the first lin
 
 ## Exit Code and `--fail-level`
 
-Use the `--fail-level` (default: `error`) flag to configure the exit code of platformos-check. Useful in CI scenarios.
+Configure the exit code of platformos-check using the `--fail-level` (default: `error`) flag, which is especially useful in continuous integration (CI) scenarios. This flag helps you control at what severity level checks should cause your CI process to fail.
 
-Example:
+### Usage Examples
 
 ```
 # Make CI fail on styles warnings, suggestions, and errors
@@ -177,19 +210,23 @@ platformos-check --fail-level suggestion path_to_app
 platformos-check path_to_app
 ```
 
+### Fail Levels
+
 There are three fail levels:
 
 - `error`
 - `suggestion`
 - `style`
 
-Exit code meanings:
+### Exit Code Meanings
 
-- 0: Success!
-- 1: Your code doesn't pass the checks
-- 2: There's a bug in platformos-check
+- 0: Success — no issues found.
+- 1: Your code does not pass the specified fail level of checks.
+- 2: Error in platformos-check itself — indicates a bug within the tool.
 
-If you would like to change the severity of a check, you can do so with the `severity` attribute. Example:
+### Customizing Check Severity
+
+You can adjust the severity of specific checks using the `severity` attribute in your configuration file:
 
 ```yaml
 DeprecateLazysizes:
@@ -197,17 +234,21 @@ DeprecateLazysizes:
   severity: error
 ```
 
+This configuration, for example, treats the "DeprecateLazysizes" check as an error, thus influencing the exit code according to the `--fail-level` set.
+
 ## Language Server Configurations
 
-- `platformosCheck.checkOnOpen` (default: `true`) makes it so theme check runs on file open.
-- `platformosCheck.checkOnChange` (default: `true`) makes it so theme check runs on file change.
-- `platformosCheck.checkOnSave` (default: `true`) makes it so theme check runs on file save.
-- `platformosCheck.onlySingleFileChecks` (default: `false`) makes it so we only check the opened files and disable "whole application" checks (e.g. UnusedPartial, TranslationKeyExists)
+Configure the PlatformOS Check language server to optimize how it interacts with your files in the development environment. The following settings can be adjusted in your editor's configuration file. 
 
-⚠️ **Note:** Quickfixes only work on a freshly checked file. If any of those configurations are turned off, you will need to rerun platformos-check in order to apply quickfixes.
+In VS Code, you can set it directly in your `settings.json` file.
 
-In VS Code, these can be set directly in your `settings.json`.
+- `platformosCheck.checkOnOpen` (default: `true`): Automatically runs checks when a file is opened.
+- `platformosCheck.checkOnChange` (default: `true`): Executes checks whenever changes are made to a file.
+- `platformosCheck.checkOnSave` (default: `true`): Initiates checks every time a file is saved.
+- `platformosCheck.onlySingleFileChecks` (default: `false`): Limits checks to the currently opened file, excluding checks that involve the entire application such as 'UnusedPartial' or 'TranslationKeyExists'.
+
+⚠️ **Note:** Quickfixes only work on files that have been recently checked. If you have disabled the automatic checking configurations, you need to manually rerun platformos-check to enable quickfixes.
 
 ## Contributing
 
-For guidance on contributing, refer to this [doc](/CONTRIBUTING.md)
+We welcome contributions from the community! For detailed guidance on how to contribute, please refer to our [contribution guidelines](/CONTRIBUTING.md). Your input helps us make the tool better for everyone.
