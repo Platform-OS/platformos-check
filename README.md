@@ -66,17 +66,23 @@ We continually update and expand our checks. If you have suggestions, please [le
 
 Ensure your Ruby is 3.2 or higher: 
 
-  ruby -v
+```
+ruby -v
+```
 
 ⚠️ **Note:** Restart your terminal after installation.
 
 2. Install platformos-check gem, using:
 
-  gem install platformos-check
+```
+gem install platformos-check
+```
 
 Confirm the installation was successful by checking the version:
 
-  platformos-check --version
+```
+platformos-check --version
+```
 
 If you chose this method, use `platformos-check-language-server` as a path to your language server instead of `/Users/<username/platformos-check-language-server`.
 
@@ -136,11 +142,15 @@ exec docker run -i \
 
 2. To check if the tool is correctly installed up, run:
 
-  platformos-check --help`
+```
+platformos-check --help
+```
 
 **Usage example for CI/CD:**
 
-  platformos-check --fail-level error
+```
+platformos-check --fail-level error
+```
 
 This setting ensures that the CI process will fail if any errors are detected during the checks.
 
@@ -245,7 +255,7 @@ In VS Code, you can set it directly in your `settings.json` file.
 - `platformosCheck.checkOnOpen` (default: `true`): Automatically runs checks when a file is opened.
 - `platformosCheck.checkOnChange` (default: `true`): Executes checks whenever changes are made to a file.
 - `platformosCheck.checkOnSave` (default: `true`): Initiates checks every time a file is saved.
-- `platformosCheck.onlySingleFileChecks` (default: `false`): Limits checks to the currently opened file, excluding checks that involve the entire application such as 'UnusedPartial' or 'TranslationKeyExists'.
+- `platformosCheck.onlySingleFileChecks` (default: `false`): Limits checks to the currently opened file, excluding checks that involve the entire application such as `UnusedPartial` or `TranslationKeyExists`.
 
 ⚠️ **Note:** Quickfixes only work on files that have been recently checked. If you have disabled the automatic checking configurations, you need to manually rerun platformos-check to enable quickfixes.
 
