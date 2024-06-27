@@ -1,12 +1,12 @@
-# JSON check API
+# YAML Check API
 
-For checking the content of `.yml` files.
+This API is designed for checking the content of `.yml` files.
 
 ```ruby
 module PlatformosCheck
   class MyCheckName < YamlCheck
     category :yaml,
-    # A check can belong to multiple categories. Valid ones:
+    # A check can belong to multiple categories. Valid categories are:
     categories :translation, :performance
     severity :suggestion # :error or :style
 
