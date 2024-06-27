@@ -1,12 +1,12 @@
 # Prevent Missing `platformos-check-enable` Comments (`MissingEnableComment`)
 
-When `platformos-check-disable` is used within a theme file, a corresponding `platformos-check-enable` comment should be included to re-enable the checks.
+This check ensures that when `platformos-check-disable` is used within a theme file, a corresponding `platformos-check-enable` comment is included to re-enable the checks.
 
-## Check Details
+## Examples
 
-This check ensures that `platformos-check-enable` comments are present when `platformos-check-disable` is used.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Example of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 <!doctype html>
@@ -21,7 +21,7 @@ This check ensures that `platformos-check-enable` comments are present when `pla
 </html>
 ```
 
-:+1: Example of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 <!doctype html>
@@ -39,7 +39,7 @@ This check ensures that `platformos-check-enable` comments are present when `pla
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.3.0.
+This check has been introduced in platformOS Check 0.3.0.
 
 ## Resources
 

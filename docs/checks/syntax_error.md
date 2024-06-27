@@ -1,12 +1,12 @@
 # Prevent Syntax Errors (`SyntaxError`)
 
-This check helps inform the user of Liquid syntax errors early.
+This check helps inform the user of Liquid syntax errors early, aiming to eliminate syntax errors in Liquid code.
 
-## Check Details
+## Examples
 
-This check aims to eliminate syntax errors in Liquid code.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% include 'muffin'
@@ -15,7 +15,7 @@ This check aims to eliminate syntax errors in Liquid code.
 {% if collection | size > 0 %}
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% include 'muffin' %}
@@ -23,22 +23,22 @@ This check aims to eliminate syntax errors in Liquid code.
 {% if collection.size > 0 %}
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 SyntaxError:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-It is not safe to disable this rule.
+Disabling this check is not recommended.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

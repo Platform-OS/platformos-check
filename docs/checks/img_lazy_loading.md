@@ -1,5 +1,7 @@
 # Lazy Loading Image Tags (`ImgLazyLoading`)
 
+This check is designed to ensure that non-critical images are deferred for loading, improving page load times and overall performance.
+
 Lazy loading is a strategy to identify resources as non-blocking (non-critical) and load these only when needed. It's a way to shorten the length of the critical rendering path, which translates into reduced page load times.
 
 Lazy loading can occur on different moments in the application, but it typically happens on some user interactions such as scrolling and navigation.
@@ -10,11 +12,11 @@ _Quoted from [MDN - Lazy loading][mdn]_
 
 As a general rule, you should apply `loading="lazy"` to elements that are **not initially visible** when the page loads. Only images that require user interaction (scrolling, hovering, clicking etc.) to be seen can be safely lazy loaded without negatively impacting the rendering performance.
 
-## Check Details
+## Examples
 
-This check is designed to ensure that non-critical images are deferred for loading, improving page load times and overall performance.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 <img src="a.jpg">
@@ -26,7 +28,7 @@ This check is designed to ensure that non-critical images are deferred for loadi
 <img src="a.jpg" loading="auto">
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 <img src="a.jpg" loading="lazy">
@@ -35,22 +37,22 @@ This check is designed to ensure that non-critical images are deferred for loadi
 <img src="a.jpg" loading="eager">
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 ImgLazyLoading:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
 There should be no cases where disabling this rule is needed. For optimal rendering performance, it is generally better to specify `loading="eager"` as a default. This is especially useful for sections that are often placed in different parts of the page (top, middle, bottom), making it difficult to determine the appropriate `loading` valued. be used.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.10.0.
+This check has been introduced in platformOS Check 0.10.0.
 
 ## Resources
 

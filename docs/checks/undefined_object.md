@@ -1,12 +1,12 @@
-# Prevent undefined object errors (`UndefinedObject`)
+# Prevent Undefined Object Errors (`UndefinedObject`)
 
-This check prevents errors by making sure that no undefined variables are being used
+This check ensures that no undefined variables are used, preventing errors in your Liquid code. It aims to eliminate undefined object errors and additionally reports any missing or unused attributes in `render`, `function`, and `background` tags.
 
-## Check Details
+## Examples
 
-This check is aimed at eliminating undefined object errors. Additionally it reports any missing or unused attributes in render, function and background tags.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% if greeting == "Hello" %}
@@ -14,7 +14,7 @@ This check is aimed at eliminating undefined object errors. Additionally it repo
 {% endif %}
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% assign greetings = "Hello" %}
@@ -35,20 +35,18 @@ This check is aimed at eliminating undefined object errors. Additionally it repo
 %}
 ```
 
+## Configuration Options
 
-
-## Check Options
-
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 UndefinedObject:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-It is discouraged to disable this rule.
+Disabling this check is not recommended.
 
 ## Version
 

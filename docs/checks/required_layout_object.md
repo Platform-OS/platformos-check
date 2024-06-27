@@ -1,12 +1,10 @@
 # Prevent Missing Required Objects in Layouts (`RequiredLayoutThemeObject`)
 
-## Check Details
-
 This check ensures that the `{{ content_for_layout }}` object is present in layouts, preventing rendering issues due to missing objects.
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 RequiredLayoutObject:
@@ -15,7 +13,7 @@ RequiredLayoutObject:
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

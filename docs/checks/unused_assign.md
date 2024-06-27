@@ -1,12 +1,12 @@
-# Prevent unused assigns (`UnusedAssign`)
+# Prevent Unused Assigns (`UnusedAssign`)
 
-This check exists to prevent bloat in themes by surfacing variable definitions that are not used.
+This check helps prevent bloat in themes by identifying variable definitions that are not used, aiming to eliminate unnecessary code in apps and highlight user errors.
 
-## Check Details
+## Examples
 
-This check is aimed at eliminating bloat in apps and highlight user errors.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% assign this_variable_is_not_used = 1 %}
@@ -16,7 +16,7 @@ This check is aimed at eliminating bloat in apps and highlight user errors.
 {% function this_variable_is_not_used = 'my_function' %}
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% assign this_variable_is_used = 1 %}
@@ -37,22 +37,22 @@ This check is aimed at eliminating bloat in apps and highlight user errors.
 {% function _ignore_this_var = 'my_function' %}
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 UnusedAssign:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-It's safe to disable this rule.
+This check is safe to disable if you do not prioritize eliminating unused variables.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

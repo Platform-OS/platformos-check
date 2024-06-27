@@ -1,16 +1,12 @@
 # Prevent Unformatted `parse_json` Tags (`ParseJsonFormat`)
 
-_Version 1.9.0+_
-
-This check ensures that the JSON in your `parse_json` tags is properly formatted (pretty) for better readability.
-
-It helps facilitate auto-correction, allowing you to right-click and fix formatting issues easily.
+This check ensures that the JSON in your `parse_json` tags is properly formatted (pretty) for better readability. It facilitates auto-correction, allowing you to right-click and fix formatting issues easily.
 
 ## Examples
 
-The following examples contain code snippets that either fail or pass this check.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Example of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% parse_json my_json %}
@@ -25,7 +21,7 @@ The following examples contain code snippets that either fail or pass this check
 {% endparse_json %}
 ```
 
-:+1: Example of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% parse_json my_json %}
@@ -44,9 +40,9 @@ The following examples contain code snippets that either fail or pass this check
 {% endparse_json %}
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 ParseJsonFormat:
@@ -64,9 +60,13 @@ ParseJsonFormat:
 | indent | The character(s) used for indentation levels. |
 
 
-## When Not To Use It
+## Disabling This Check
 
-This check is safe to disable. You might choose to disable it if you do not care about the visual formatting of your `parse_json` tags.
+This check is safe to disable if you do not care about the visual formatting of your `parse_json` tags.
+
+## Version
+
+This check has been introduced in platformOS Check 1.9.0.
 
 ## Resources
 

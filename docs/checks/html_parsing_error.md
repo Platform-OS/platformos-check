@@ -1,14 +1,14 @@
 # Report HTML Parsing Errors (`HtmlParsingError`)
 
-This check reports errors that prevent HTML from being properly parsed and analyzed by PlatformOS Check.
+This check reports errors that prevent HTML from being properly parsed and analyzed by PlatformOS Check. It focuses on identifying HTML errors that hinder file analysis.
 
-## Check Details
+The HTML parser limits the number of attributes per element to 400 and the maximum depth of the Document Object Model (DOM) tree to 400 levels. If either of these limits is reached, parsing stops, and all HTML errors in the file are ignored.
 
-This check focuses on identifying HTML errors that prevent a file from being analyzed.
+## Examples
 
-The HTML parser limits the number of attributes per element to 400, and the maximum depth of the Document Object Model (DOM) tree to 400 levels. If either of these limits is reached, parsing stops, and all HTML errors in the file are ignored.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 <img src="muffin.jpeg"
@@ -18,28 +18,28 @@ The HTML parser limits the number of attributes per element to 400, and the maxi
      data-attrbute-400="">
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 <img src="muffin.jpeg">
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 HtmlParsingError:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-This check may be disabled if identifying HTML errors is not a priority.
+This check is safe to disable if identifying HTML errors is not a priority.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

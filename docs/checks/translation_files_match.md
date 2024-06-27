@@ -1,12 +1,12 @@
 # Translation Files Match (`TranslationFilesMatch`)
 
-Checks if translation files for different language have the same keys.
+This check ensures that translation files for different languages have the same keys, aiming to avoid inconsistencies, making it easier to spot errors and maintain the code.
 
-## Check Details
+## Examples
 
-This check is aimed at avoiding inconsistences between translation files to avoid errors hard to spot and make maintenance easier.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```yaml
 # app/translations/en/item.yml
@@ -25,7 +25,7 @@ This check is aimed at avoiding inconsistences between translation files to avoi
 
 Missing "title" in de/item.yml
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```yaml
 # app/translations/en/item.yml
@@ -43,23 +43,22 @@ Missing "title" in de/item.yml
         description: "Beschreibung"
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 TranslationFilesMatch:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-There should be no cases where disabling this rule is needed. For keys that are set via UI, and hence should not be part of the codebase,
-use proper configuration option in [app/config.yml](https://documentation.platformos.com/developer-guide/platformos-workflow/codebase/config)
+There should be no need to disable this rule. For keys set via the UI and not intended to be part of the codebase, use the appropriate configuration option in [app/config.yml](https://documentation.platformos.com/developer-guide/platformos-workflow/codebase/config).
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.4.10.
+This check has been introduced in platformOS Check 0.4.10.
 
 ## Resources
 

@@ -1,26 +1,26 @@
 # Prevent Missing Templates (`MissingTemplate`)
 
-This check ensures that resources specified with the `render` tag, `function` tag, and the deprecated `include` tag actually exist.
+This check ensures that resources specified with the `render` tag, `function` tag, and the deprecated `include` tag actually exist. It aims to prevent Liquid rendering errors caused by referencing non-existent templates.
 
-## Check Details
+## Examples
 
-This check aims to prevent Liquid rendering errors caused by referencing non-existent templates.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Example of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% render 'partial-that-does-not-exist' %}
 ```
 
-:+1: Example of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% render 'partial-that-exists' %}
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 MissingTemplate:
@@ -55,7 +55,7 @@ This configuration ignores all `MissingTemplate` offenses in `modules/private-mo
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

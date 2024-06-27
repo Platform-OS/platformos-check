@@ -1,6 +1,6 @@
 # Width and height attributes on image tags (`ImgWidthAndHeight`)
 
-This check helps prevent [cumulative layout shift][cls] (CLS) in themes.
+This check aims to prevent [cumulative layout shift][cls] (CLS) in themes by enforcing the use of `width` and `height` attributes on `img` tags.
 
 When `width` and `height` attributes are missing on an `img` tag, the browser doesn’t know the image’s aspect ratio until the image is fully loaded. Without this information, the browser treats the image as having a height of 0 until it loads.
 
@@ -13,11 +13,11 @@ To fix this, ensure the `width` and `height` attributes are set on the `img` tag
 
 **Note:** The `width` and `height` attributes should not include units.
 
-## Check Details
+## Examples
 
-This check aims to prevent content layout shift in themes by enforcing the use of `width` and `height` attributes on `img` tags.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 <img alt="cat" src="cat.jpg">
@@ -25,7 +25,7 @@ This check aims to prevent content layout shift in themes by enforcing the use o
 <img alt="{{ image.alt }}" src="{{ image.src }}">
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 <img alt="cat" src="cat.jpg" width="100" height="200">
@@ -39,16 +39,16 @@ This check aims to prevent content layout shift in themes by enforcing the use o
 
 **NOTE:** The CSS `width` of the `img` should _also_ be set for the image to be responsive.
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 ImgWidthAndHeight:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check - When Not To Use It
 
 You can avoid content layout shift without `width` and `height` attributes in certain cases:
 
@@ -59,7 +59,7 @@ Otherwise, it’s unwise to disable this check as it can negatively impact the m
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.6.0.
+This check has been introduced in platformOS Check 0.6.0.
 
 ## Resources
 

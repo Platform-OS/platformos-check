@@ -1,5 +1,7 @@
 # Form Authenticity Token (`FormAuthenticityToken`)
 
+This check ensures that the `authenticity_token` is included in each form to keep the session safe and protect against CSRF.
+
 In platformOS, all POST, PATCH, PUT, and DELETE requests are protected from [CSRF Attacks][csrf-attack] by using an [authenticity_token][page-csrf]. This token verifies that the person submitting the form is the one who initially requested the web page.
 
 It's important to add a hidden input field with the authenticity token in every form. The tag should look like this: 
@@ -10,18 +12,18 @@ It's important to add a hidden input field with the authenticity token in every 
 
 If this token is missing from a form, the session will end and the user will be logged out automatically.
 
-## Check Details
+## Examples
 
-This check ensures that the `authenticity_token` is included in each form to keep the session safe and protect against CSRF.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 <form action="/dummy/create" method="post">
 </form>
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 With token:
 ```liquid
@@ -48,22 +50,22 @@ For parameterized request:
 </form>
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 FormAuthenticityToken:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-There should be no cases where disabling this rule is necessary.
+Disabling this check is not recommended.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.4.6.
+This check has been introduced in platformOS Check 0.4.6.
 
 ## Resources
 

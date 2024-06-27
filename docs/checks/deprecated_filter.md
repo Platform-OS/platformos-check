@@ -1,14 +1,10 @@
-# Discourage the use of deprecated filters (`DeprecatedFilter`)
+# Discourage The Use of Deprecated filters (`DeprecatedFilter`)
 
-This check discourages the use of [deprecated filters][deprecated].
+This check discourages the use of [deprecated filters][deprecated] and aims at eliminating them.
 
-## Check Details
+## Configuration Options
 
-This check is aimed at eliminating deprecated filters.
-
-## Check Options
-
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 DeprecatedFilter:
@@ -17,7 +13,7 @@ DeprecatedFilter:
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.1.0.
+This check has been introduced in platformOS Check 0.1.0.
 
 ## Resources
 

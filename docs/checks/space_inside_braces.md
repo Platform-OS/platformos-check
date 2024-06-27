@@ -1,12 +1,12 @@
 # Ensure Consistent Spacing Inside Liquid Tags and Variables (`SpaceInsideBraces`)
 
-This check warns against inconsistent spacing inside Liquid tags and variables.
+This check warns against and aims to eliminate inconsistent spacing inside Liquid tags and variables, ensuring cleaner and more readable Liquid code.
 
-## Check Details
+## Examples
 
-This check aims to eliminate inconsistent and messy Liquid code:
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 <!-- Around braces -->
@@ -27,7 +27,7 @@ This check aims to eliminate inconsistent and messy Liquid code:
 {%- if product.featured_media.width >=165 -%}
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% assign x = 1 %}
@@ -47,9 +47,9 @@ This check aims to eliminate inconsistent and messy Liquid code:
 {%- if product.featured_media.width >= 165 -%}
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 SpaceInsideBraces:
@@ -72,13 +72,13 @@ Can all be auto-corrected with the `--auto-correct` option to:
 {{ x }}
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-This check can be disabled if you do not prioritize the visual consistency of your code.
+This check is safe to disable if you do not prioritize the visual consistency of your code.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

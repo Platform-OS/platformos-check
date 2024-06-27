@@ -1,39 +1,40 @@
 # Discourage the Use of `include` (`ConvertIncludeToRender`)
 
-The `include` tag is now considered [deprecated][deprecated], and it is recommended to use the `render` tag instead. This check enforces using the `render` tag instead of `include` to help maintain the efficiency and readability of your code.
+The purpose of this check is to discourage the use of `include` tags and ensure the use of `render` tags instead. The `include` tag is now considered [deprecated][deprecated], and it is recommended to use the `render` tag to help maintain the efficiency and readability of your code.
 
-## Difference between `include` and  `render`
+
+## Why Use `render` instead of `include`
 
 While the `include` tag functions similarly to the `render` tag by inserting snippets of code into files, there's a key difference: `include` allows the code within the snippet to access and overwrite the variables in its parent theme file. This can make your website slower and your code harder to read and maintain. That’s why it’s recommended to use the simpler `render` tag instead.
 
-## Check Details
+## Examples
 
-The purpose of this check is to discourage the use of `include` tags.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% include 'snippet' %}
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% render 'snippet' %}
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 ConvertIncludeToRender:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check - When Not To Use It
 
-### Exception: Variable Partial Names
+### Using Variable Partial Names
 
 There is an exception to using the `render` tag: if you need to use a variable as a partial name. In such cases, the `include` tag remains necessary because the `render` tag does not support variable partial names.
 Here's how you can use the include tag for this specific scenario:
@@ -50,7 +51,7 @@ This example shows how to temporarily disable the check when you need to use `in
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

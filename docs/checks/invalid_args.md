@@ -2,11 +2,11 @@
 
 This check ensures that invalid arguments are not provided in `function`, `render`, and `graphql` tags in Liquid files.
 
-## Check Details
+## Examples
 
-The following examples contain code snippets that either fail or pass this check.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% comment %}app/graphql/my-query does not define invalid_argument{% endcomment %}
@@ -21,16 +21,16 @@ The following examples contain code snippets that either fail or pass this check
 {% render res = 'my-partial', context: context %}
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% comment %}app/graphql/my-query defines defined_argument{% endcomment %}
 {% graphql res = 'my-query', defined_argument: 10 %}
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 InvalidArgs:
@@ -42,9 +42,9 @@ InvalidArgs:
 | enabled | Whether the check is enabled. |
 | severity | The [severity](https://documentation.platformos.com/developer-guide/platformos-check/platformos-check#check-severity) of the check. |
 
-## When Not To Use It
+## Disabling This Check
 
-It is not safe to disable this rule.
+Disabling this check is not recommended.
 
 ## Resources
 

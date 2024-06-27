@@ -1,12 +1,12 @@
 # Report usage of `include` tag inside `render` (`IncludeInRender`)
 
-A runtime error occurs when an `include` tag is used inside a `render` tag. This check identifies and reports these occurrences.
+A runtime error occurs when an `include` tag is used inside a `render` tag. This check aims to eliminate and report these occurrences.
 
-## Check Details
+## Examples
 
-This check aims to eliminate the use of `include` tags within `render` tags.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% liquid
@@ -20,7 +20,7 @@ This check aims to eliminate the use of `include` tags within `render` tags.
 %}
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% liquid
@@ -34,22 +34,22 @@ This check aims to eliminate the use of `include` tags within `render` tags.
 %}
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 IncludeInRender:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-It is not safe to disable this rule.
+Disabling this check is not recommended.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.4.9.
+This check has been introduced in platformOS Check 0.4.9.
 
 ## Resources
 
