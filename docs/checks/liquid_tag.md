@@ -1,12 +1,12 @@
-# Encourage use of liquid tag for consecutive statements (LiquidTag)
+# Encourage Use of `{% liquid ... %}` Tag for Consecutive Statements (`LiquidTag`)
 
-Recommends using `{% liquid ... %}` if 4 or more consecutive liquid tags (`{% ... %}`) are found.
+This check recommends using the `{% liquid ... %}` tag when four or more consecutive Liquid tags (`{% ... %}`) are found. The purpose of this check is to eliminate repetitive tag markers (`{%` and `%}`) in theme files for improved readability and maintainability.
 
-## Check Details
+## Examples
 
-This check is aimed at eliminating repetitive tag markers (`{%` and `%}`) in theme files.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Example of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% if collection.image.size != 0 %}
@@ -18,7 +18,7 @@ This check is aimed at eliminating repetitive tag markers (`{%` and `%}`) in the
 {% endif %}
 ```
 
-:+1: Example of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {%- liquid
@@ -32,9 +32,9 @@ This check is aimed at eliminating repetitive tag markers (`{%` and `%}`) in the
 -%}
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 LiquidTag:
@@ -44,15 +44,15 @@ LiquidTag:
 
 ### `min_consecutive_statements`
 
-The `min_consecutive_statements` option (Default: `5`) determines the maximum (inclusive) number of consecutive statements before the check recommends a refactor.
+The `min_consecutive_statements` option (Default: `5`) determines the maximum (inclusive) number of consecutive statements required before the check recommends refactoring to use the `{% liquid ... %}` tag.
 
-## When Not To Use It
+## Disabling This Check
 
-It's safe to disable this rule.
+This check is safe to disable if it does not align with your coding standards.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

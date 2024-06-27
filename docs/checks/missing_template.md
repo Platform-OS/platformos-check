@@ -1,26 +1,26 @@
-# Prevent missing templates (`MissingTemplate`)
+# Prevent Missing Templates (`MissingTemplate`)
 
-This check exists to prevent rendering resources with the `render` tag, `function` tag (and the deprecated `include` tag) that do not exist.
+This check ensures that resources specified with the `render` tag, `function` tag, and the deprecated `include` tag actually exist. It aims to prevent Liquid rendering errors caused by referencing non-existent templates.
 
-## Check Details
+## Examples
 
-This check is aimed at preventing liquid rendering errors.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Example of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% render 'partial-that-does-not-exist' %}
 ```
 
-:+1: Example of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% render 'partial-that-exists' %}
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 MissingTemplate:
@@ -30,9 +30,10 @@ MissingTemplate:
 
 ### `ignore_missing`
 
-Specify a list of patterns of missing template files to ignore.
+Specify a list of patterns for missing template files to ignore.
 
-While the `ignore` option will ignore all occurrences of `MissingTemplate` according to the file in which they appear, `ignore_missing` allows ignoring all occurrences of `MissingTemplate` based on the target template, the template being rendered.
+- The `ignore` option ignores all occurrences of `MissingTemplate` according to the file in which they appear.
+- The `ignore_missing` option ignores all occurrences of `MissingTemplate` based on the target template, the template being rendered.
 
 For example:
 
@@ -42,7 +43,7 @@ MissingTemplate:
   - icon-*
 ```
 
-Would ignore offenses on `{% render 'icon-missing' %}` across app files.
+This configuration ignores offenses on `{% render 'icon-missing' %}` across all app files.
 
 ```yaml
 MissingTemplate:
@@ -50,11 +51,11 @@ MissingTemplate:
   - modules/private-module/index.liquid
 ```
 
-Would ignore all `MissingTemplate` in `modules/private-module/index.liquid`, no mater the file being rendered.
+This configuration ignores all `MissingTemplate` offenses in `modules/private-module/index.liquid`, regardless of the file being rendered.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

@@ -1,23 +1,23 @@
 # Width and height attributes on image tags (`ImgWidthAndHeight`)
 
-This check exists to prevent [cumulative layout shift][cls] (CLS) in themes.
+This check aims to prevent [cumulative layout shift][cls] (CLS) in themes by enforcing the use of `width` and `height` attributes on `img` tags.
 
-The absence of `width` and `height` attributes on an `img` tag prevents the browser from knowing the aspect ratio of the image before it is downloaded. Unless another technique is used to allocate space, the browser will consider the image to be of height 0 until it is loaded.
+When `width` and `height` attributes are missing on an `img` tag, the browser doesn’t know the image’s aspect ratio until the image is fully loaded. Without this information, the browser treats the image as having a height of 0 until it loads.
 
-This has numerous nefarious implications:
+This leads to several problems:
 
-1. [This causes layout shift as images start appearing one after the other.][codepenshift] Text starts flying down the page as the image pushes it down.
-2. [This breaks lazy loading.][codepenlazy] When all images have a height of 0px, every image is inside the viewport. And when everything is in the viewport, everything gets loaded. There's nothing lazy about it!
+1. [Layout shift occurs as images load][codepenshift]. Text and other content get pushed down the page as the images load one after another.
+2. [Lazy loading fails][codepenlazy]. When all images appear to have a height of 0px, the browser assumes they are all in the viewport and loads them immediately, defeating the purpose of lazy loading.
 
-The fix is easy. Make sure the `width` and `height` attribute are set on the `img` tag and that the CSS width of the image is set.
+To fix this, ensure the `width` and `height` attributes are set on the `img` tag and that the CSS width of the image is defined.
 
-Note: The width and height attributes of an image do not have  units.
+**Note:** The `width` and `height` attributes should not include units.
 
-## Check Details
+## Examples
 
-This check is aimed at eliminating content layout shift in themes by enforcing the use of the `width` and `height` attributes on `img` tags.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 <img alt="cat" src="cat.jpg">
@@ -25,7 +25,7 @@ This check is aimed at eliminating content layout shift in themes by enforcing t
 <img alt="{{ image.alt }}" src="{{ image.src }}">
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 <img alt="cat" src="cat.jpg" width="100" height="200">
@@ -39,29 +39,27 @@ This check is aimed at eliminating content layout shift in themes by enforcing t
 
 **NOTE:** The CSS `width` of the `img` should _also_ be set for the image to be responsive.
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 ImgWidthAndHeight:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check - When Not To Use It
 
-There are some cases where you can avoid content-layout shift without needing the width and height attributes:
+You can avoid content layout shift without `width` and `height` attributes in certain cases:
 
-- When the aspect-ratio of the displayed image should be independent of the uploaded image. In those cases, the solution is still the padding-top hack with an `overflow: hidden container`.
-- When you are happy with the padding-top hack.
+- When the aspect ratio of the displayed image should be independent of the uploaded image. In these cases, use the padding-top hack with an `overflow: hidden` container.
+- When you are satisfied with the padding-top hack.
 
-In those cases, it is fine to disable this check with the comment. 
-
-It is otherwise unwise to disable this check, since it would negatively impact the mobile search ranking of the merchants using your theme.
+Otherwise, it’s unwise to disable this check as it can negatively impact the mobile search ranking of the merchants using your theme.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.6.0.
+This check has been introduced in platformOS Check 0.6.0.
 
 ## Resources
 
@@ -75,5 +73,5 @@ This check has been introduced in PlatformOS Check 0.6.0.
 [codepenshift]: https://codepen.io/charlespwd/pen/YzpxPEp?editors=1100
 [codepenlazy]: https://codepen.io/charlespwd/pen/abZmqXJ?editors=0111
 [aspect-ratio]: https://caniuse.com/mdn-css_properties_aspect-ratio
-[codesource]: /lib/platformos_check/checks/img_aspect_ratio.rb
-[docsource]: /docs/checks/img_aspect_ratio.md
+[codesource]: /lib/platformos_check/checks/img_width_and_height.rb
+[docsource]: /docs/checks/img_width_and_height.md

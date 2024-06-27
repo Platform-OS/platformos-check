@@ -1,12 +1,12 @@
-# Prevent providing invalid arguments in function, render and graphql tags Liquid (`InvalidArgs`)
+# Prevent providing invalid arguments in `function`, `render` and `graphql` tags Liquid (`InvalidArgs`)
 
-This check exists to prevent providing invalid arguments via `function`, `render` and `graphql` tags.
+This check ensures that invalid arguments are not provided in `function`, `render`, and `graphql` tags in Liquid files.
 
 ## Examples
 
-The following examples contain code snippets that either fail or pass this check.
+The following examples show code snippets that either fail or pass this check:
 
-### &#x2717; Fail
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% comment %}app/graphql/my-query does not define invalid_argument{% endcomment %}
@@ -21,16 +21,16 @@ The following examples contain code snippets that either fail or pass this check
 {% render res = 'my-partial', context: context %}
 ```
 
-### &#x2713; Pass
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% comment %}app/graphql/my-query defines defined_argument{% endcomment %}
 {% graphql res = 'my-query', defined_argument: 10 %}
 ```
 
-## Options
+## Configuration Options
 
-The following example contains the default configuration for this check:
+The default configuration for this check:
 
 ```yaml
 InvalidArgs:
@@ -42,9 +42,9 @@ InvalidArgs:
 | enabled | Whether the check is enabled. |
 | severity | The [severity](https://documentation.platformos.com/developer-guide/platformos-check/platformos-check#check-severity) of the check. |
 
-## When Not To Use It
+## Disabling This Check
 
-It is not safe to disable this rule.
+Disabling this check is not recommended.
 
 ## Resources
 
@@ -52,5 +52,5 @@ It is not safe to disable this rule.
 - [Rule source][codesource]
 - [Documentation source][docsource]
 
-[codesource]: /lib/platformos_check/checks/graphql_args.rb
-[docsource]: /docs/checks/graphql_args.md
+[codesource]: /lib/platformos_check/checks/invalid_args.rb
+[docsource]: /docs/checks/invalid_args.md

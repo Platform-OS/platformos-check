@@ -1,27 +1,23 @@
-# Remove unused partials in app (`UnusedPartial`)
+# Remove Unused Partials in App (`UnusedPartial`)
 
-This check warns the user about partials that are not used (Could not find a `render` or `function` tag that uses that partial)
+This check warns the user about partials that are not used, specifically when no `render` or `function` tag references the partial, and aims to eliminate these unused partials from your app.
 
-## Check Details
+## Configuration Options
 
-This check is aimed at eliminating unused partials.
-
-## Check Options
-
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 UnusedPartial:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-It's safe to disable this rule.
+This check is safe to disable if managing unused partials is not a priority.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

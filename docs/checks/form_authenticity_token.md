@@ -1,22 +1,29 @@
-# Form authenticity token (`FormAuthenticityToken`)
+# Form Authenticity Token (`FormAuthenticityToken`)
 
-In platformOS all POST/PATCH/PUT/DELETE requests are protected from [CSRF Attacks][csrf-attack] through [authenticity_token][page-csrf]
-Form action defines the endpoint to which browser will make a request after submitting it.
+This check ensures that the `authenticity_token` is included in each form to keep the session safe and protect against CSRF.
 
-As a general rule you should include hidden input `<input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">` in every form. Missing it will result in session invalidation and the logged in user will be automatically logged out.
+In platformOS, all POST, PATCH, PUT, and DELETE requests are protected from [CSRF Attacks][csrf-attack] by using an [authenticity_token][page-csrf]. This token verifies that the person submitting the form is the one who initially requested the web page.
 
-## Check Details
+It's important to add a hidden input field with the authenticity token in every form. The tag should look like this: 
 
-This check is aimed at ensuring you have not forgotten to include authenticity_token in a form.
+```liquid
+<input type="hidden" name="authenticity_token" value="{{ context.authenticity_token }}">
+```
 
-:-1: Examples of **incorrect** code for this check:
+If this token is missing from a form, the session will end and the user will be logged out automatically.
+
+## Examples
+
+The following examples show code snippets that either fail or pass this check:
+
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 <form action="/dummy/create" method="post">
 </form>
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 With token:
 ```liquid
@@ -43,22 +50,22 @@ For parameterized request:
 </form>
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 FormAuthenticityToken:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-There should be no cases where disabling this rule is needed.
+Disabling this check is not recommended.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.4.6.
+This check has been introduced in platformOS Check 0.4.6.
 
 ## Resources
 
@@ -71,4 +78,3 @@ This check has been introduced in PlatformOS Check 0.4.6.
 [docsource]: /docs/checks/form_authenticity_token.md
 [page-csrf]: https://documentation.platformos.com/developer-guide/pages/pages#post-put-patch-delete-methods-and-cross-site-request-forgery-attacks
 [csrf-attack]: https://owasp.org/www-community/attacks/csrf
-

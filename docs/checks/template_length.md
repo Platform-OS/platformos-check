@@ -1,22 +1,22 @@
-# Discourage the use of large template files (`TemplateLength`)
+# Discourage the Use of Large Template Files (`TemplateLength`)
 
-This check exists to discourage the use of large template files. Use partials and functions to componentize your app.
+This check aims to eliminate the use of large template files by encouraging a modular approach - using partials and functions to componentize your app instead.
 
-## Check Details
+## Examples
 
-This check is aimed at eliminating large template files.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Example (Avoid using this):
 
 - Files that have more lines than the threshold
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Example (Use this instead):
 
 - Files that have less lines than the threshold
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 TemplateLength:
@@ -26,15 +26,15 @@ TemplateLength:
 
 ### `max_length`
 
-The `max_length` (Default: `200`) option determines the maximum number of lines allowed inside a liquid file.
+The `max_length` (Default: `600`) option determines the maximum number of lines allowed inside a liquid file.
 
-## When Not To Use It
+## Disabling This Check
 
-If you don't care about template lengths, then it's safe to disable this rule.
+This check is safe to disable if you do not prioritize template length management.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

@@ -1,39 +1,38 @@
 # Translation Key Exists (`TranslationKeyExists`)
 
-Checks if translation key is defined in the default language
+This check ensures that translation keys are defined in the default language, aiming to prevent missing translation errors.
 
-## Check Details
+## Examples
 
-This check is aimed at avoiding missing translation error.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {{ 'undefined.key' | t }}
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {{ 'defined.key' | t }}
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 TranslationKeyExists:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-There should be no cases where disabling this rule is needed. For keys that are set via UI, and hence should not be part of the codebase,
-use proper configuration option in [app/config.yml](https://documentation.platformos.com/developer-guide/platformos-workflow/codebase/config)
+There should be no need to disable this rule. For keys set via the UI and not intended to be part of the codebase, use the appropriate configuration option in [app/config.yml](https://documentation.platformos.com/developer-guide/platformos-workflow/codebase/config).
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.4.10.
+This check has been introduced in platformOS Check 0.4.10.
 
 ## Resources
 

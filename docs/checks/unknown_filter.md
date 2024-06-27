@@ -1,39 +1,39 @@
-# Prevent use of unknown filters (`UnknownFilter`)
+# Prevent Use of Unknown Filters (`UnknownFilter`)
 
-This check exists to prevent user errors.
+This check prevents errors caused by using unknown filters in Liquid code and aims to eliminate the use of such filters.
 
-## Check Details
+## Examples
 
-This check is aimed at preventing the use of unknown filters.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {{ x | some_unknown_filter }}
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {{ x | upcase }}
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 UnknownFilter:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-It is not safe to disable this rule.
+Disabling this check is not recommended, as it helps prevent user errors.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.0.1.
+This check has been introduced in platformOS Check 0.0.1.
 
 ## Resources
 

@@ -1,12 +1,12 @@
-# Unreachable code (`UnreachableCode`)
+# Unreachable Code (`UnreachableCode`)
 
-Unreachable code reports code that will never be reached, no matter what.
+This check detects and ensures that you do not accidentally write code that will never be executed because it is unreachable.
 
-## Check Details
+## Examples
 
-This check is aimed at ensuring you will not accidentally write code that will never be reached.
+The following examples show code snippets that either fail or pass this check:
 
-:-1: Examples of **incorrect** code for this check:
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
   assign x = "hello"
@@ -23,7 +23,7 @@ This check is aimed at ensuring you will not accidentally write code that will n
   endif
 ```
 
-:+1: Examples of **correct** code for this check:
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
   assign x = "hello"
@@ -40,22 +40,22 @@ This check is aimed at ensuring you will not accidentally write code that will n
   endif
 ```
 
-## Check Options
+## Configuration Options
 
-The default configuration for this check is the following:
+The default configuration for this check:
 
 ```yaml
 UnreachableCode:
   enabled: true
 ```
 
-## When Not To Use It
+## Disabling This Check
 
-There should be no cases where disabling this rule is needed.
+Disabling this check is not recommended.
 
 ## Version
 
-This check has been introduced in PlatformOS Check 0.4.7.
+This check has been introduced in platformOS Check 0.4.7.
 
 ## Resources
 

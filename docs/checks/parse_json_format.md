@@ -1,16 +1,12 @@
-# Prevent unformatted parse_json tags (`ParseJsonFormat`)
+# Prevent Unformatted `parse_json` Tags (`ParseJsonFormat`)
 
-_Version 1.9.0+_
-
-This check exists to ensure the JSON in your parses is pretty.
-
-It exists as a facilitator for its auto-correction. This way you can right-click fix the problem.
+This check ensures that the JSON in your `parse_json` tags is properly formatted (pretty) for better readability. It facilitates auto-correction, allowing you to right-click and fix formatting issues easily.
 
 ## Examples
 
-The following examples contain code snippets that either fail or pass this check.
+The following examples show code snippets that either fail or pass this check:
 
-### &#x2717; Fail
+### &#x2717; Incorrect Code Example (Avoid using this):
 
 ```liquid
 {% parse_json my_json %}
@@ -25,7 +21,7 @@ The following examples contain code snippets that either fail or pass this check
 {% endparse_json %}
 ```
 
-### &#x2713; Pass
+### &#x2713; Correct Code Example (Use this instead):
 
 ```liquid
 {% parse_json my_json %}
@@ -44,9 +40,9 @@ The following examples contain code snippets that either fail or pass this check
 {% endparse_json %}
 ```
 
-## Options
+## Configuration Options
 
-The following example contains the default configuration for this check:
+The default configuration for this check:
 
 ```yaml
 ParseJsonFormat:
@@ -60,12 +56,17 @@ ParseJsonFormat:
 | --- | --- |
 | enabled | Whether the check is enabled. |
 | severity | The [severity](https://documentation.platformos.com/developer-guide/platformos-check/platformos-check#check-severity) of the check. |
-| start_level | The indentation level. If you prefer an indented parse_json, set this to 1. |
+| start_level | The base indentation level. Set this to 1 if you prefer an indented `parse_json`. |
 | indent | The character(s) used for indentation levels. |
 
-## Disabling this check
 
- This check is safe to disable. You might want to disable this check if you do not care about the visual appearance of your parse_json tags.
+## Disabling This Check
+
+This check is safe to disable if you do not care about the visual formatting of your `parse_json` tags.
+
+## Version
+
+This check has been introduced in platformOS Check 1.9.0.
 
 ## Resources
 
