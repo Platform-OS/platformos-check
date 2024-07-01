@@ -5,7 +5,7 @@ The purpose of this check is to discourage the use of `include` tags and ensure 
 
 ## Why Use `render` instead of `include`
 
-While the `include` tag functions similarly to the `render` tag by inserting snippets of code into files, there's a key difference: `include` allows the code within the snippet to access and overwrite the variables in its parent theme file. This can make your website slower and your code harder to read and maintain. That’s why it’s recommended to use the simpler `render` tag instead.
+While the `include` tag functions similarly to the `render` tag by inserting snippets of code into files, there's a key difference: `include` allows the code within the snippet to access and overwrite the variables in its parent platformOS file. This can make your website slower and your code harder to read and maintain. That’s why it’s recommended to use the simpler `render` tag instead.
 
 ## Examples
 

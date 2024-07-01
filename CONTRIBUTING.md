@@ -6,16 +6,16 @@
 * PR should explain what the feature does, and why the change exists.
 * PR should include any carrier specific documentation explaining how it works.
 * Code _must_ be tested.
-* Be consistent. Write clean code that follows [Ruby community standards](https://github.com/bbatsov/ruby-style-guide).
+* Be consistent. Write clean code that follows the [Ruby community standards](https://github.com/bbatsov/ruby-style-guide).
 * Code should be generic and reusable.
 
 ## How to contribute
 
-1. Fork it ( https://github.com/Platform-OS/platformos-lsp )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+1. Fork it (https://github.com/Platform-OS/platformos-lsp).
+2. Create your feature branch (`git checkout -b my-new-feature`).
+3. Commit your changes (`git commit -am 'Add some feature'`).
+4. Push to the branch (`git push origin my-new-feature`).
+5. Create a new Pull Request.
 
 ## Run Language Server
 
@@ -49,9 +49,9 @@ Before configuring your IDE, run the following commands in a terminal:
 
 #### Configure VS Code
 
-1. Download provided .vsix file
-2. Install it manually via View -> Extensions -> ... -> Install from VSIX
-3. Configure settings.json
+1. Download provided `.vsix` file.
+2. Install it manually via View -> Extensions -> ... -> Install from VSIX.
+3. Configure `settings.json`:
 
 ```
 "platformosCheck.checkOnChange": true,
@@ -90,8 +90,8 @@ If you use `coc.nvim` as your completion engine, add this to your CocConfig:
 
 ### Confirm Setup
 
-* In another terminal from the root of theme check run `tail -f /tmp/platformos-check-debug.log` to watch the server logs
-* Restart your IDE, confirm the response for initialize in the logs is pointing to the language server in the `$HOME/bin` directory (the version will be different)
+* From the root of platformos-check, run `tail -f /tmp/platformos-check-debug.log` in another terminal to watch the server logs.
+* Restart your IDE, confirm the response for initialization in the logs is pointing to the language server in the `$HOME/bin` directory (the version will be different).
 
 ```json
     "serverInfo": {
@@ -118,9 +118,9 @@ bin/platformos-check /path/to/your/app
 
 Run `bundle exec rake "new_check[MyNewCheckName]"` to generate all the files required to create a new check.
 
-Check the [Check API](/docs/api/check.md) for how to implement a check. Also take a look at other checks in [lib/platformos_check/checks](/lib/platformos_check/checks).
+Check the [Check API](/docs/api/check.md) for how to implement a check. Also, take a look at other checks in [lib/platformos_check/checks](/lib/platformos_check/checks).
 
-We done implementing your check, add it to `config/default.yml` to enable it:
+When you're done implementing your check, add it to `config/default.yml` to enable it:
 
 ```yaml
 MyNewCheckName:
@@ -128,7 +128,9 @@ MyNewCheckName:
   ignore: []
 ```
 
-If the check is configurable, the `initialize` argument names and default values should also be duplicated inside `config/default.yml`. eg.:
+If the check is configurable, the `initialize` argument names and default values should also be duplicated inside `config/default.yml`. 
+
+For example:
 
 ```ruby
 class MyCheckName < LiquidCheck
@@ -148,9 +150,9 @@ MyNewCheckName:
 
 ## Debugging
 
-A couple of things are turned on when the `PLATFORMOS_CHECK_DEBUG` environment variable is set.
+When the `PLATFORMOS_CHECK_DEBUG` environment variable is set, several features are enabled:
 
-1. The check timeout is turned off. This means you can add `binding.pry` in tests and properly debug with `bundle exec rake tests:in_memory`
+1. The check timeout is disabled. This allows you to use `binding.pry` in tests and debug with `bundle exec rake tests:in_memory`.
 2. The `--profile` flag appears. You can now create Flamegraphs to inspect performance.
 
 ```
@@ -173,7 +175,7 @@ bin/platformos-check-language-server
 
 #### Flamegraph
 
-With the `--profile` flag, you can run platformos-check on a theme and the `ruby-prof-flamegraph` printer will output profiling information in a format [Flamegraph](/brendangregg/FlameGraph) understands.
+With the `--profile` flag, you can run platformos-check on your platformOS application and the `ruby-prof-flamegraph` printer will output profiling information in a format [Flamegraph](/brendangregg/FlameGraph) understands.
 
 
 **Setup:**
@@ -206,4 +208,4 @@ What you'll see is an interactive version of the following image:
 
 ## Troubleshooting
 
-If you run into issues during development, see the [troubleshooting guide](/TROUBLESHOOTING.md)
+If you run into issues during development, see the [Troubleshooting Guide](/TROUBLESHOOTING.md).
