@@ -90,7 +90,7 @@ If you use `coc.nvim` as your completion engine, add this to your CocConfig:
 
 ### Confirm Setup
 
-* From the root of theme check, run `tail -f /tmp/platformos-check-debug.log` in another terminal to watch the server logs.
+* From the root of platformos-check, run `tail -f /tmp/platformos-check-debug.log` in another terminal to watch the server logs.
 * Restart your IDE, confirm the response for initialization in the logs is pointing to the language server in the `$HOME/bin` directory (the version will be different).
 
 ```json
@@ -175,7 +175,7 @@ bin/platformos-check-language-server
 
 #### Flamegraph
 
-With the `--profile` flag, you can run platformos-check on a theme and the `ruby-prof-flamegraph` printer will output profiling information in a format [Flamegraph](/brendangregg/FlameGraph) understands.
+With the `--profile` flag, you can run platformos-check on your platformOS application and the `ruby-prof-flamegraph` printer will output profiling information in a format [Flamegraph](/brendangregg/FlameGraph) understands.
 
 
 **Setup:**

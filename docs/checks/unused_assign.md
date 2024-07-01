@@ -1,6 +1,6 @@
 # Prevent Unused Assigns (`UnusedAssign`)
 
-This check helps prevent bloat in themes by identifying variable definitions that are not used, aiming to eliminate unnecessary code in apps and highlight user errors.
+This check helps prevent bloat in your platformOS application by identifying variable definitions that are not used, aiming to eliminate unnecessary code in apps and highlight user errors.
 
 ## Examples
 

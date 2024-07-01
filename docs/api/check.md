@@ -1,8 +1,8 @@
 # Check API
 
-PlatformOS Check uses static analysis by parsing theme files into an Abstract Syntax Tree (AST), and then applying various checks to this structure.
+PlatformOS Check uses static analysis by parsing platformOS files into an Abstract Syntax Tree (AST), and then applying various checks to this structure.
 
-An [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree), or Abstract Syntax Tree, is a tree representation of the abstract syntactic structure of a theme file. Each node in the tree corresponds to a part of the code.
+An [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree), or Abstract Syntax Tree, is a tree representation of the abstract syntactic structure of a platformOS file. Each node in the tree corresponds to a part of the code.
 
 The checks are implemented as Ruby classes with callback methods:
 

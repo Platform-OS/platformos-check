@@ -1,6 +1,6 @@
 # Prevent Missing `platformos-check-enable` Comments (`MissingEnableComment`)
 
-This check ensures that when `platformos-check-disable` is used within a theme file, a corresponding `platformos-check-enable` comment is included to re-enable the checks.
+This check ensures that when `platformos-check-disable` is used in your platformOS application, a corresponding `platformos-check-enable` comment is included to re-enable the checks.
 
 ## Examples
 

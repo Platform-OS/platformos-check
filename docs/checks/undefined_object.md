@@ -50,7 +50,7 @@ Disabling this check is not recommended.
 
 ## Version
 
-This check has been introduced in Theme Check 0.1.0.
+This check has been introduced in platformOS Check 0.1.0.
 
 ## Resources
 

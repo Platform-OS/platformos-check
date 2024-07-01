@@ -1,6 +1,6 @@
 # Width and height attributes on image tags (`ImgWidthAndHeight`)
 
-This check aims to prevent [cumulative layout shift][cls] (CLS) in themes by enforcing the use of `width` and `height` attributes on `img` tags.
+This check aims to prevent [cumulative layout shift][cls] (CLS) in your platformOS application by enforcing the use of `width` and `height` attributes on `img` tags.
 
 When `width` and `height` attributes are missing on an `img` tag, the browser doesn’t know the image’s aspect ratio until the image is fully loaded. Without this information, the browser treats the image as having a height of 0 until it loads.
 
@@ -55,7 +55,7 @@ You can avoid content layout shift without `width` and `height` attributes in ce
 - When the aspect ratio of the displayed image should be independent of the uploaded image. In these cases, use the padding-top hack with an `overflow: hidden` container.
 - When you are satisfied with the padding-top hack.
 
-Otherwise, it’s unwise to disable this check as it can negatively impact the mobile search ranking of the merchants using your theme.
+Otherwise, it’s unwise to disable this check as it can negatively impact the mobile search ranking of the merchants using your platformOS application.
 
 ## Version
 

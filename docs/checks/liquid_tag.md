@@ -1,6 +1,6 @@
 # Encourage Use of `{% liquid ... %}` Tag for Consecutive Statements (`LiquidTag`)
 
-This check recommends using the `{% liquid ... %}` tag when four or more consecutive Liquid tags (`{% ... %}`) are found. The purpose of this check is to eliminate repetitive tag markers (`{%` and `%}`) in theme files for improved readability and maintainability.
+This check recommends using the `{% liquid ... %}` tag when four or more consecutive Liquid tags (`{% ... %}`) are found. The purpose of this check is to eliminate repetitive tag markers (`{%` and `%}`) in your platformOS application files for improved readability and maintainability.
 
 ## Examples
 
