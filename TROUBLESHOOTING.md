@@ -22,16 +22,15 @@ bundle install
 
 If discrepancies are found, update your environment with the correct version of Ruby and re-install the necessary gems:
 
-### Language Server sends an `initialize()` request to the client and stops
-
-
-**Debugging Steps:**
+### Language Server Initialization Issue
 
 **Symptom:**
 
-To debug, confirm these steps are included in your local language server startup script:
+The language server sends an `initialize()` request to the client but then stops responding.
 
-1. Ensure your local language server startup script includes the necessary environment variables for debugging:
+**Debugging Steps:**
+
+1. Ensure your local language server startup script includes these steps:
 ```bash
 export PLATFORMOS_CHECK_DEBUG=true
 export PLATFORMOS_CHECK_DEBUG_LOG_FILE="/tmp/platformos-check-debug.log"
