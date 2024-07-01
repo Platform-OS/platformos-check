@@ -1,17 +1,23 @@
 ## Releasing platformOS Check
 
-1. Check the Semantic Versioning page for info on how to version the new release: http://semver.org
+Follow these steps to release a new version of latformOS Check:
 
-2. Run the following command to update the version in `lib/platformos_check/version.rb` and replace the `PLATFORMOS_CHECK_VERSION` placeholder in the documentation for new rules:
+1. **Versioning**: Refer to the [Semantic Versioning page](http://semver.org) to determine the appropriate version number for the new release based on the changes made.
+
+2. **Update Version**: Update the version number in the `lib/platformos_check/version.rb` file. Also, replace the `PLATFORMOS_CHECK_VERSION` placeholder in the documentation for any new rules.
+Use the following command to automate these updates:
 
    ```bash
    VERSION="X.X.X"
    rake prerelease[$VERSION]
    ```
 
-3. Run [`git changelog`](https://github.com/tj/git-extras) to update `CHANGELOG.md`.
+3. **Update Changelog**: Use the [`git changelog` command](https://github.com/tj/git-extras) to automatically update the `CHANGELOG.md` with the latest commit descriptions.
+   ```bash
+   git changelog
+   ```
 
-4. Commit your changes and make a PR.
+4. **Commit and Prepare PR**: Commit the changes and prepare a pull request for review.
 
    ```bash
    git checkout -b "bump/platformos-check-$VERSION"
@@ -20,9 +26,10 @@
    hub compare "main:bump/platformos-check-$VERSION"
    ```
 
-5. Merge your PR to main.
+5. **Merge PR**: After review, merge your pull request into the main branch.
 
-6. [Create a GitHub release](https://github.com/Platform-OS/platformos-lsp/releases/new) for the change.
+6. **Create GitHub Release**: [Create a GitHub release](https://github.com/Platform-OS/platformos-lsp/releases/new) for the change using the updated version tag.
+
 
    ```
    VERSION=v1.X.Y
@@ -32,4 +39,4 @@
    gh release create -t $VERSION
    ```
 
-   (It's a good idea to copy parts of the CHANGELOG in there)
+⚠️ **Note:** Incorporate relevant parts of the CHANGELOG into the release notes to provide context on the changes.
