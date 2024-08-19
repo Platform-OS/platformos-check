@@ -57,6 +57,17 @@ class SyntaxErrorTest < Minitest::Test
     END
   end
 
+  def test_invalid_function_tag
+    offenses = analyze_platformos_app_without_raise(
+      PlatformosCheck::SyntaxError.new,
+      "app/views/pages/index.liquid" => "{% function 'path/to/function', id: my_id %}"
+    )
+
+    assert_offenses(<<~END, offenses)
+      Invalid syntax for function tag at app/views/pages/index.liquid:1
+    END
+  end
+
   def test_invalid_parse_json_tag
     offenses = analyze_platformos_app_without_raise(
       PlatformosCheck::SyntaxError.new,
