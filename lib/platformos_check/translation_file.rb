@@ -2,7 +2,7 @@
 
 module PlatformosCheck
   class TranslationFile < YamlFile
-    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(translations)/|modules/((\w|-)*)/(private|public)/(translations)/)}
+    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(translations)/|(app/)?modules/((\w|-)*)/(private|public)/(translations)/)}
     TRANSLATION_FILTERS = Set.new(%w[t t_escape translate translate_escape]).freeze
     attr_reader :language
 

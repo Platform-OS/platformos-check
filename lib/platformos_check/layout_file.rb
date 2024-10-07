@@ -2,7 +2,7 @@
 
 module PlatformosCheck
   class LayoutFile < LiquidFile
-    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(views/layouts)/|modules/((\w|-)*)/(private|public)/(views/layouts)/)}
+    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(views/layouts)/|(app/)?modules/((\w|-)*)/(private|public)/(views/layouts)/)}
 
     def layout?
       true

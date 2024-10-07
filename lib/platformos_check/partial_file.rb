@@ -2,7 +2,7 @@
 
 module PlatformosCheck
   class PartialFile < LiquidFile
-    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(views/partials|liquid_views|views|lib)/|modules/((\w|-)*)/(private|public)/(views/partials|liquid_views|views|lib)/)}
+    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(views/partials|liquid_views|views|lib)/|(app/)?modules/((\w|-)*)/(private|public)/(views/partials|liquid_views|views|lib)/)}
 
     def partial?
       true

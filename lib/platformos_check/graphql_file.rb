@@ -4,7 +4,7 @@ require 'graphql'
 
 module PlatformosCheck
   class GraphqlFile < AppFile
-    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(graph_queries|graphql)s?/|modules/((\w|-)*)/(private|public)/(graph_queries|graphql)s?/)}
+    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(graph_queries|graphql)s?/|(app/)?modules/((\w|-)*)/(private|public)/(graph_queries|graphql)s?/)}
 
     def write
       content = rewriter.to_s

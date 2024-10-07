@@ -6,20 +6,20 @@ require "pathname"
 
 module PlatformosCheck
   class App
-    API_CALLS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(notifications/api_call_notifications|api_calls)/(.+)\.liquid\z}
-    ASSETS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)assets/}
-    EMAILS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(notifications/email_notifications|emails)/(.+)\.liquid\z}
-    GRAPHQL_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(graph_queries|graphql)s?/(.+)\.graphql\z}
+    API_CALLS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)(notifications/api_call_notifications|api_calls)/(.+)\.liquid\z}
+    ASSETS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)assets/}
+    EMAILS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)(notifications/email_notifications|emails)/(.+)\.liquid\z}
+    GRAPHQL_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)(graph_queries|graphql)s?/(.+)\.graphql\z}
 
-    MIGRATIONS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)migrations/(.+)\.liquid\z}
-    PAGES_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(pages|views/pages)/(.+).liquid\z}
-    PARTIALS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(views/partials|lib)/(.+)\.liquid\z}
-    FORMS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(form_configurations|forms)/(.+)\.liquid\z}
-    LAYOUTS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(views/layouts)/(.+).liquid\z}
-    SCHEMA_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(custom_model_types|model_schemas|schema)/(.+)\.yml\z}
-    SMSES_REGEX =  %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)(notifications/sms_notifications|smses)/(.+)\.liquid\z}
+    MIGRATIONS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)migrations/(.+)\.liquid\z}
+    PAGES_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)(pages|views/pages)/(.+).liquid\z}
+    PARTIALS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)(views/partials|lib)/(.+)\.liquid\z}
+    FORMS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)(form_configurations|forms)/(.+)\.liquid\z}
+    LAYOUTS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)(views/layouts)/(.+).liquid\z}
+    SCHEMA_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)(custom_model_types|model_schemas|schema)/(.+)\.yml\z}
+    SMSES_REGEX =  %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)(notifications/sms_notifications|smses)/(.+)\.liquid\z}
     USER_SCHEMA_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/)?)user.yml}
-    TRANSLATIONS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|modules/(.+)(private|public|marketplace_builder|app)/)?)translations/(.+)\.yml}
+    TRANSLATIONS_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/|(app/)?modules/(.+)(private|public|marketplace_builder|app)/)?)translations/(.+)\.yml}
     CONFIG_REGEX = %r{\A(?-mix:^/?((marketplace_builder|app)/)?)config.yml}
 
     REGEXP_MAP = {
@@ -60,10 +60,12 @@ module PlatformosCheck
         next unless regexp
 
         f = klass.new(path, storage)
+
         if remove
           @grouped_files[klass].delete(f.name)
         else
-          @grouped_files[klass][f.name] = f
+          # we want to keep the reference to a module overwrite, if exists
+          @grouped_files[klass][f.name] = f unless f.module_original_file? && @grouped_files[klass][f.name] && @grouped_files[klass][f.name].module_overwrite_file?
         end
       end
       @grouped_files

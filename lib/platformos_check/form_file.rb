@@ -2,7 +2,7 @@
 
 module PlatformosCheck
   class FormFile < LiquidFile
-    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(form_configurations|forms)/|modules/((\w|-)*)/(private|public)/(form_configurations|forms)/)}
+    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/(form_configurations|forms)/|(app/)?modules/((\w|-)*)/(private|public)/(form_configurations|forms)/)}
 
     def form?
       true

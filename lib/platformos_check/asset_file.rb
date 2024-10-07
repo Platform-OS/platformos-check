@@ -4,7 +4,7 @@ require "zlib"
 
 module PlatformosCheck
   class AssetFile < AppFile
-    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/assets/|modules/((\w|-)*)/(private|public)/assets/)}
+    DIR_PREFIX = %r{\A/?((marketplace_builder|app)/assets/|(app/)?modules/((\w|-)*)/(private|public)/assets/)}
 
     def initialize(relative_path, storage)
       super
