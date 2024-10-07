@@ -185,7 +185,7 @@ module PlatformosCheck
           "{{ product | ", # return_type array is empty
           "{{ settings.type_header_font | " # return_type and properties arrays are empty
         ].each do |token|
-          @filter_compatible_with.each do |_, filter_name|
+          @filter_compatible_with.each_value do |filter_name|
             assert_can_complete_with(@provider, token, filter_name)
           end
           assert_can_complete_with(@provider, token, FILTER_WITH_INPUT_TYPE_VARIABLE)

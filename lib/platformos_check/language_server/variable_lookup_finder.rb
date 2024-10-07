@@ -75,11 +75,10 @@ module PlatformosCheck
         is_liquid_variable = content =~ Liquid::VariableStart
         is_in_variable_segment = previous_char =~ VARIABLE_LOOKUP_CHARACTERS
         is_on_blank_variable_lookup_position = content[0..cursor - 1] =~ /[{:,-]\s+$/
-        (
-          is_liquid_variable && (
-            is_in_variable_segment ||
-            is_on_blank_variable_lookup_position
-          )
+
+        is_liquid_variable && (
+          is_in_variable_segment ||
+          is_on_blank_variable_lookup_position
         )
       end
 
@@ -162,11 +161,10 @@ module PlatformosCheck
         is_liquid_tag = content.match?(Liquid::TagStart)
         is_in_variable_segment = markup =~ ENDS_WITH_POTENTIAL_LOOKUP
         is_on_blank_variable_lookup_position = markup =~ ENDS_WITH_BLANK_POTENTIAL_LOOKUP
-        (
-          is_liquid_tag && (
-            is_in_variable_segment ||
-            is_on_blank_variable_lookup_position
-          )
+
+        is_liquid_tag && (
+          is_in_variable_segment ||
+          is_on_blank_variable_lookup_position
         )
       end
 

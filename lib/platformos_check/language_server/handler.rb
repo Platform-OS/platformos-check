@@ -169,8 +169,8 @@ module PlatformosCheck
 
       def on_workspace_did_create_files(_id, params)
         paths = params[:files]
-          &.map { |file| file[:uri] }
-          &.map { |uri| file_path(uri) }
+                &.map { |file| file[:uri] }
+                &.map { |uri| file_path(uri) }
         return unless paths
 
         paths.each do |path|
@@ -184,8 +184,8 @@ module PlatformosCheck
 
       def on_workspace_did_delete_files(_id, params)
         absolute_paths = params[:files]
-          &.map { |file| file[:uri] }
-          &.map { |uri| file_path(uri) }
+                         &.map { |file| file[:uri] }
+                         &.map { |uri| file_path(uri) }
 
         return unless absolute_paths
 
@@ -202,8 +202,8 @@ module PlatformosCheck
       # (which might trigger another platformos_app analysis).
       def on_workspace_will_rename_files(id, params)
         relative_paths = params[:files]
-          &.map { |file| [file[:oldUri], file[:newUri]] }
-          &.map { |(old_uri, new_uri)| [relative_path_from_uri(old_uri), relative_path_from_uri(new_uri)] }
+                         &.map { |file| [file[:oldUri], file[:newUri]] }
+                         &.map { |(old_uri, new_uri)| [relative_path_from_uri(old_uri), relative_path_from_uri(new_uri)] }
         return @bridge.send_response(id, nil) unless relative_paths
 
         relative_paths.each do |(old_path, new_path)|

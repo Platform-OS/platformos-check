@@ -22,8 +22,8 @@ module PlatformosCheck
           property_entry = SourceIndex
                            .objects
                            .find { |entry| entry.name == object_name }
-            &.properties
-            &.find { |prop| prop.name == property_name }
+                           &.properties
+                           &.find { |prop| prop.name == property_name }
 
           render_doc(property_entry)
         end

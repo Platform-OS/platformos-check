@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency('graphql', '~> 2.0.0')
-  spec.add_dependency('liquid', '>= 5.4.0')
+  spec.add_dependency('liquid', '5.4.0')
   spec.add_dependency('nokogiri', '>= 1.12')
   spec.add_dependency('parser', '~> 3')
 
