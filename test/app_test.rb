@@ -86,4 +86,39 @@ class AppTest < Minitest::Test
 
     assert_equal(["app.css", "app.js"], storage.platformos_app.assets.map(&:name).sort)
   end
+
+  def test_module_overwrites_in_app
+    # find the overwrite in app instead of the original file in modules
+    @platformos_app = make_platformos_app(
+      "modules/my-module/public/lib/foo/create.liquid" => "modules",
+      "app/modules/my-module/public/lib/foo/create.liquid" => "app"
+    )
+
+    assert_equal '/dev/null/app/modules/my-module/public/lib/foo/create.liquid', @platformos_app.grouped_files[PlatformosCheck::PartialFile]["modules/my-module/foo/create"].path.to_s
+
+    # find the overwrite in app instead of the original file in modules
+    @platformos_app = make_platformos_app(
+      "app/modules/my-module/public/lib/foo/create.liquid" => "app",
+      "modules/my-module/public/lib/foo/create.liquid" => "modules"
+    )
+
+    assert_equal '/dev/null/app/modules/my-module/public/lib/foo/create.liquid', @platformos_app.grouped_files[PlatformosCheck::PartialFile]["modules/my-module/foo/create"].path.to_s
+
+    # find the original file in modules if the overwrite is missing
+    @platformos_app = make_platformos_app(
+      "modules/my-module/public/lib/foo/create.liquid" => "modules"
+    )
+
+    assert_equal(1, @platformos_app.liquid.size)
+    assert(@platformos_app.liquid.all? { |a| a.is_a?(PlatformosCheck::LiquidFile) })
+
+    assert_equal '/dev/null/modules/my-module/public/lib/foo/create.liquid', @platformos_app.grouped_files[PlatformosCheck::PartialFile]["modules/my-module/foo/create"].path.to_s
+
+    # find the overwrite file in modules even if the original is missing
+    @platformos_app = make_platformos_app(
+      "app/modules/my-module/public/lib/foo/create.liquid" => "app"
+    )
+
+    assert_equal '/dev/null/app/modules/my-module/public/lib/foo/create.liquid', @platformos_app.grouped_files[PlatformosCheck::PartialFile]["modules/my-module/foo/create"].path.to_s
+  end
 end
