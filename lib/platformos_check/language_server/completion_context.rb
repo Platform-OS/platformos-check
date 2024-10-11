@@ -28,6 +28,8 @@ module PlatformosCheck
 
       def cursor
         @cursor ||= (absolute_cursor - token&.start) || 0
+      rescue StandardError
+        0
       end
 
       def content

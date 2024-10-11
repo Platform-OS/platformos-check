@@ -104,10 +104,8 @@ class AppTest < Minitest::Test
 
     assert_equal '/dev/null/app/modules/my-module/public/lib/foo/create.liquid', @platformos_app.grouped_files[PlatformosCheck::PartialFile]["modules/my-module/foo/create"].path.to_s
 
-    # find the original file in modules if the overwrite is missing
-    @platformos_app = make_platformos_app(
-      "modules/my-module/public/lib/foo/create.liquid" => "modules"
-    )
+    # remove overwrite, still need to be able to find the original file
+    @platformos_app.storage.remove('app/modules/my-module/public/lib/foo/create.liquid')
 
     assert_equal(1, @platformos_app.liquid.size)
     assert(@platformos_app.liquid.all? { |a| a.is_a?(PlatformosCheck::LiquidFile) })
@@ -115,9 +113,17 @@ class AppTest < Minitest::Test
     assert_equal '/dev/null/modules/my-module/public/lib/foo/create.liquid', @platformos_app.grouped_files[PlatformosCheck::PartialFile]["modules/my-module/foo/create"].path.to_s
 
     # find the overwrite file in modules even if the original is missing
-    @platformos_app = make_platformos_app(
-      "app/modules/my-module/public/lib/foo/create.liquid" => "app"
-    )
+    @platformos_app.storage.remove('modules/my-module/public/lib/foo/create.liquid')
+
+    assert_nil @platformos_app.grouped_files[PlatformosCheck::PartialFile]["modules/my-module/foo/create"]
+
+    # add a module file
+    @platformos_app.storage.write('modules/my-module/public/lib/foo/create.liquid', 'hello')
+
+    assert_equal '/dev/null/modules/my-module/public/lib/foo/create.liquid', @platformos_app.grouped_files[PlatformosCheck::PartialFile]["modules/my-module/foo/create"].path.to_s
+
+    # add an overwrite file
+    @platformos_app.storage.write('app/modules/my-module/public/lib/foo/create.liquid', 'hello from overwrite')
 
     assert_equal '/dev/null/app/modules/my-module/public/lib/foo/create.liquid', @platformos_app.grouped_files[PlatformosCheck::PartialFile]["modules/my-module/foo/create"].path.to_s
   end

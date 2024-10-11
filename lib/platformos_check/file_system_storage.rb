@@ -31,7 +31,7 @@ module PlatformosCheck
 
       file(relative_path).dirname.mkpath unless file(relative_path).dirname.directory?
       file(relative_path).write(content, mode: 'w+b', encoding: 'UTF-8')
-      @platformos_app&.update([relative_path])
+      @platformos_app&.update([relative_path], remove: !file_exists?(relative_path))
     end
 
     def remove(relative_path)

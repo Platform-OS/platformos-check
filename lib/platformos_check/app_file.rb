@@ -63,8 +63,16 @@ module PlatformosCheck
       dir_names[0] == 'app' && dir_names[1] == 'modules'
     end
 
+    def module_overwrite_file_path
+      @module_overwrite_file_path ||= module_original_file? ? 'app/' + relative_path.to_s : nil
+    end
+
+    def module_original_file_path
+      @module_original_file_path ||= module_overwrite_file? ? dir_names[1..].join(File::SEPARATOR) : nil
+    end
+
     def dir_names
-      @dir_names = @relative_path.split(File::SEPARATOR).reject(&:empty?)
+      @dir_names ||= @relative_path.split(File::SEPARATOR).reject(&:empty?)
     end
 
     # For the corrector to work properly, we should have a

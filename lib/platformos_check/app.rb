@@ -63,6 +63,13 @@ module PlatformosCheck
 
         if remove
           @grouped_files[klass].delete(f.name)
+          if f.module_overwrite_file? && storage.files.include?(f.module_original_file_path)
+            original_file = klass.new(f.module_original_file_path, storage)
+            @grouped_files[klass][original_file.name] = original_file
+          elsif f.module_original_file? && storage.files.include?(f.module_overwrite_file_path)
+            overwrite_file = klass.new(f.module_overwrite_file_path, storage)
+            @grouped_files[klass][overwrite_file.name] = overwrite_file
+          end
         else
           # we want to keep the reference to a module overwrite, if exists
           @grouped_files[klass][f.name] = f unless f.module_original_file? && @grouped_files[klass][f.name] && @grouped_files[klass][f.name].module_overwrite_file?
