@@ -2,8 +2,6 @@
 
 module PlatformosCheck
   module Tags
-    # Copied tags parsing code from storefront-renderer
-
     class ContentFor < BaseBlock; end
 
     class Yield < Base; end

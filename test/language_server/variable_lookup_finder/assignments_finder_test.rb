@@ -281,7 +281,7 @@ module PlatformosCheck
             -%}
             {% assign var2 = 1 %}
             {%- for var3 in (1..var2) -%}
-              {% echo█
+              {% echo
           LIQUID
 
           assert_assignments_finder(template, {
