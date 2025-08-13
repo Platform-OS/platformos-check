@@ -88,9 +88,6 @@ require_relative "platformos_check/language_server"
 
 Dir[__dir__ + "/platformos_check/checks/*.rb"].each { |file| require file }
 
-Encoding.default_external = Encoding::UTF_8
-Encoding.default_internal = Encoding::UTF_8
-
 module PlatformosCheck
   def self.debug?
     ENV["PLATFORMOS_CHECK_DEBUG"] == "true"
@@ -98,16 +95,6 @@ module PlatformosCheck
 
   def self.debug_log_file
     ENV.fetch("PLATFORMOS_CHECK_DEBUG_LOG_FILE", nil)
-  end
-
-  def self.with_liquid_c_disabled
-    if defined?(Liquid::C)
-      was_enabled = Liquid::C.enabled
-      Liquid::C.enabled = false if was_enabled
-    end
-    yield
-  ensure
-    Liquid::C.enabled = true if defined?(Liquid::C) && was_enabled
   end
 
   def self.log(message)

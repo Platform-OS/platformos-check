@@ -8,11 +8,6 @@ class LiquidVisitorTest < Minitest::Test
     @visitor = PlatformosCheck::LiquidVisitor.new(PlatformosCheck::Checks.new([@tracer]), PlatformosCheck::DisabledChecks.new)
   end
 
-  def run
-    # Liquid-C is disabled from the Analyzer, before the visitor is called
-    PlatformosCheck.with_liquid_c_disabled { super }
-  end
-
   def test_assign
     app_file = parse_liquid(<<~END)
       {% assign x = 'hello' %}

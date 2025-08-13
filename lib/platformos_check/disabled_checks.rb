@@ -70,7 +70,7 @@ module PlatformosCheck
     def comment_text(node)
       case node.type_name
       when :comment
-        node.value.nodelist.join
+        node.inner_markup
       when :inline_comment
         node.markup.sub(/\s*#+\s*/, '')
       end

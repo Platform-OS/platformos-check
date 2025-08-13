@@ -26,7 +26,7 @@ module PlatformosCheck
       end
 
       def register_tag(name, klass)
-        Liquid::Template.register_tag(name, klass)
+        Liquid::Environment.default.register_tag(name, klass)
       end
 
       def register_tags!
