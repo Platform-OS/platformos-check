@@ -19,11 +19,11 @@ module PlatformosCheck
             def environment
               @environment ||= Liquid::Environment.build(tags: Liquid::Environment.default.tags.merge(
                 {
-                  'case' => Tags::TolerantCase,
-                  'for' => Tags::TolerantFor,
-                  'if' => Tags::TolerantIf,
-                  'tablerow' => Tags::TolerantTableRow,
-                  'unless' => Tags::TolerantUnless
+                  'case' => Tags::Case,
+                  'for' => Tags::For,
+                  'if' => Tags::If,
+                  'tablerow' => Tags::TableRow,
+                  'unless' => Tags::Unless
                 }
               ))
             end
@@ -44,23 +44,23 @@ module PlatformosCheck
             end
           end
 
-          class TolerantCase < Liquid::Case
+          class Case < Liquid::Case
             include TolerantBlockBody
           end
 
-          class TolerantFor < Liquid::For
+          class For < Liquid::For
             include TolerantBlockBody
           end
 
-          class TolerantIf < Liquid::If
+          class If < Liquid::If
             include TolerantBlockBody
           end
 
-          class TolerantTableRow < Liquid::TableRow
+          class TableRow < Liquid::TableRow
             include TolerantBlockBody
           end
 
-          class TolerantUnless < Liquid::Unless
+          class Unless < Liquid::Unless
             include TolerantBlockBody
           end
         end
