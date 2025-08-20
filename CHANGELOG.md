@@ -1,3 +1,9 @@
+v0.5.0 / 2025-08-20
+==================
+
+  * Add support for {% transaction %} and {% rollback %} tags
+  * Upgrade Liquid dependency to the newest version to enhance compatiblity with platformOS runtime
+
 v0.4.14 / 2024-10-11
 ==================
 
