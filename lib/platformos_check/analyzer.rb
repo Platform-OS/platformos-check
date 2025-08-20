@@ -53,13 +53,11 @@ module PlatformosCheck
       liquid_visitor = LiquidVisitor.new(@liquid_checks, @disabled_checks)
       html_visitor = HtmlVisitor.new(@html_checks)
 
-      PlatformosCheck.with_liquid_c_disabled do
-        @platformos_app.liquid.each_with_index do |liquid_file, i|
-          yield(liquid_file.relative_path.to_s, i, total_file_count) if block_given?
-          liquid_visitor.visit_liquid_file(liquid_file)
-          html_visitor.visit_liquid_file(liquid_file)
-          @warnings[liquid_file.path] = liquid_file.warnings if @store_warnings && !liquid_file.warnings&.empty?
-        end
+      @platformos_app.liquid.each_with_index do |liquid_file, i|
+        yield(liquid_file.relative_path.to_s, i, total_file_count) if block_given?
+        liquid_visitor.visit_liquid_file(liquid_file)
+        html_visitor.visit_liquid_file(liquid_file)
+        @warnings[liquid_file.path] = liquid_file.warnings if @store_warnings && !liquid_file.warnings&.empty?
       end
 
       @platformos_app.yaml.each_with_index do |yaml_file, i|
@@ -87,39 +85,37 @@ module PlatformosCheck
     def analyze_files(files, only_single_file: false)
       reset
 
-      PlatformosCheck.with_liquid_c_disabled do
-        total = files.size
-        offset = 0
+      total = files.size
+      offset = 0
 
-        unless only_single_file
-          # Call all checks that run on the whole platformos_app
-          liquid_visitor = LiquidVisitor.new(@liquid_checks.whole_platformos_app, @disabled_checks)
-          html_visitor = HtmlVisitor.new(@html_checks.whole_platformos_app)
-          total += total_file_count
-          offset = total_file_count
-          @platformos_app.liquid.each_with_index do |liquid_file, i|
-            yield(liquid_file.relative_path.to_s, i, total) if block_given?
-            liquid_visitor.visit_liquid_file(liquid_file)
-            html_visitor.visit_liquid_file(liquid_file)
-          end
-
-          @platformos_app.yaml.each_with_index do |yaml_file, i|
-            yield(yaml_file.relative_path.to_s, liquid_file_count + i, total) if block_given?
-            @yaml_checks.whole_platformos_app.call(:on_file, yaml_file)
-          end
+      unless only_single_file
+        # Call all checks that run on the whole platformos_app
+        liquid_visitor = LiquidVisitor.new(@liquid_checks.whole_platformos_app, @disabled_checks)
+        html_visitor = HtmlVisitor.new(@html_checks.whole_platformos_app)
+        total += total_file_count
+        offset = total_file_count
+        @platformos_app.liquid.each_with_index do |liquid_file, i|
+          yield(liquid_file.relative_path.to_s, i, total) if block_given?
+          liquid_visitor.visit_liquid_file(liquid_file)
+          html_visitor.visit_liquid_file(liquid_file)
         end
 
-        # Call checks that run on a single files, only on specified file
-        liquid_visitor = LiquidVisitor.new(@liquid_checks.single_file, @disabled_checks, only_single_file:)
-        html_visitor = HtmlVisitor.new(@html_checks.single_file)
-        files.each_with_index do |app_file, i|
-          yield(app_file.relative_path.to_s, offset + i, total) if block_given?
-          if app_file.liquid?
-            liquid_visitor.visit_liquid_file(app_file)
-            html_visitor.visit_liquid_file(app_file)
-          elsif app_file.yaml?
-            @yaml_checks.single_file.call(:on_file, app_file)
-          end
+        @platformos_app.yaml.each_with_index do |yaml_file, i|
+          yield(yaml_file.relative_path.to_s, liquid_file_count + i, total) if block_given?
+          @yaml_checks.whole_platformos_app.call(:on_file, yaml_file)
+        end
+      end
+
+      # Call checks that run on a single files, only on specified file
+      liquid_visitor = LiquidVisitor.new(@liquid_checks.single_file, @disabled_checks, only_single_file:)
+      html_visitor = HtmlVisitor.new(@html_checks.single_file)
+      files.each_with_index do |app_file, i|
+        yield(app_file.relative_path.to_s, offset + i, total) if block_given?
+        if app_file.liquid?
+          liquid_visitor.visit_liquid_file(app_file)
+          html_visitor.visit_liquid_file(app_file)
+        elsif app_file.yaml?
+          @yaml_checks.single_file.call(:on_file, app_file)
         end
       end
 

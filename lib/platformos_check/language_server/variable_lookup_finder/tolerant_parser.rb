@@ -11,31 +11,22 @@ module PlatformosCheck
               # The tolerant parser relies on a tolerant custom parse
               # context to creates a new 'Template' object, even when
               # a block is not closed.
-              Liquid::Template.parse(content, custom_parse_context)
+              Liquid::Template.parse(content, environment: environment)
             end
 
             private
 
-            def custom_parse_context
-              ParseContext.new
+            def environment
+              @environment ||= Liquid::Environment.build(tags: Liquid::Environment.default.tags.merge(
+                {
+                  'case' => Tags::Case,
+                  'for' => Tags::For,
+                  'if' => Tags::If,
+                  'tablerow' => Tags::TableRow,
+                  'unless' => Tags::Unless
+                }
+              ))
             end
-          end
-        end
-
-        class ParseContext < Liquid::ParseContext
-          def new_block_body
-            BlockBody.new
-          end
-        end
-
-        class BlockBody < Liquid::BlockBody
-          ##
-          # The tags are statically defined and referenced at the
-          # 'Liquid::Template', so the TolerantParser just uses the
-          # redefined tags at this custom block body. Thus, there's
-          # no side-effects between the regular and the tolerant parsers.
-          def registered_tags
-            Tags.new(super)
           end
         end
 
@@ -71,21 +62,6 @@ module PlatformosCheck
 
           class Unless < Liquid::Unless
             include TolerantBlockBody
-          end
-
-          def initialize(standard_tags)
-            @standard_tags = standard_tags
-            @tolerant_tags = {
-              'case' => Case,
-              'for' => For,
-              'if' => If,
-              'tablerow' => TableRow,
-              'unless' => Unless
-            }
-          end
-
-          def [](key)
-            @tolerant_tags[key] || @standard_tags[key]
           end
         end
       end
