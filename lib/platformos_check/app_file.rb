@@ -55,6 +55,10 @@ module PlatformosCheck
                        end
     end
 
+    def module_file?
+      module_name != nil
+    end
+
     def module_original_file?
       dir_names[0] == 'modules'
     end

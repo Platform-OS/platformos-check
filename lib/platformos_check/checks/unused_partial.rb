@@ -39,6 +39,9 @@ module PlatformosCheck
 
     def on_end
       missing_partials.each do |app_file|
+        # we want to duplicate the offense to not mark it as autocorrectible
+        return add_offense("This partial is not used", app_file:) if app_file.module_file?
+
         add_offense("This partial is not used", app_file:) do |corrector|
           corrector.remove_file(@platformos_app.storage, app_file.relative_path.to_s)
         end
