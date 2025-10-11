@@ -49,9 +49,9 @@ module PlatformosCheck
       storage.mkdir(relative_path)
     end
 
-    # def rename(storage, old_path, new_path)
-    #   storage.rename(old_path, new_path)
-    # end
+    def rename(storage, old_path, new_path)
+      storage.rename(old_path, new_path)
+    end
 
     def add_translation(json_file, path, value)
       hash = json_file.content

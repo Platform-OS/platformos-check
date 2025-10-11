@@ -24,7 +24,7 @@ module PlatformosCheck
       assert_offenses("", offenses)
     end
 
-    def test_no_offense_if_no_directory_in_module
+    def test_no_offense_if_no_directory_in_module_but_file_name_is_a_language
       offenses = analyze_platformos_app(
         TranslationFilesMatch.new,
         "modules/my_module/public/translations/en.yml" => <<~YML
@@ -56,11 +56,13 @@ module PlatformosCheck
     def test_corrects_other_language_than_in_path
       expected_sources = {
         "app/translations/en/item.yml" => <<~YML
+          ---
           en:
             app:
               item:
-                title: "Item"
-                description: "Item"
+                title: Item
+                description: Item
+
         YML
       }
       sources = fix_platformos_app(
@@ -74,6 +76,61 @@ module PlatformosCheck
         YML
       )
 
+      refute_empty sources
+      sources.each do |path, source|
+        assert_equal(expected_sources[path], source)
+      end
+    end
+
+    def test_corrects_if_file_in_not_language_directory
+      expected_sources = {
+        "app/translations/en/item.yml" => <<~YML
+          en:
+            app:
+              item:
+                title: "Item"
+                description: "Item"
+        YML
+      }
+      sources = fix_platformos_app(
+        TranslationFilesMatch.new,
+        "app/translations/item.yml" => <<~YML
+          en:
+            app:
+              item:
+                title: "Item"
+                description: "Item"
+        YML
+      )
+
+      refute_empty sources
+      sources.each do |path, source|
+        assert_equal(expected_sources[path], source)
+      end
+    end
+
+    def test_corrects_if_module_file_in_not_language_directory
+      expected_sources = {
+        "modules/my_module/public/translations/en/item.yml" => <<~YML
+          en:
+            app:
+              item:
+                title: "Item"
+                description: "Item"
+        YML
+      }
+      sources = fix_platformos_app(
+        TranslationFilesMatch.new,
+        "modules/my_module/public/translations/item.yml" => <<~YML
+          en:
+            app:
+              item:
+                title: "Item"
+                description: "Item"
+        YML
+      )
+
+      refute_empty sources
       sources.each do |path, source|
         assert_equal(expected_sources[path], source)
       end
@@ -143,11 +200,12 @@ module PlatformosCheck
                 description: "Item"
         YML
         "app/translations/de/item.yml" => <<~YML
+          ---
           de:
             app:
               item:
-                title: "Item"
-                description: "Item"
+                title: Item
+                description: Item
         YML
       }
       sources = fix_platformos_app(
@@ -171,6 +229,7 @@ module PlatformosCheck
         YML
       )
 
+      refute_empty sources
       sources.each do |path, source|
         assert_equal(expected_sources[path], source)
       end
@@ -299,16 +358,18 @@ module PlatformosCheck
             base: Base
         YML
         "app/translations/de/item.yml" => <<~YML
+          ---
           de:
             app:
               item:
-                title: "Artikel"
-                description: "Item"
+                title: Artikel
+                description: Item
               hello:
-                world: "Welt"
+                world: Welt
               my_translation:
-                value: "hello"
+                value: hello
             base: Base
+
         YML
       }
       sources = fix_platformos_app(
@@ -334,6 +395,8 @@ module PlatformosCheck
                 value: "hello"
         YML
       )
+
+      refute_empty sources
 
       sources.each do |path, source|
         assert_equal(expected_sources[path], source)

@@ -130,6 +130,12 @@ module PlatformosCheck
         @delete_files << delete_file_change(uri)
       end
 
+      def rename(storage, old_path, new_path)
+        contents = storage.read(old_path)
+        remove_file(storage, old_path)
+        create_file(storage, new_path, contents)
+      end
+
       def mkdir(storage, relative_path)
         path = Pathname.new(relative_path).join("tmp").to_s
         # The LSP doesn't have a concept for directories, so what we
