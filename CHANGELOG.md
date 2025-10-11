@@ -1,3 +1,10 @@
+v0.5.1 / 2025-08-20
+==================
+
+  * Fix: Translation checks sometimes crashed 
+  * Fix: Autocorrection for translation files will work correctly now
+  * Improvement: Do not remove unused modules files, as this might silently introduce breaking changes
+
 v0.5.0 / 2025-08-20
 ==================
 

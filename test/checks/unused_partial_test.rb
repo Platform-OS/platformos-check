@@ -3,7 +3,26 @@
 require "test_helper"
 
 class UnusedPartialTest < Minitest::Test
-  def test_finds_unused
+  def test_finds_unused_in_module
+    offenses = analyze_platformos_app(
+      PlatformosCheck::UnusedPartial.new,
+      "app/views/pages/index.liquid" => <<~END,
+        {% include 'modules/my_module/muffin' %}
+      END
+      "modules/my_module/public/views/partials/muffin.liquid" => <<~END,
+        Here's a muffin
+      END
+      "modules/my_module/public/views/partials/unused.liquid" => <<~END
+        This is not used
+      END
+    )
+
+    assert_offenses(<<~END, offenses)
+      This partial is not used at modules/my_module/public/views/partials/unused.liquid
+    END
+  end
+
+  def test_finds_unused_in_app
     offenses = analyze_platformos_app(
       PlatformosCheck::UnusedPartial.new,
       "app/views/pages/index.liquid" => <<~END,
@@ -74,7 +93,7 @@ class UnusedPartialTest < Minitest::Test
     assert_offenses("", offenses)
   end
 
-  def test_removes_unused_partial
+  def test_removes_unused_partial_if_in_app
     platformos_app = make_platformos_app(
       "app/views/pages/index.liquid" => <<~END,
         {% include 'muffin' %}
@@ -92,5 +111,25 @@ class UnusedPartialTest < Minitest::Test
     analyzer.correct_offenses
 
     refute_includes(platformos_app.storage.files, "app/views/partials/unused.liquid")
+  end
+
+  def test_does_not_remove_unused_partial_if_in_module
+    platformos_app = make_platformos_app(
+      "app/views/pages/index.liquid" => <<~END,
+        {% include 'modules/my_module/muffin' %}
+      END
+      "modules/my_module/public/views/partials/muffin.liquid" => <<~END,
+        Here's a muffin
+      END
+      "modules/my_module/public/views/partials/unused.liquid" => <<~END
+        This is not used
+      END
+    )
+
+    analyzer = PlatformosCheck::Analyzer.new(platformos_app, [PlatformosCheck::UnusedPartial.new], true)
+    analyzer.analyze_platformos_app
+    analyzer.correct_offenses
+
+    assert_includes(platformos_app.storage.files, "modules/my_module/public/views/partials/unused.liquid")
   end
 end
