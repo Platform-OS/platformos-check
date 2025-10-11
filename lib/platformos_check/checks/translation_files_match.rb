@@ -11,7 +11,8 @@ module PlatformosCheck
     def on_file(file)
       return unless file.translation?
       return if file.parse_error
-      return add_offense_wrong_language_in_file(file) if file.language != file.language_from_path
+      return add_offense_no_language_in_path(file) if file.language_from_path.nil? && File.basename(file.relative_path, File.extname(file.relative_path)) != file.language
+      return add_offense_wrong_language_in_file(file) if file.language_from_path && file.language != file.language_from_path
       return check_if_file_exists_for_all_other_languages(file) if file.language == @platformos_app.default_language
 
       default_language_file = @platformos_app.grouped_files[PlatformosCheck::TranslationFile][file.name.sub(file.language, @platformos_app.default_language)]
@@ -23,9 +24,20 @@ module PlatformosCheck
 
     protected
 
+    def add_offense_no_language_in_path(file)
+      add_offense("Mismatch detected - file not inside `#{file.language}` directory", app_file: file) do |corrector|
+        corrector.rename(@platformos_app.storage,
+                         file.relative_path.to_s,
+                         file.relative_path.to_s.sub('/translations/', "/translations/#{file.language}/"))
+      end
+    end
+
     def add_offense_wrong_language_in_file(file)
       add_offense("Mismatch detected - file inside #{file.language_from_path} directory defines translations for `#{file.language}`", app_file: file) do |_corrector|
-        file.update_contents(file.content[file.language_from_path] = file.content.delete(file.content[file.language]))
+        return if file.content.nil?
+
+        wrong_language_content = file.content.delete(file.language)
+        file.update_contents(file.content.merge({ file.language_from_path => wrong_language_content }))
         file.write
       end
     end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "pathname"
+require 'fileutils'
 
 module PlatformosCheck
   class FileSystemStorage < Storage
@@ -48,14 +49,17 @@ module PlatformosCheck
       file(relative_path).mkpath
     end
 
-    # TODO: Fix corrector
-    # def rename(old_path, new_path)
-    #   return unless file_exists?(old_path)
-    #
-    #   reset_memoizers
-    #
-    #   file(old_path).mv(new_path)
-    # end
+    def rename(old_path, new_path)
+      return unless file_exists?(old_path)
+
+      @platformos_app&.update([old_path], remove: true)
+      @platformos_app&.update([new_path])
+
+      reset_memoizers
+
+      FileUtils.mkdir_p(File.dirname(file(new_path)))
+      FileUtils.mv(file(old_path), file(new_path))
+    end
 
     def files
       @file_array ||= glob("**/*")

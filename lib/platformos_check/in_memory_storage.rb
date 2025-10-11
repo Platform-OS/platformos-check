@@ -31,6 +31,14 @@ module PlatformosCheck
       @files.delete(relative_path)
     end
 
+    def rename(old_path, new_path)
+      return unless @files[old_path]
+
+      @platformos_app&.update([old_path], remove: true)
+      @platformos_app&.update([new_path])
+      @files[new_path] = @files.delete(old_path)
+    end
+
     def mkdir(relative_path)
       @files[relative_path] = nil
     end

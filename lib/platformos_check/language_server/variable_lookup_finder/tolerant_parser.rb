@@ -11,7 +11,7 @@ module PlatformosCheck
               # The tolerant parser relies on a tolerant custom parse
               # context to creates a new 'Template' object, even when
               # a block is not closed.
-              Liquid::Template.parse(content, environment: environment)
+              Liquid::Template.parse(content, environment:)
             end
 
             private

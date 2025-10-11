@@ -131,7 +131,7 @@ module Minitest
       analyzer = PlatformosCheck::Analyzer.new(platformos_app, check_classes, true)
       analyzer.analyze_platformos_app
       analyzer.correct_offenses
-      sources = platformos_app.liquid.map { |app_file| [app_file.relative_path.to_s, app_file.rewriter.to_s] }
+      sources = platformos_app.all.map { |app_file| [app_file.relative_path.to_s, app_file.rewriter.to_s] }
       Hash[*sources.flatten]
     end
 

@@ -24,7 +24,10 @@ module PlatformosCheck
     end
 
     def language_from_path
-      @language_from_path ||= name.sub(module_prefix, '').split(File::SEPARATOR).first
+      @language_from_path ||= begin
+        name_without_prefix_components = name.sub(module_prefix, '').split(File::SEPARATOR)
+        name_without_prefix_components.size > 1 ? name_without_prefix_components.first : nil
+      end
     end
 
     def update_contents(new_content = {})
@@ -41,6 +44,10 @@ module PlatformosCheck
 
     def translation?
       true
+    end
+
+    def rewriter
+      @rewriter ||= AppFileRewriter.new(@relative_path, source)
     end
   end
 end
