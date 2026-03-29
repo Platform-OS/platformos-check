@@ -36,6 +36,7 @@ module PlatformosCheck
         register_tag('content_for', ContentFor)
         register_tag('context', Context)
         register_tag('context_rc', Context)
+        register_tag('doc', Doc)
         register_tag('export', Export)
         register_tag('form', Form)
         register_tag('function', Function)
